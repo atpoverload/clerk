@@ -1,8 +1,10 @@
 package clerk.concurrent;
 
-import chappie.profiling.Sampler;
+import clerk.core.Sampler;
+import clerk.sampling.SamplingRate;
 import dagger.Module;
 import dagger.Provides;
+// TODO: is this right?
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
@@ -16,21 +18,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 public interface ParallelExecutorModule {
   private static final AtomicInteger counter = new AtomicInteger();
 
-  // make sure each sampler has a thread
-  @Provides
-  static ExecutorService provideExecutor(Set<Sampler> samplers) {
-    return Executors.newFixedThreadPool(
-      samplers.size(), r -> new Thread(r,
-        String.join("-",
-          "clerk",
-          String.format("%02d", counter.getAndIncrement())
-          r.getClass().getSimpleName()
-    )));
+  private static clerkName(Class cls) {
+    return String.join("-",
+      "clerk",
+      String.format("%02d", counter.getAndIncrement())
+      r.getClass().getSimpleName());
   }
 
+  // make sure each sampler has a thread
   @Provides
-  @SamplingRate
-  static Duration provideSamplingRate() {
-    return Duration.ofMillis(Long.parseLong(System.getProperty("clerk.rate", "41")));
+  static ExecutorService provideExecutor(@SamplingRate Duration rate, Set<Sampler> samplers) {
+    return Executors.newFixedThreadPool(
+      samplers.size(),
+      r -> new Thread(
+        new SteadyStateScheduledRunnable(r, rate.toEpochMillis()),
+        clerkName(r.getClass())));
   }
 }

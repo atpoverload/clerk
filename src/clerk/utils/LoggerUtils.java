@@ -10,7 +10,7 @@ import java.util.logging.LogRecord;
 import java.text.SimpleDateFormat;
 
 /** Logger setup so that we can easily track events. */
-public final class LoggerUtil {
+public final class LoggerUtils {
   private static boolean setup = false;
 
   public static Logger setup() {
@@ -46,5 +46,5 @@ public final class LoggerUtil {
     return Logger.getLogger("chappie");
   }
 
-  private LoggerUtil() { }
+  private LoggerUtils() { }
 }

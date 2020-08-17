@@ -25,11 +25,15 @@ public final class Profiler {
   private boolean isRunning = false;
 
   @Inject
-  Profiler(@SamplingRate Duration rate, Set<Sampler> samplers, SampleProcessor<Iterable<Profile>> processor, ExecutorService executor) {
-    this.rate = rate;
-    this.samplers = samplers;
-    this.processor = processor;
-    this.executor = executor;
+  Profiler(
+    @SamplingRate Duration rate,
+    Set<Sampler> samplers,
+    SampleProcessor<Iterable<Profile>> processor,
+    ExecutorService executor) {
+      this.rate = rate;
+      this.samplers = samplers;
+      this.processor = processor;
+      this.executor = executor;
   }
 
   /**
@@ -48,7 +52,7 @@ public final class Profiler {
       profiles.clear();
       for (Sampler sampler: samplers) {
         // is there a reason to use a listenable future?
-        executor.execute(new SelfScheduledRunnable(() -> {
+        executor.execute(() -> {
           try {
             logger.finest("sampling");
             processor.add(sampler.sample());
@@ -56,9 +60,8 @@ public final class Profiler {
             logger.log(WARNING, "unable to sample", e);
             e.printStackTrace();
           }
-        },
-        rate.toMillis()));
-        logger.fine("started the " + sampler.getClass().getSimpleName());
+        });
+        logger.fine("started " + sampler.getClass().getSimpleName());
       }
       isRunning = true;
       logger.info("started the profiler");
@@ -76,12 +79,14 @@ public final class Profiler {
       logger.info("stopping the profiler");
       try {
         executor.shutdownNow();
-        while (!executor.awaitTermination(250, MILLISECONDS)) { logger.info("waiting for executor to terminate..."); }
+        while (!executor.awaitTermination(250, MILLISECONDS)) {
+          logger.fine("waiting for executor to terminate...");
+        }
         isRunning = false;
       } catch (Exception e) {
         logger.log(WARNING, "unable to terminate executor", e);
       }
-      logger.info("stopped the profiler");
+      logger.fine("stopped the profiler");
     } else {
       logger.warning("profiler not currently running");
     }
