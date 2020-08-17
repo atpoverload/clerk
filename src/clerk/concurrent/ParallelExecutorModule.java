@@ -22,7 +22,7 @@ public interface ParallelExecutorModule {
     return String.join("-",
       "clerk",
       String.format("%02d", counter.getAndIncrement())
-      r.getClass().getSimpleName());
+      cls.getSimpleName());
   }
 
   // make sure each sampler has a thread

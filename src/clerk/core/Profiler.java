@@ -3,9 +3,7 @@ package clerk.core;
 import static java.util.logging.Level.WARNING;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-import chappie.concurrent.SelfScheduledRunnable;
-import clerk.util.LoggerUtil;
-import java.time.Duration;
+import clerk.utils.LoggerUtils;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -14,9 +12,9 @@ import javax.inject.Inject;
 
 /** Manages a system that collects profiles. */
 public final class Profiler {
-  private static final Logger logger = LoggerUtil.setup();
+  private static final Logger logger = LoggerUtils.setup();
 
-  private final Duration rate;
+  // this is implicitly scheduled
   private final ExecutorService executor;
   private final Set<Sampler> samplers;
   private final SampleProcessor<Iterable<Profile>> processor;
@@ -26,11 +24,9 @@ public final class Profiler {
 
   @Inject
   Profiler(
-    @SamplingRate Duration rate,
     Set<Sampler> samplers,
     SampleProcessor<Iterable<Profile>> processor,
     ExecutorService executor) {
-      this.rate = rate;
       this.samplers = samplers;
       this.processor = processor;
       this.executor = executor;
@@ -48,8 +44,6 @@ public final class Profiler {
   public void start() {
     if (!isRunning) {
       logger.info("starting the profiler");
-      getProfiles();
-      profiles.clear();
       for (Sampler sampler: samplers) {
         // is there a reason to use a listenable future?
         executor.execute(() -> {
@@ -87,6 +81,7 @@ public final class Profiler {
         logger.log(WARNING, "unable to terminate executor", e);
       }
       logger.fine("stopped the profiler");
+      getProfiles();
     } else {
       logger.warning("profiler not currently running");
     }

@@ -40,7 +40,7 @@ public final class LoggerUtils {
 
         setup = true;
       } catch (Exception e) {
-        setup =false;
+        setup = false;
       }
     }
     return Logger.getLogger("chappie");
