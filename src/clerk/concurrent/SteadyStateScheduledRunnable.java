@@ -1,4 +1,4 @@
-package chappie.concurrent;
+package clerk.concurrent;
 
 import static java.lang.Math.min;
 
@@ -34,7 +34,7 @@ public final class SteadyStateScheduledRunnable implements Runnable {
   // private final Schedule schedule = new Schedule();
 
   // TODO(timur): explore non-runnable interfaces
-  public SelfScheduledRunnable(Runnable runnable, long rate) {
+  public SteadyStateScheduledRunnable(Runnable runnable, long rate) {
     this.runnable = runnable;
     this.rate = rate;
   }

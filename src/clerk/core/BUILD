@@ -5,6 +5,7 @@ dagger_rules()
 
 java_library(
   name = "core",
+  visibility = ["//visibility:public"],
   srcs = [
     "Profile.java",
     "Sample.java",
@@ -15,12 +16,15 @@ java_library(
 
 java_library(
   name = "profiler",
+  visibility = ["//visibility:public"],
   srcs = [
     "Profiler.java",
   ],
   deps = [
     ":core",
-    ":dagger",
     "//src/clerk/utils",
+    ":dagger",
+    "//src/clerk/concurrent",
+    "//src/clerk/sampling:rate",
   ],
 )

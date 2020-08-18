@@ -1,13 +1,12 @@
 package clerk.sampling;
 
-import chappie.profiling.TimestampedSample;
 import java.time.Instant;
 
 /** Sample that wraps an Instant. */
 public final class RuntimeSample implements TimestampedSample {
   private final Instant timestamp;
 
-  TimestampedSample() {
+  RuntimeSample() {
     timestamp = Instant.now();
   }
 
@@ -18,6 +17,6 @@ public final class RuntimeSample implements TimestampedSample {
 
   @Override
   public String toString() {
-    return timestamp.getEpochMillis().toString();
+    return Long.toString(timestamp.toEpochMilli());
   }
 }

@@ -1,37 +1,38 @@
 package clerk.sampling;
 
+import clerk.core.Sample;
 import clerk.core.Sampler;
 import clerk.core.SampleProcessor;
 import dagger.Module;
 import dagger.Provides;
+import java.time.Instant;
+import java.util.Set;
 import java.util.TreeSet;
-import java.util.Iterable;
-import java.util.List;
 
 /** Module to provide a sampling rate from dargs or a default value. */
 @Module
 public interface RuntimeSamplingModule {
   @Provides
   static Set<Sampler> provideSamplers() {
-    return List.of(RuntimeSample::new);
+    return Set.of(RuntimeSample::new);
   }
 
   @Provides
-  static SampleProcessor provideProcessor() {
+  static SampleProcessor<Iterable<Instant>> provideProcessor() {
     return new SampleProcessor<Iterable<Instant>>() {
       private final TreeSet<Instant> samples = new TreeSet<>();
 
       @Override
-      void add(Sample s) {
+      public void add(Sample s) {
         if (s instanceof RuntimeSample) {
-          samples.add(s)
+          samples.add(((RuntimeSample) s).getTimestamp());
         }
       }
 
       @Override
-      Iterable<Instant> process() {
+      public Iterable<Instant> process() {
         return samples;
       }
-    }
+    };
   }
 }

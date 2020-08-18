@@ -2,12 +2,12 @@ package clerk.sampling;
 
 import dagger.Module;
 import dagger.Provides;
-import java.util.time.Duration;
+import java.time.Duration;
 
 /** Module to provide a sampling rate from dargs or a default value. */
 @Module
 public interface SamplingRateModule {
-  private static final long DEFAULT_RATE_MS = 41;
+  static final String DEFAULT_RATE_MS = "41";
 
   @Provides
   @SamplingRate

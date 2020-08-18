@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.time.Duration;
 
 /**
  * Module to provide an executor for the profiler. Users can provide their
@@ -16,12 +17,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Module
 public interface ParallelExecutorModule {
-  private static final AtomicInteger counter = new AtomicInteger();
+  static final AtomicInteger counter = new AtomicInteger();
 
-  private static clerkName(Class cls) {
+  static String clerkName(Class cls) {
     return String.join("-",
       "clerk",
-      String.format("%02d", counter.getAndIncrement())
+      String.format("%02d", counter.getAndIncrement()),
       cls.getSimpleName());
   }
 
@@ -31,7 +32,7 @@ public interface ParallelExecutorModule {
     return Executors.newFixedThreadPool(
       samplers.size(),
       r -> new Thread(
-        new SteadyStateScheduledRunnable(r, rate.toEpochMillis()),
+        r,
         clerkName(r.getClass())));
   }
 }

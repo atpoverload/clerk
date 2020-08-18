@@ -10,23 +10,29 @@ import java.util.logging.Logger;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 
+import clerk.concurrent.SteadyStateScheduledRunnable;
+import clerk.sampling.SamplingRate;
+import java.time.Duration;
+
 /** Manages a system that collects profiles. */
-public final class Profiler {
+public final class Profiler<T> {
   private static final Logger logger = LoggerUtils.setup();
 
   // this is implicitly scheduled
+  private final Duration rate;
   private final ExecutorService executor;
   private final Set<Sampler> samplers;
-  private final SampleProcessor<Iterable<Profile>> processor;
-  private final ArrayList<Profile> profiles = new ArrayList<>();
+  private final SampleProcessor<Iterable<T>> processor;
 
   private boolean isRunning = false;
 
   @Inject
   Profiler(
+    @SamplingRate Duration rate,
     Set<Sampler> samplers,
-    SampleProcessor<Iterable<Profile>> processor,
+    SampleProcessor<Iterable<T>> processor,
     ExecutorService executor) {
+      this.rate = rate;
       this.samplers = samplers;
       this.processor = processor;
       this.executor = executor;
@@ -46,19 +52,18 @@ public final class Profiler {
       logger.info("starting the profiler");
       for (Sampler sampler: samplers) {
         // is there a reason to use a listenable future?
-        executor.execute(() -> {
+        executor.execute(new SteadyStateScheduledRunnable(() -> {
           try {
-            logger.finest("sampling");
             processor.add(sampler.sample());
           } catch (RuntimeException e) {
             logger.log(WARNING, "unable to sample", e);
             e.printStackTrace();
           }
-        });
+        }, rate.toMillis()));
         logger.fine("started " + sampler.getClass().getSimpleName());
       }
       isRunning = true;
-      logger.info("started the profiler");
+      logger.fine("started the profiler");
     } else {
       logger.warning("profiler already running");
     }
@@ -88,9 +93,10 @@ public final class Profiler {
   }
 
   /** Processes the data and adds any profiles produced to the underlying storage. */
-  public Iterable<Profile> getProfiles() {
+  public Iterable<T> getProfiles() {
+    ArrayList<T> profiles = new ArrayList<>();
     int count = 0;
-    for (Profile profile: processor.process()) {
+    for (T profile: processor.process()) {
       profiles.add(profile);
       count++;
     }
