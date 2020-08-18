@@ -9,7 +9,6 @@ import java.util.Random;
 
 import java.io.File;
 import java.util.Arrays;
-import java.time.Instant;
 
 import java.util.logging.Logger;
 
@@ -25,9 +24,7 @@ public class Driver {
         e.printStackTrace();
       }
       Clerk.stop();
-      for (Instant profile: Clerk.getProfiles()) {
-        System.out.println(profile);
-      }
+      System.out.println(Clerk.dump());
     }
 
     // print vs write profiles; work needs to be done here as well

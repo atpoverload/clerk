@@ -5,33 +5,30 @@ import clerk.core.Sampler;
 import clerk.core.SampleProcessor;
 import dagger.Module;
 import dagger.Provides;
+import java.time.Duration;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 /** Module to provide a sampling rate from dargs or a default value. */
 @Module
 public interface RuntimeSamplingModule {
   @Provides
   static Set<Sampler> provideSamplers() {
-    return Set.of(RuntimeSample::new);
+    return new HashSet<>();
   }
 
   @Provides
-  static SampleProcessor<Iterable<Instant>> provideProcessor() {
-    return new SampleProcessor<Iterable<Instant>>() {
-      private final TreeSet<Instant> samples = new TreeSet<>();
+  static SampleProcessor<Duration> provideProcessor() {
+    return new SampleProcessor<Duration>() {
+      private Instant start = Instant.now();
 
       @Override
-      public void add(Sample s) {
-        if (s instanceof RuntimeSample) {
-          samples.add(((RuntimeSample) s).getTimestamp());
-        }
-      }
+      public void add(Sample s) { }
 
       @Override
-      public Iterable<Instant> process() {
-        return samples;
+      public Duration process() {
+        return Duration.between(start, Instant.now());
       }
     };
   }

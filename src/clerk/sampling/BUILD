@@ -42,7 +42,6 @@ java_library(
   visibility = ["//visibility:public"],
   srcs = [
     "RuntimeSamplingModule.java",
-    "RuntimeSample.java",
   ],
   deps = [
     ":sampling",

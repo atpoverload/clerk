@@ -29,10 +29,17 @@ public interface ParallelExecutorModule {
   // make sure each sampler has a thread
   @Provides
   static ExecutorService provideExecutor(@SamplingRate Duration rate, Set<Sampler> samplers) {
-    return Executors.newFixedThreadPool(
-      samplers.size(),
-      r -> new Thread(
-        r,
-        clerkName(r.getClass())));
+    if (samplers.size() > 0) {
+      return Executors.newFixedThreadPool(
+        samplers.size(),
+        r -> new Thread(
+          r,
+          clerkName(r.getClass())));
+    } else {
+      return Executors.newSingleThreadExecutor(
+        r -> new Thread(
+          r,
+          clerkName(r.getClass())));
+    }
   }
 }

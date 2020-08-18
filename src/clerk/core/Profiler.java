@@ -18,19 +18,21 @@ import java.time.Duration;
 public final class Profiler<T> {
   private static final Logger logger = LoggerUtils.setup();
 
-  // this is implicitly scheduled
+  private final Set<Sampler> samplers;
+  private final SampleProcessor<T> processor;
+
+  // our execution is implicitly scheduled!
   private final Duration rate;
   private final ExecutorService executor;
-  private final Set<Sampler> samplers;
-  private final SampleProcessor<Iterable<T>> processor;
 
   private boolean isRunning = false;
+  private T profile;
 
   @Inject
   Profiler(
     @SamplingRate Duration rate,
     Set<Sampler> samplers,
-    SampleProcessor<Iterable<T>> processor,
+    SampleProcessor<T> processor,
     ExecutorService executor) {
       this.rate = rate;
       this.samplers = samplers;
@@ -73,7 +75,7 @@ public final class Profiler<T> {
    * Starts running the profiler, which feeds {@link sample()} of all samplers
    * into the processor. All samplers are scheduled to collect data at the same rate.
    */
-  public void stop() {
+  public T stop() {
     if (isRunning) {
       logger.info("stopping the profiler");
       try {
@@ -86,23 +88,15 @@ public final class Profiler<T> {
         logger.log(WARNING, "unable to terminate executor", e);
       }
       logger.fine("stopped the profiler");
-      getProfiles();
+      return dump();
     } else {
       logger.warning("profiler not currently running");
+      return null;
     }
   }
 
-  /** Processes the data and adds any profiles produced to the underlying storage. */
-  public Iterable<T> getProfiles() {
-    ArrayList<T> profiles = new ArrayList<>();
-    int count = 0;
-    for (T profile: processor.process()) {
-      profiles.add(profile);
-      count++;
-    }
-    if (count > 0) {
-      logger.finest("collected " + count + " profiles from " + processor.getClass().getSimpleName());
-    }
-    return profiles;
+  /** Processes the data and returns its output. */
+  public T dump() {
+    return processor.process();
   }
 }

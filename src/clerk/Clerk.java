@@ -6,7 +6,7 @@ import clerk.core.Profiler;
 import clerk.sampling.SamplingRateModule;
 import clerk.sampling.RuntimeSamplingModule;
 import dagger.Component;
-import java.time.Instant;
+import java.time.Duration;
 import java.util.ArrayList;
 
 // temporary driver; should be able to get rid of this in some way or another
@@ -20,18 +20,17 @@ public class Clerk {
   })
 
   interface ClerkFactory {
-    Profiler<Instant> newClerk();
+    Profiler<Duration> newClerk();
   }
 
   private static final ClerkFactory clerkFactory = DaggerClerk_ClerkFactory.builder().build();
 
   private static Profiler clerk;
-  private static ArrayList<Instant> profiles = new ArrayList<Instant>();
+  private static Duration profile = Duration.ZERO;
 
-  // starts a profiler if there is not one already
+  // starts a profiler if there is not one
   public static void start() {
     if (clerk == null) {
-      profiles = new ArrayList<Instant>();
       clerk = clerkFactory.newClerk();
       clerk.start();
     }
@@ -41,19 +40,15 @@ public class Clerk {
   public static void stop() {
     if (clerk != null) {
       clerk.stop();
-      profiles.addAll(clerk.getProfiles());
+      profile = (Duration) clerk.dump();
       clerk = null;
     }
   }
 
-  // get all profiles stored
-  public static Iterable<Instant> getProfiles() {
+  // kill the profiler so that we start fresh
+  public static Duration dump() {
     stop();
     start();
-    return profiles;
-  }
-
-  public static void clear() {
-    profiles.clear();
+    return profile;
   }
 }
