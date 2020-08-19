@@ -1,31 +1,32 @@
 package clerk;
 
+import static clerk.utils.MathUtils.mean;
+import static clerk.utils.MathUtils.std;
+
 import clerk.utils.LoggerUtils;
-
-import java.io.PrintWriter;
-import java.io.FileWriter;
-import java.util.List;
-import java.util.Random;
-
-import java.io.File;
-import java.util.Arrays;
-
+import java.util.ArrayList;
 import java.util.logging.Logger;
+import java.time.Duration;
 
 public class Driver {
   public static void main(String[] args) {
+    ArrayList<Integer> profiles = new ArrayList<>();
+    Logger logger = LoggerUtils.setup();
+    logger.info("starting driver");
     // TODO(timur): need a real benchmark to work with
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 1000; i++) {
       Clerk.start();
-      long start = System.currentTimeMillis();
       try {
-        Thread.sleep(500);
+        Thread.sleep(5);
       } catch (Exception e) {
         e.printStackTrace();
       }
       Clerk.stop();
-      System.out.println(Clerk.dump());
+      profiles.add((int) Clerk.dump().toMillis());
     }
+    logger.info("produced " + profiles.size() + " profiles:");
+    logger.info("average sleep time: " + mean(profiles));
+    logger.info("average sleep variance: " + std(profiles));
 
     // print vs write profiles; work needs to be done here as well
     // for (Instant profile: Clerk.getProfiles()) {

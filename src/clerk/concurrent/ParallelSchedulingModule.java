@@ -7,7 +7,7 @@ import dagger.Provides;
 // TODO: is this right?
 import java.util.Set;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.Duration;
 
@@ -16,7 +16,7 @@ import java.time.Duration;
  * own executor if they like (unit testing).
  */
 @Module
-public interface ParallelExecutorModule {
+public interface ParallelSchedulingModule {
   static final AtomicInteger counter = new AtomicInteger();
 
   static String clerkName(Class cls) {
@@ -28,15 +28,15 @@ public interface ParallelExecutorModule {
 
   // make sure each sampler has a thread
   @Provides
-  static ExecutorService provideExecutor(@SamplingRate Duration rate, Set<Sampler> samplers) {
+  static ScheduledExecutorService provideExecutor(@SamplingRate Duration rate, Set<Sampler> samplers) {
     if (samplers.size() > 0) {
-      return Executors.newFixedThreadPool(
+      return Executors.newScheduledThreadPool(
         samplers.size(),
         r -> new Thread(
           r,
           clerkName(r.getClass())));
     } else {
-      return Executors.newSingleThreadExecutor(
+      return Executors.newSingleThreadScheduledExecutor(
         r -> new Thread(
           r,
           clerkName(r.getClass())));

@@ -4,10 +4,10 @@ load("@rules_java//java:defs.bzl", "java_library")
 dagger_rules()
 
 java_library(
-  name = "parallel_executor",
+  name = "parallel",
   visibility = ["//visibility:public"],
   srcs = [
-    "ParallelExecutorModule.java",
+    "ParallelSchedulingModule.java",
   ],
   deps = [
     ":concurrent",
@@ -19,8 +19,14 @@ java_library(
 
 java_library(
   name = "concurrent",
-  visibility = ["//src/clerk:__subpackages__"],
-  srcs = [
-    "SteadyStateScheduledRunnable.java",
+  visibility = [
+    "//src/clerk:__subpackages__",
+    "//test/clerk:__subpackages__",
   ],
+  srcs = [
+    "Scheduler.java",
+  ],
+  deps = [
+    ":dagger",
+  ]
 )

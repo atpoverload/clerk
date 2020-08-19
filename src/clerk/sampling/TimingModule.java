@@ -10,9 +10,9 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-/** Module to provide a sampling rate from dargs or a default value. */
+/** Module to time how long the profiler has run. */
 @Module
-public interface RuntimeSamplingModule {
+public interface TimingModule {
   @Provides
   static Set<Sampler> provideSamplers() {
     return new HashSet<>();
@@ -22,9 +22,6 @@ public interface RuntimeSamplingModule {
   static SampleProcessor<Duration> provideProcessor() {
     return new SampleProcessor<Duration>() {
       private Instant start = Instant.now();
-
-      @Override
-      public void add(Sample s) { }
 
       @Override
       public Duration process() {
