@@ -5,13 +5,9 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import clerk.concurrent.Scheduler;
 import clerk.utils.LoggerUtils;
-import java.util.ArrayList;
-import java.util.Set;
 import java.util.logging.Logger;
-import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 
-import clerk.concurrent.SteadyStateScheduledRunnable;
 import clerk.sampling.SamplingRate;
 import java.time.Duration;
 
@@ -19,12 +15,12 @@ import java.time.Duration;
 public final class Profiler<T> {
   private static final Logger logger = LoggerUtils.setup();
 
-  private final Set<Sampler> samplers;
+  private final Iterable<Sampler> samplers;
   private final SampleProcessor<T> processor;
 
   // our execution is implicitly scheduled!
   private final Duration rate;
-  private final Scheduler executor;
+  private final Scheduler scheduler;
 
   private boolean isRunning = false;
   private T profile;
@@ -32,13 +28,13 @@ public final class Profiler<T> {
   @Inject
   Profiler(
     @SamplingRate Duration rate,
-    Set<Sampler> samplers,
+    Iterable<Sampler> samplers,
     SampleProcessor<T> processor,
-    Scheduler executor) {
+    Scheduler scheduler) {
       this.rate = rate;
       this.samplers = samplers;
       this.processor = processor;
-      this.executor = executor;
+      this.scheduler = scheduler;
   }
 
   /**
@@ -55,7 +51,7 @@ public final class Profiler<T> {
       logger.fine("starting the profiler");
       for (Sampler sampler: samplers) {
         // is there a reason to use a listenable future?
-        executor.schedule(() -> {
+        scheduler.schedule(() -> {
           try {
             processor.add(sampler.sample());
           } catch (RuntimeException e) {
@@ -63,14 +59,6 @@ public final class Profiler<T> {
             e.printStackTrace();
           }
         }, rate.toMillis());
-        // executor.execute(new SteadyStateScheduledRunnable(() -> {
-        //   try {
-        //     processor.add(sampler.sample());
-        //   } catch (RuntimeException e) {
-        //     logger.log(WARNING, "unable to sample", e);
-        //     e.printStackTrace();
-        //   }
-        // }, rate.toMillis()));
         logger.fine("started " + sampler.getClass().getSimpleName());
       }
       isRunning = true;
@@ -87,16 +75,7 @@ public final class Profiler<T> {
   public T stop() {
     if (isRunning) {
       logger.fine("stopping the profiler");
-      executor.stop();
-      // try {
-      //   executor.shutdownNow();
-      //   while (!executor.awaitTermination(250, MILLISECONDS)) {
-      //     logger.fine("waiting for executor to terminate...");
-      //   }
-      //   isRunning = false;
-      // } catch (Exception e) {
-      //   logger.log(WARNING, "unable to terminate executor", e);
-      // }
+      scheduler.cancel();
       logger.fine("stopped the profiler");
       return dump();
     } else {

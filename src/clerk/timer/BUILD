@@ -7,22 +7,10 @@ java_library(
   name = "module",
   visibility = ["//visibility:public"],
   srcs = [
-    "ParallelSchedulingModule.java",
+    "TimerModule.java",
   ],
   deps = [
-    ":concurrent",
     "//src/clerk/core",
-    ":dagger",
-  ]
-)
-
-java_library(
-  name = "concurrent",
-  visibility = ["//visibility:public"],
-  srcs = [
-    "Scheduler.java",
-  ],
-  deps = [
     ":dagger",
   ]
 )

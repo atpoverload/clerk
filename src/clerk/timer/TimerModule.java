@@ -1,21 +1,19 @@
-package clerk.sampling;
+package clerk.timer;
 
-import clerk.core.Sample;
 import clerk.core.Sampler;
 import clerk.core.SampleProcessor;
 import dagger.Module;
 import dagger.Provides;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 /** Module to time how long the profiler has run. */
 @Module
-public interface TimingModule {
+public interface TimerModule {
   @Provides
-  static Set<Sampler> provideSamplers() {
-    return new HashSet<>();
+  static Iterable<Sampler> provideSamplers() {
+    return new ArrayList<>();
   }
 
   @Provides

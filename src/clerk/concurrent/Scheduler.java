@@ -2,6 +2,7 @@ package clerk.concurrent;
 
 import static java.lang.Math.min;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
@@ -18,7 +19,7 @@ public final class Scheduler {
     executor.execute(() -> runAndReschedule(r, period));
   }
 
-  public void stop() {
+  public void cancel() {
     try {
       executor.shutdownNow();
       while (!executor.awaitTermination(250, MILLISECONDS)) { }
@@ -27,9 +28,7 @@ public final class Scheduler {
 
   private void runAndReschedule(Runnable r, long period) {
     long start = System.nanoTime();
-
     r.run();
-
     long elapsed = System.nanoTime() - start;
 
     long millis = elapsed / 1000000;
@@ -40,6 +39,10 @@ public final class Scheduler {
 
     if (millis >= 0 && nanos > 0) {
       executor.schedule(() -> runAndReschedule(r, period), millis, MILLISECONDS);
+    } else if (nanos > 0) {
+      executor.schedule(() -> runAndReschedule(r, period), nanos, NANOSECONDS);
+    } else {
+      executor.execute(() -> runAndReschedule(r, period));
     }
   }
 }

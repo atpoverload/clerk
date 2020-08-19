@@ -1,10 +1,9 @@
 package clerk;
 
-import clerk.concurrent.ParallelExecutorModule;
-import clerk.core.Profile;
+import clerk.concurrent.ParallelSchedulingModule;
 import clerk.core.Profiler;
 import clerk.sampling.SamplingRateModule;
-import clerk.sampling.RuntimeSamplingModule;
+import clerk.timer.TimerModule;
 import dagger.Component;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -14,9 +13,9 @@ import java.util.ArrayList;
 // could look into an annotation for a profiler.
 public class Clerk {
   @Component(modules = {
-    ParallelExecutorModule.class,
+    ParallelSchedulingModule.class,
     SamplingRateModule.class,
-    RuntimeSamplingModule.class
+    TimerModule.class
   })
 
   interface ClerkFactory {

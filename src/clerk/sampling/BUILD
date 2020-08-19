@@ -36,16 +36,3 @@ java_library(
     ":dagger",
   ]
 )
-
-java_library(
-  name = "runtime_sampler",
-  visibility = ["//visibility:public"],
-  srcs = [
-    "RuntimeSamplingModule.java",
-  ],
-  deps = [
-    ":sampling",
-    "//src/clerk/core",
-    ":dagger",
-  ]
-)

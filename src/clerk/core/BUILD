@@ -7,7 +7,6 @@ java_library(
   name = "core",
   visibility = ["//visibility:public"],
   srcs = [
-    "Profile.java",
     "Sample.java",
     "SampleProcessor.java",
     "Sampler.java",
