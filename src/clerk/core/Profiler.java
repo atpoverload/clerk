@@ -58,7 +58,7 @@ public final class Profiler<T> {
             logger.log(WARNING, "unable to sample", e);
             e.printStackTrace();
           }
-        }, rate.toMillis());
+        }, rate);
         logger.fine("started " + sampler.getClass().getSimpleName());
       }
       isRunning = true;

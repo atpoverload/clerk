@@ -17,18 +17,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 // THIS NEEDS TO BE FIXED!!!!!!!
-public class ProfilerTest {
-  @Component(modules = {
-    SerialSchedulingModule.class,
-  })
+public class SchedulerTest {
+  @Module
+  interface TestModule {
+    @Provides
+    static ScheduledExecutorService provideExecutor() {
+      return Executors.newSingleThreadScheduledExecutor();
+    }
+  }
+
+  @Component(modules = {TestModule.class})
   interface TestComponent {
-    void inject(ProfilerTest test);
+    void inject(SchedulerTest test);
   }
 
   private static final int ITERATIONS = 10;
   private static final Duration SLEEP_TIME = Duration.ofMillis(250);
 
-  @Inject Profiler profiler;
+  @Inject Scheduler scheduler;
 
   private AtomicInteger counter;
   private CyclicBarrier barrier;
@@ -53,10 +59,9 @@ public class ProfilerTest {
     setupTaskBarrier(2);
 
     scheduler.schedule(task, SLEEP_TIME);
-    for (int i = 0; i < ITERATIONS; i++) {
-      barrier.await();
-      assertEquals(i + 1, counter.get());
-    }
+    barrier.await();
+    barrier.await();
+    assertEquals(2, counter.get());
   }
 
   @Test
@@ -69,6 +74,30 @@ public class ProfilerTest {
 
     assertEquals(1, counter.get());
   }
+
+  // @Test
+  // public void cancelMultiple() throws Exception {
+  //   counter = new AtomicInteger();
+  //   barrier = new CyclicBarrier(ITERATIONS);
+  //   Runnable task;
+  //
+  //   for (int i = 0; i < ITERATIONS; i++) {
+  //     task = () -> {
+  //         counter.getAndIncrement();
+  //         System.out.println("waiting");
+  //         try {
+  //           barrier.await();
+  //         } catch (InterruptedException | BrokenBarrierException e) {
+  //           throw new RuntimeException(e);
+  //         }
+  //       };
+  //     scheduler.schedule(task, SLEEP_TIME);
+  //   }
+  //   scheduler.cancel();
+  //   barrier.await();
+  //
+  //   assertEquals(ITERATIONS, counter.get());
+  // }
 
   private void setupTaskBarrier(int count) {
     counter = new AtomicInteger();

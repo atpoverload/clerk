@@ -17,18 +17,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 // THIS NEEDS TO BE FIXED!!!!!!!
-public class ProfilerTest {
-  @Component(modules = {
-    SerialSchedulingModule.class,
-  })
+public class SchedulerTest {
+  @Component(modules = {SerialSchedulingModule.class})
   interface TestComponent {
-    void inject(ProfilerTest test);
+    void inject(SchedulerTest test);
   }
 
   private static final int ITERATIONS = 10;
   private static final Duration SLEEP_TIME = Duration.ofMillis(250);
 
-  @Inject Profiler profiler;
+  @Inject Scheduler scheduler;
 
   private AtomicInteger counter;
   private CyclicBarrier barrier;

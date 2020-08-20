@@ -1,6 +1,6 @@
 package clerk;
 
-import clerk.concurrent.ParallelSchedulingModule;
+import clerk.concurrent.SerialSchedulingModule;
 import clerk.core.Profiler;
 import clerk.sampling.SamplingRateModule;
 import clerk.timer.TimerModule;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 // could look into an annotation for a profiler.
 public class Clerk {
   @Component(modules = {
-    ParallelSchedulingModule.class,
+    SerialSchedulingModule.class,
     SamplingRateModule.class,
     TimerModule.class
   })

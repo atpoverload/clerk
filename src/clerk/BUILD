@@ -8,7 +8,7 @@ java_library(
   visibility = ["//visibility:public"],
   srcs = ["Clerk.java"],
   deps = [
-    "//src/clerk/concurrent:module",
+    "//src/clerk/concurrent:serial",
     "//src/clerk/core",
     "//src/clerk/core:profiler",
     "//src/clerk/sampling",
