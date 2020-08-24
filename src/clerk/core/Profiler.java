@@ -3,64 +3,48 @@ package clerk.core;
 import static java.util.logging.Level.WARNING;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-import clerk.concurrent.Scheduler;
 import clerk.utils.LoggerUtils;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
+import dagger.Lazy;
 import javax.inject.Inject;
 
-import clerk.sampling.SamplingRate;
-import java.time.Duration;
-
-/** Manages a system that collects profiles. */
+/** Manages a system that collects and processes data. */
 public final class Profiler<T> {
   private static final Logger logger = LoggerUtils.setup();
 
-  private final Iterable<Sampler> samplers;
-  private final SampleProcessor<T> processor;
-
-  // our execution is implicitly scheduled!
-  private final Duration rate;
-  private final Scheduler scheduler;
+  private final Iterable<Supplier<? extends Object>> sources;
+  private final Lazy<DataProcessor<? super Object, T>> processor;
+  private final Lazy<Scheduler> scheduler;
 
   private boolean isRunning = false;
-  private T profile;
 
   @Inject
   Profiler(
-    @SamplingRate Duration rate,
-    Iterable<Sampler> samplers,
-    SampleProcessor<T> processor,
-    Scheduler scheduler) {
-      this.rate = rate;
-      this.samplers = samplers;
+    Iterable<Supplier<? extends Object>> sources,
+    Lazy<DataProcessor<? super Object, T>> processor,
+    Lazy<Scheduler> scheduler) {
+      this.sources = sources;
       this.processor = processor;
       this.scheduler = scheduler;
   }
 
   /**
-   * Starts running the profiler, which feeds {@link sample()} of all samplers
-   * into the processor. All samplers are scheduled to collect data at the same rate.
+   * Starts running the profiler, which feeds the output of the data sources
+   * into the processor. All sources are sampled based on the scheduler.
    *
    * NOTE: the profiler will ignore this call if it is already running.
-   *
-   * NOTE: all previously collected profiles are cleared and the processor is flushed
-   *       when this is called.
    */
   public void start() {
     if (!isRunning) {
       logger.fine("starting the profiler");
-      for (Sampler sampler: samplers) {
+      for (Supplier<? extends Object> source: sources) {
         // is there a reason to use a listenable future?
-        scheduler.schedule(() -> {
-          try {
-            processor.add(sampler.sample());
-          } catch (RuntimeException e) {
-            logger.log(WARNING, "unable to sample", e);
-            e.printStackTrace();
-          }
-        }, rate);
-        logger.fine("started " + sampler.getClass().getSimpleName());
+        scheduler.get().schedule(() -> processor.get().add(source.get()));
+        logger.fine("started sampling from " + source.getClass().getSimpleName());
       }
+      // just in case there were no sources
+      processor.get();
       isRunning = true;
       logger.fine("started the profiler");
     } else {
@@ -69,13 +53,13 @@ public final class Profiler<T> {
   }
 
   /**
-   * Starts running the profiler, which feeds {@link sample()} of all samplers
-   * into the processor. All samplers are scheduled to collect data at the same rate.
+   * Stops running the profiler by canceling all scheduled tasks and dumping
+   * the stored data.
    */
   public T stop() {
     if (isRunning) {
       logger.fine("stopping the profiler");
-      scheduler.cancel();
+      scheduler.get().cancel();
       logger.fine("stopped the profiler");
       return dump();
     } else {
@@ -84,8 +68,8 @@ public final class Profiler<T> {
     }
   }
 
-  /** Processes the data and returns its output. */
+  /** Processes the stored data and returns the output. */
   public T dump() {
-    return processor.process();
+    return processor.get().process();
   }
 }

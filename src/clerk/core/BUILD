@@ -7,9 +7,8 @@ java_library(
   name = "core",
   visibility = ["//visibility:public"],
   srcs = [
-    "Sample.java",
-    "SampleProcessor.java",
-    "Sampler.java",
+    "DataProcessor.java",
+    "Scheduler.java",
   ],
 )
 
@@ -23,7 +22,5 @@ java_library(
     ":core",
     "//src/clerk/utils",
     ":dagger",
-    "//src/clerk/concurrent",
-    "//src/clerk/sampling:rate",
   ],
 )

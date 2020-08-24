@@ -23,7 +23,7 @@ java_binary(
   main_class = "clerk.Driver",
   srcs = ["Driver.java"],
   deps = [
-    "clerk",
+    "//src/clerk/profiling/timer",
     "//src/clerk/utils",
   ],
 )
