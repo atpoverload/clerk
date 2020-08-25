@@ -6,7 +6,6 @@ import dagger.Module;
 import dagger.Provides;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Supplier;
 
@@ -14,13 +13,13 @@ import java.util.function.Supplier;
 @Module
 public interface TimerModule {
   @Provides
-  static Iterable<Supplier<? extends Object>> provideSources() {
+  static Iterable<Supplier<Void>> provideSources() {
     return Collections.emptyList();
   }
 
   @Provides
-  static DataProcessor<? super Object, Duration> provideProcessor() {
-    return new DataProcessor<Object, Duration>() {
+  static DataProcessor<Void, Duration> provideProcessor() {
+    return new DataProcessor<Void, Duration>() {
       private Instant start = Instant.now();
 
       @Override

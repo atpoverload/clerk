@@ -17,16 +17,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 // THIS NEEDS TO BE FIXED!!!!!!!
-public class SchedulerTest {
-  @Component(modules = {SerialSchedulingModule.class})
+public class PeriodicExecutionSchedulerTest {
+  @Component(modules = {PeriodicSchedulingModule.class})
   interface TestComponent {
-    void inject(SchedulerTest test);
+    void inject(PeriodicExecutionSchedulerTest test);
   }
 
   private static final int ITERATIONS = 10;
-  private static final Duration SLEEP_TIME = Duration.ofMillis(250);
 
-  @Inject Scheduler scheduler;
+  @Inject PeriodicExecutionScheduler scheduler;
 
   private AtomicInteger counter;
   private CyclicBarrier barrier;
@@ -34,14 +33,14 @@ public class SchedulerTest {
 
   @Before
   public void setUp() {
-    DaggerSchedulerTest_TestComponent.builder().build().inject(this);
+    DaggerPeriodicExecutionSchedulerTest_TestComponent.builder().build().inject(this);
   }
 
   @Test
   public void scheduleSingle_oneExecution() throws Exception {
     setupTaskBarrier(2);
 
-    scheduler.schedule(task, SLEEP_TIME);
+    scheduler.schedule(task);
     barrier.await();
     assertEquals(1, counter.get());
   }
@@ -50,7 +49,7 @@ public class SchedulerTest {
   public void scheduleSingle_twoExecutions() throws Exception {
     setupTaskBarrier(2);
 
-    scheduler.schedule(task, SLEEP_TIME);
+    scheduler.schedule(task);
     for (int i = 0; i < ITERATIONS; i++) {
       barrier.await();
       assertEquals(i + 1, counter.get());
@@ -61,7 +60,7 @@ public class SchedulerTest {
   public void cancelSingle() throws Exception {
     setupTaskBarrier(2);
 
-    scheduler.schedule(task, SLEEP_TIME);
+    scheduler.schedule(task);
     scheduler.cancel();
     barrier.await();
 

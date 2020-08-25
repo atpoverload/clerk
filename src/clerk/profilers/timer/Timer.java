@@ -7,7 +7,7 @@ import java.time.Duration;
 public class Timer {
   @Component(modules = {TimerModule.class})
   interface ClerkFactory {
-    Profiler<Duration> newClerk();
+    Profiler<Void, Duration> newClerk();
   }
 
   private static final ClerkFactory clerkFactory = DaggerTimer_ClerkFactory.builder().build();
@@ -26,16 +26,17 @@ public class Timer {
   // stops the profiler if there is one
   public static void stop() {
     if (clerk != null) {
-      clerk.stop();
-      profile = (Duration) clerk.dump();
+      profile = (Duration) clerk.stop();
       clerk = null;
     }
   }
 
   // kill the profiler so that we start fresh
   public static Duration dump() {
-    stop();
-    start();
+    if (clerk != null) {
+      stop();
+      start();
+    }
     return profile;
   }
 }

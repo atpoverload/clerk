@@ -4,17 +4,16 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 dagger_rules()
 
 java_library(
-  name = "concurrent",
-  visibility = [
-    "//src/clerk:__subpackages__",
-    "//test/clerk:__subpackages__"
-  ],
+  name = "thread",
+  visibility = ["//visibility:public"],
   srcs = [
-    "PeriodicExecutionScheduler.java",
-    "SchedulingRate.java",
+    "ThreadTracker.java",
   ],
   deps = [
-    "//src/clerk/core",
+    ":module",
+    "//src/clerk/concurrent",
+    "//src/clerk/concurrent:module",
+    "//src/clerk/core:profiler",
     ":dagger",
   ]
 )
@@ -23,10 +22,9 @@ java_library(
   name = "module",
   visibility = ["//visibility:public"],
   srcs = [
-    "PeriodicSchedulingModule.java",
+    "ThreadTrackerModule.java",
   ],
   deps = [
-    ":concurrent",
     "//src/clerk/core",
     ":dagger",
   ]

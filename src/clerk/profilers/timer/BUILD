@@ -16,7 +16,6 @@ java_library(
   ]
 )
 
-
 java_library(
   name = "module",
   visibility = ["//visibility:public"],

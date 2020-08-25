@@ -4,12 +4,12 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 dagger_rules()
 
 java_test(
-    name = "SchedulerTest",
-    srcs = ["SchedulerTest.java"],
-    test_class = "clerk.concurrent.SchedulerTest",
+    name = "PeriodicExecutionSchedulerTest",
+    srcs = ["PeriodicExecutionSchedulerTest.java"],
+    test_class = "clerk.concurrent.PeriodicExecutionSchedulerTest",
     deps = [
         "//src/clerk/concurrent",
-        "//src/clerk/concurrent:serial",
+        "//src/clerk/concurrent:module",
         ":dagger"
     ],
 )

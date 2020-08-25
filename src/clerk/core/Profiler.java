@@ -10,19 +10,19 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Manages a system that collects and processes data. */
-public final class Profiler<T> {
+public final class Profiler<I, O> {
   private static final Logger logger = LoggerUtils.setup();
 
-  private final Iterable<Supplier<? extends Object>> sources;
-  private final Lazy<DataProcessor<? super Object, T>> processor;
+  private final Iterable<Supplier<I>> sources;
+  private final Lazy<DataProcessor<I, O>> processor;
   private final Lazy<Scheduler> scheduler;
 
   private boolean isRunning = false;
 
   @Inject
   Profiler(
-    Iterable<Supplier<? extends Object>> sources,
-    Lazy<DataProcessor<? super Object, T>> processor,
+    Iterable<Supplier<I>> sources,
+    Lazy<DataProcessor<I, O>> processor,
     Lazy<Scheduler> scheduler) {
       this.sources = sources;
       this.processor = processor;
@@ -38,7 +38,7 @@ public final class Profiler<T> {
   public void start() {
     if (!isRunning) {
       logger.fine("starting the profiler");
-      for (Supplier<? extends Object> source: sources) {
+      for (Supplier<I> source: sources) {
         // is there a reason to use a listenable future?
         scheduler.get().schedule(() -> processor.get().add(source.get()));
         logger.fine("started sampling from " + source.getClass().getSimpleName());
@@ -56,20 +56,15 @@ public final class Profiler<T> {
    * Stops running the profiler by canceling all scheduled tasks and dumping
    * the stored data.
    */
-  public T stop() {
+  public O stop() {
     if (isRunning) {
       logger.fine("stopping the profiler");
       scheduler.get().cancel();
       logger.fine("stopped the profiler");
-      return dump();
+      return processor.get().process();
     } else {
       logger.warning("profiler not currently running");
       return null;
     }
-  }
-
-  /** Processes the stored data and returns the output. */
-  public T dump() {
-    return processor.get().process();
   }
 }
