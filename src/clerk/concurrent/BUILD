@@ -5,10 +5,7 @@ dagger_rules()
 
 java_library(
   name = "concurrent",
-  visibility = [
-    "//src/clerk:__subpackages__",
-    "//test/clerk:__subpackages__"
-  ],
+  visibility = ["//visibility:public"],
   srcs = [
     "PeriodicExecutionScheduler.java",
     "SchedulingRate.java",
