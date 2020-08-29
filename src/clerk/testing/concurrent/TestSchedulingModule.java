@@ -1,7 +1,8 @@
-package clerk.concurrent;
+package clerk.testing.concurrent;
 
-import static java.util.concurrent.Executors.newScheduledThreadPool;
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
+import clerk.concurrent.SchedulingRate;
 import clerk.core.Scheduler;
 import dagger.Binds;
 import dagger.Module;
@@ -10,7 +11,7 @@ import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/** Module to provide a scheduler back-end for testing. */
+/** Module to provide scheduler back-end for testing. */
 @Module
 public interface TestSchedulingModule {
   @Provides
@@ -21,6 +22,6 @@ public interface TestSchedulingModule {
 
   @Provides
   static ScheduledExecutorService provideExecutor() {
-    return newSingleThreadExecutor();
+    return newSingleThreadScheduledExecutor();
   }
 }

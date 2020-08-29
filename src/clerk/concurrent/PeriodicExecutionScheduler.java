@@ -11,7 +11,7 @@ import java.time.Instant;
 import javax.inject.Inject;
 
 /** Scheduler that periodically runs tasks on an scheduled executor service. */
-public final class PeriodicExecutionScheduler implements Scheduler {
+final class PeriodicExecutionScheduler implements Scheduler {
   private final ScheduledExecutorService executor;
   private final Duration period;
 

@@ -9,7 +9,9 @@ java_test(
     test_class = "clerk.concurrent.PeriodicExecutionSchedulerTest",
     deps = [
         "//src/clerk/concurrent",
-        "//src/clerk/concurrent:module",
+        "//src/clerk/core",
+        "//src/clerk/testing/concurrent",
+        "//src/clerk/testing/concurrent:module",
         ":dagger"
     ],
 )
