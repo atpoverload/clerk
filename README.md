@@ -90,7 +90,7 @@ Scheduler scheduler;
 
 `clerk` naively pipes the output of any data source into the processor. This means failures between the two components should be handled on the user side. This choice is made to prevent the need for debugging from within `clerk`.
 
-`clerk` does not require data sources to be provided. This is helpful to build profilers that do not require sampling (such as `clerk.timer.TimerModule`).
+`clerk` does not require data sources to be provided. This is to handle profilers that do not require sampling (such as `clerk.timer.TimerModule`).
 
 ### DataProcessor
 
@@ -100,7 +100,7 @@ Traditionally, profilers produce flat data traces to the user, requiring post-pr
 
 ### Scheduler
 
-`clerk` uses a scheduler to pipe data sources into processors:
+`clerk` uses a scheduler to asynchronously pipe data to processors:
 
 ```java
 interface Scheduler {
@@ -112,4 +112,4 @@ interface Scheduler {
 }
 ```
 
-Although you can provide your own scheduler, it is recommend that you use one of `clerk`'s provided scheduling modules. They have been optimized for both performance and correctness.
+Although you can provide your own scheduler, it is recommend that you use one of `clerk`'s provided scheduling modules. They have been tested for both performance and correctness.
