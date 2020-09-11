@@ -9,6 +9,6 @@ java_binary(
   ],
   deps = [
     "//profilers/clerk/profilers/memory",
-    "//profilers/clerk/profilers/timer",
+    # "//profilers/clerk/profilers/timer",
   ],
 )

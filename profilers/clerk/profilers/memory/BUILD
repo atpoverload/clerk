@@ -11,7 +11,7 @@ java_library(
   ],
   deps = [
     ":module",
-    "//core/clerk/concurrent:periodic_scheduler",
+    "//core/clerk/concurrent:periodic_scheduling",
     "//core/clerk:profiler",
     ":dagger",
   ]
@@ -25,6 +25,7 @@ java_library(
     "MemoryStats.java",
   ],
   deps = [
+    "//profilers/clerk/profilers",
     "//core/clerk",
     ":dagger",
   ]

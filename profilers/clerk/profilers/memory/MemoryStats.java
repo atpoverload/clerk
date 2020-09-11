@@ -13,12 +13,16 @@ public class MemoryStats {
     return freeMemory;
   }
 
+  public long getReservedMemory() {
+    return totalMemory - freeMemory;
+  }
+
   public long getTotalMemory() {
     return totalMemory;
   }
 
   @Override
   public String toString() {
-    return Long.toString(freeMemory) + "/" + Long.toString(totalMemory);
+    return Long.toString(getReservedMemory());
   }
 }

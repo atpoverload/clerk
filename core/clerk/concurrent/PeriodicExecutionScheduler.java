@@ -36,12 +36,12 @@ final class PeriodicExecutionScheduler implements Scheduler {
   private void runAndReschedule(Runnable r) {
     Instant start = Instant.now();
     r.run();
-    Duration sleepTime = period.minus(Duration.between(start, Instant.now()));
+    Duration rescheduleTime = period.minus(Duration.between(start, Instant.now()));
 
-    if (sleepTime.toMillis() > 0) {
-      executor.schedule(() -> runAndReschedule(r), sleepTime.toMillis(), MILLISECONDS);
-    } else if (sleepTime.toNanos() > 0) {
-      executor.schedule(() -> runAndReschedule(r), sleepTime.toNanos(), NANOSECONDS);
+    if (rescheduleTime.toMillis() > 0) {
+      executor.schedule(() -> runAndReschedule(r), rescheduleTime.toMillis(), MILLISECONDS);
+    } else if (rescheduleTime.toNanos() > 0) {
+      executor.schedule(() -> runAndReschedule(r), rescheduleTime.toNanos(), NANOSECONDS);
     } else {
       executor.execute(() -> runAndReschedule(r));
     }

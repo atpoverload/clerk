@@ -1,9 +1,9 @@
 package clerk.profilers.memory;
 
 import clerk.Processor;
+import clerk.profilers.DataSorter;
 import dagger.Module;
 import dagger.Provides;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -20,23 +20,10 @@ public interface MemoryMonitorModule {
 
   @Provides
   static Processor<MemoryStats, Map<Instant, MemoryStats>> provideProcessor() {
-    return new Processor<MemoryStats, Map<Instant, MemoryStats>>() {
-      private TreeMap<Instant, MemoryStats> stats = new TreeMap<>();
-
+    return new DataSorter<Instant, MemoryStats>() {
       @Override
-      public void add(MemoryStats stats) {
-        synchronized (stats) {
-          this.stats.put(Instant.now(), stats);
-        }
-      }
-
-      @Override
-      public Map<Instant, MemoryStats> process() {
-        Map<Instant, MemoryStats> stats = this.stats;
-        synchronized (stats) {
-          this.stats = new TreeMap<>();
-        }
-        return stats;
+      protected Instant getKey(MemoryStats stats) {
+        return Instant.now();
       }
     };
   }
