@@ -8,6 +8,7 @@ java_binary(
     "Driver.java"
   ],
   deps = [
-    "//src/clerk/profilers/memory",
+    "//profilers/clerk/profilers/memory",
+    "//profilers/clerk/profilers/timer",
   ],
 )

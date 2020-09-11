@@ -4,7 +4,6 @@ import static java.lang.Math.min;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
-import clerk.core.Scheduler;
 import java.util.concurrent.ScheduledExecutorService;
 import java.time.Duration;
 import java.time.Instant;
@@ -16,7 +15,7 @@ final class PeriodicExecutionScheduler implements Scheduler {
   private final Duration period;
 
   @Inject
-  PeriodicExecutionScheduler(@SchedulingRate Duration period, ScheduledExecutorService executor) {
+  PeriodicExecutionScheduler(@PeriodicSchedulingRate Duration period, ScheduledExecutorService executor) {
     this.period = period;
     this.executor = executor;
   }

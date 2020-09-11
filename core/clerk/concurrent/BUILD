@@ -7,24 +7,38 @@ java_library(
   name = "concurrent",
   visibility = ["//visibility:public"],
   srcs = [
-    "PeriodicExecutionScheduler.java",
-    "SchedulingRate.java",
+    "Scheduler.java",
   ],
   deps = [
-    "//src/clerk/core",
     ":dagger",
   ]
 )
 
 java_library(
-  name = "module",
+  name = "periodic_scheduler",
+  visibility = [
+    "//core/clerk:__subpackages__",
+    "//profilers/clerk:__subpackages__",
+  ],
+  srcs = [
+    "PeriodicExecutionScheduler.java",
+    "PeriodicSchedulingRate.java",
+  ],
+  deps = [
+    ":concurrent",
+    ":dagger",
+  ]
+)
+
+java_library(
+  name = "periodic_scheduling",
   visibility = ["//visibility:public"],
   srcs = [
     "PeriodicSchedulingModule.java",
   ],
   deps = [
     ":concurrent",
-    "//src/clerk/core",
+    ":periodic_scheduler",
     ":dagger",
   ]
 )

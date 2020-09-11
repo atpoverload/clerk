@@ -1,9 +1,9 @@
-package clerk.core;
+package clerk;
 
 import static java.util.logging.Level.WARNING;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-import clerk.utils.LoggerUtils;
+import clerk.concurrent.Scheduler;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import dagger.Lazy;
@@ -11,19 +11,19 @@ import javax.inject.Inject;
 
 /** Manages a system that collects and processes data. */
 public final class Profiler<I, O> {
-  private static final Logger logger = LoggerUtils.setup();
+  private static final Logger logger = ClerkLogger.createLogger();
 
   private final Iterable<Supplier<I>> sources;
-  private final Lazy<DataProcessor<I, O>> processor;
-  private final Lazy<Scheduler> scheduler;
+  private final Processor<I, O> processor;
+  private final Scheduler scheduler;
 
   private boolean isRunning = false;
 
   @Inject
   Profiler(
     Iterable<Supplier<I>> sources,
-    Lazy<DataProcessor<I, O>> processor,
-    Lazy<Scheduler> scheduler) {
+    Processor<I, O> processor,
+    Scheduler scheduler) {
       this.sources = sources;
       this.processor = processor;
       this.scheduler = scheduler;
@@ -40,11 +40,12 @@ public final class Profiler<I, O> {
       logger.fine("starting the profiler");
       for (Supplier<I> source: sources) {
         // is there a reason to use a listenable future?
-        scheduler.get().schedule(() -> processor.get().add(source.get()));
+        // the problem here is we don't really know how the data will be
+        // collected
+        scheduler.schedule(() -> processor.add(source.get()));
         logger.fine("started sampling from " + source.getClass().getSimpleName());
       }
       // just in case there were no sources
-      processor.get();
       isRunning = true;
       logger.fine("started the profiler");
     } else {
@@ -59,12 +60,17 @@ public final class Profiler<I, O> {
   public O stop() {
     if (isRunning) {
       logger.fine("stopping the profiler");
-      scheduler.get().cancel();
+      scheduler.cancel();
       logger.fine("stopped the profiler");
-      return processor.get().process();
+      return dump();
     } else {
       logger.warning("profiler not currently running");
       return null;
     }
+  }
+
+  /** Raw method to pull data while running. Does this need to be safe? */
+  public O dump() {
+    return processor.process();
   }
 }

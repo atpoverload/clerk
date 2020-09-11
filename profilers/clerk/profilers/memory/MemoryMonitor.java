@@ -1,7 +1,7 @@
 package clerk.profilers.memory;
 
 import clerk.concurrent.PeriodicSchedulingModule;
-import clerk.core.Profiler;
+import clerk.Profiler;
 import dagger.Component;
 import java.time.Instant;
 import java.util.Map;

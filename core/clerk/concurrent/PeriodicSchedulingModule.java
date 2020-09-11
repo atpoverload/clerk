@@ -2,7 +2,6 @@ package clerk.concurrent;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
-import clerk.core.Scheduler;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
@@ -25,7 +24,7 @@ public interface PeriodicSchedulingModule {
   }
 
   @Provides
-  @SchedulingRate
+  @PeriodicSchedulingRate
   static Duration provideSamplingRate() {
     return Duration.ofMillis(Long.parseLong(System.getProperty(
       "clerk.sampling.rate",

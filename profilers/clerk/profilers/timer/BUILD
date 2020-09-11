@@ -4,23 +4,27 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 dagger_rules()
 
 java_library(
-  name = "core",
+  name = "timer",
   visibility = ["//visibility:public"],
   srcs = [
-    "DataProcessor.java",
-    "Scheduler.java",
+    "Timer.java",
   ],
+  deps = [
+    ":module",
+    "//core/clerk:profiler",
+    ":dagger",
+  ]
 )
 
 java_library(
-  name = "profiler",
+  name = "module",
   visibility = ["//visibility:public"],
   srcs = [
-    "Profiler.java",
+    "TimerModule.java",
   ],
   deps = [
-    ":core",
-    "//src/clerk/utils",
+    "//core/clerk",
+    "//core/clerk/concurrent",
     ":dagger",
-  ],
+  ]
 )

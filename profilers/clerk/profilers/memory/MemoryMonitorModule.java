@@ -1,7 +1,6 @@
 package clerk.profilers.memory;
 
-import clerk.core.DataProcessor;
-import clerk.core.Scheduler;
+import clerk.Processor;
 import dagger.Module;
 import dagger.Provides;
 import java.time.Duration;
@@ -20,8 +19,8 @@ public interface MemoryMonitorModule {
   }
 
   @Provides
-  static DataProcessor<MemoryStats, Map<Instant, MemoryStats>> provideProcessor() {
-    return new DataProcessor<MemoryStats, Map<Instant, MemoryStats>>() {
+  static Processor<MemoryStats, Map<Instant, MemoryStats>> provideProcessor() {
+    return new Processor<MemoryStats, Map<Instant, MemoryStats>>() {
       private TreeMap<Instant, MemoryStats> stats = new TreeMap<>();
 
       @Override

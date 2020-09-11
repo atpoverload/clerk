@@ -1,6 +1,6 @@
 package clerk.profilers.timer;
 
-import clerk.core.Profiler;
+import clerk.Profiler;
 import dagger.Component;
 import java.time.Duration;
 
@@ -33,10 +33,6 @@ public class Timer {
 
   // kill the profiler so that we start fresh
   public static Duration dump() {
-    if (clerk != null) {
-      stop();
-      start();
-    }
-    return profile;
+    return (Duration) clerk.dump();
   }
 }

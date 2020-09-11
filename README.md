@@ -100,7 +100,7 @@ Traditionally, profilers produce flat data traces to the user, requiring post-pr
 
 ### Scheduler
 
-`clerk` uses a scheduler to asynchronously pipe data to processors:
+`clerk` uses a scheduler to asynchronously pipe data into processors:
 
 ```java
 interface Scheduler {
@@ -112,4 +112,4 @@ interface Scheduler {
 }
 ```
 
-Although you can provide your own scheduler, it is recommend that you use one of `clerk`'s provided scheduling modules. They have been tested for both performance and correctness.
+Although you can provide your own scheduler, it is recommend that you use one of `clerk`'s provided scheduling modules. They have been optimized for both performance and correctness.
