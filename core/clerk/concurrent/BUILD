@@ -40,7 +40,7 @@ java_library(
     ":concurrent",
     ":periodic_scheduler",
     ":dagger",
-  ]
+  ],
   exports = [
     ":periodic_scheduler",
   ]
