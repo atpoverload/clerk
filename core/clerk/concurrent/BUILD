@@ -41,4 +41,7 @@ java_library(
     ":periodic_scheduler",
     ":dagger",
   ]
+  exports = [
+    ":periodic_scheduler",
+  ]
 )
