@@ -9,9 +9,6 @@ java_library(
   srcs = [
     "Processor.java",
   ],
-  deps = [
-    ":logger",
-  ]
 )
 
 java_library(

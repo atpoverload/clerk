@@ -9,33 +9,39 @@ import java.util.logging.Logger;
 import java.util.logging.LogRecord;
 import java.text.SimpleDateFormat;
 
-/** Logger to track the profiler events. */
+/** Logger to track the events. */
 final class ClerkLogger {
+  private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a z");
+  private static final Formatter formatter = new Formatter() {
+    @Override
+    public String format(LogRecord record) {
+      return String.join(" ",
+        logPrefix(new Date(record.getMillis())),
+        record.getMessage(),
+        System.lineSeparator()
+      );
+    }
+  };
+
   private static boolean setup = false;
+
+  private static String logPrefix(Date date) {
+    return "clerk (" + dateFormatter.format(date) + ") [" + Thread.currentThread().getName() + "]:";
+  }
 
   public static Logger createLogger() {
     if (!setup) {
       try {
-        // build the formatter and handlers
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a z");
-        Formatter formatter = new Formatter() {
-          @Override
-          public String format(LogRecord record) {
-            String date = dateFormatter.format(new Date(record.getMillis()));
-            return "clerk (" + date + ") [" + Thread.currentThread().getName() + "]: " + record.getMessage() + "\n";
-          }
-        };
-
+        // TODO(timur): add a file handler for transactions
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);
-        // TODO(timur): should add a file logger for transactions
 
         Logger logger = Logger.getLogger("clerk");
         logger.setUseParentHandlers(false);
 
-        for (Handler hdlr: logger.getHandlers())
+        for (Handler hdlr: logger.getHandlers()) {
           logger.removeHandler(hdlr);
-
+        }
         logger.addHandler(handler);
 
         setup = true;

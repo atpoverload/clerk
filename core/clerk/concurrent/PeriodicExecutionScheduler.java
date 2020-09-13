@@ -11,11 +11,11 @@ import javax.inject.Inject;
 
 /** Scheduler that periodically runs tasks on an scheduled executor service. */
 final class PeriodicExecutionScheduler implements Scheduler {
-  private final ScheduledExecutorService executor;
   private final Duration period;
+  private final ScheduledExecutorService executor;
 
   @Inject
-  PeriodicExecutionScheduler(@PeriodicSchedulingRate Duration period, ScheduledExecutorService executor) {
+  PeriodicExecutionScheduler(@SchedulingPeriod Duration period, ScheduledExecutorService executor) {
     this.period = period;
     this.executor = executor;
   }

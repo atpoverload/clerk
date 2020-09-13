@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Module
 public interface PeriodicSchedulingModule {
   static final AtomicInteger counter = new AtomicInteger();
-  static final int DEFAULT_RATE_MS = 41;
-  static final int THREAD_POOL_SIZE = 4;
+  static final int DEFAULT_RATE_MS = 41; // formalize this
+  static final int THREAD_POOL_SIZE = 4; // formalize this
 
   static String clerkName(Class cls) {
     return String.join("-",
@@ -23,6 +23,7 @@ public interface PeriodicSchedulingModule {
       cls.getSimpleName());
   }
 
+  /** Provision for a periodic rate that is from properties or a default. */
   @Provides
   @PeriodicSchedulingRate
   static Duration provideSamplingRate() {
@@ -32,7 +33,7 @@ public interface PeriodicSchedulingModule {
     )));
   }
 
-  // make sure each sampler has a thread
+  // make sure each data source has a thread
   @Provides
   static ScheduledExecutorService provideExecutor() {
     return newScheduledThreadPool(
