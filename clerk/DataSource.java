@@ -2,6 +2,6 @@ package clerk;
 
 import javax.inject.Qualifier;
 
-/** Qualifier for a periodic scheduling rate. */
+/** Qualifier for the profiler's input data. */
 @Qualifier
 public @interface DataSource { }

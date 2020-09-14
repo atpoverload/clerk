@@ -1,29 +1,31 @@
-package clerk.profilers.memory;
+package clerk.profilers;
 
-import clerk.DataProcessor;
+import clerk.Processor;
 import clerk.DataSource;
 import dagger.Module;
 import dagger.Provides;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.function.Supplier;
 
 /** Module to time how long the profiler has run. */
 @Module
-public interface MemoryMonitorModule {
+interface TimerModule {
   @Provides
   @DataSource
-  static Iterable<Supplier<MemoryStats>> provideSources() {
-    return List.of(() -> new MemoryStats());
+  static Iterable<Supplier<Instant>> provideSources() {
+    return List.of(() -> Instant.now());
   }
 
   @Provides
-  static DataProcessor<MemoryStats, Long> provideProcessor() {
-    return new DataProcessor<MemoryStats, Long>() {
-      private MemoryStats start;
-      private MemoryStats end;
+  static Processor<Instant, Duration> provideProcessor() {
+    return new Processor<Instant, Duration>() {
+      private Instant start;
+      private Instant end;
 
       @Override
-      public void accept(MemoryStats timestamp) {
+      public void accept(Instant timestamp) {
         if (start == null) {
           this.start = timestamp;
         } else if (end == null) {
@@ -35,8 +37,8 @@ public interface MemoryMonitorModule {
       }
 
       @Override
-      public Long get() {
-        return start.getFreeMemory() - end.getFreeMemory();
+      public Duration get() {
+        return Duration.between(start, end);
       }
     };
   }

@@ -9,7 +9,7 @@ import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/** Module to provide a sampling rate from dargs or a default value. */
+/** Module to provide periodic sampling with an adjustable period. */
 @Module
 public interface PeriodicSampingModule {
   static final AtomicInteger counter = new AtomicInteger();
@@ -23,17 +23,15 @@ public interface PeriodicSampingModule {
       cls.getSimpleName());
   }
 
-  /** Provision for a periodic rate that is from properties or a default. */
   @Provides
-  @PeriodicSchedulingRate
+  @SchedulingPeriod
   static Duration provideSamplingRate() {
     return Duration.ofMillis(Long.parseLong(System.getProperty(
       "clerk.sampling.rate",
-      Integer.toString(DEFAULT_RATE_MS)
-    )));
+      Integer.toString(DEFAULT_RATE_MS))));
   }
 
-  // make sure each data source has a thread
+  // TODO(timurbey): is there any reason to change the pool from the source size?
   @Provides
   static ScheduledExecutorService provideExecutor() {
     return newScheduledThreadPool(
@@ -44,5 +42,5 @@ public interface PeriodicSampingModule {
   }
 
   @Binds
-  abstract Scheduler bindScheduler(PeriodicExecutionScheduler schedulerImpl);
+  abstract TaskRunner bindTaskRunner(PeriodicTaskRunner schedulerImpl);
 }

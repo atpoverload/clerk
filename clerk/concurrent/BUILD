@@ -7,21 +7,17 @@ java_library(
   name = "concurrent",
   visibility = ["//visibility:public"],
   srcs = [
-    "Scheduler.java",
+    "TaskRunner.java",
   ],
-  deps = [
-    ":dagger",
-  ]
 )
 
 java_library(
-  name = "direct_scheduler",
+  name = "direct_task_runner",
   visibility = [
-    "//core/clerk:__subpackages__",
-    "//profilers/clerk:__subpackages__",
+    "//clerk:__subpackages__",
   ],
   srcs = [
-    "DirectScheduler.java",
+    "DirectTaskRunner.java",
   ],
   deps = [
     ":concurrent",
@@ -36,22 +32,21 @@ java_library(
   ],
   deps = [
     ":concurrent",
-    ":direct_scheduler",
+    ":direct_task_runner",
     ":dagger",
   ],
   exports = [
-    ":direct_scheduler",
+    ":direct_task_runner",
   ]
 )
 
 java_library(
-  name = "periodic_scheduler",
+  name = "periodic_task_runner",
   visibility = [
-    "//core/clerk:__subpackages__",
-    "//profilers/clerk:__subpackages__",
+    "//clerk:__subpackages__",
   ],
   srcs = [
-    "PeriodicExecutionScheduler.java",
+    "PeriodicTaskRunner.java",
     "PeriodicSchedulingRate.java",
   ],
   deps = [
@@ -68,10 +63,10 @@ java_library(
   ],
   deps = [
     ":concurrent",
-    ":periodic_scheduler",
+    ":periodic_task_runner",
     ":dagger",
   ],
   exports = [
-    ":periodic_scheduler",
+    ":periodic_task_runner",
   ]
 )
