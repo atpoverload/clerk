@@ -1,4 +1,4 @@
-package clerk.concurrent;
+package clerk;
 
 /** Interface for executing tasks. */
 public interface Scheduler {
