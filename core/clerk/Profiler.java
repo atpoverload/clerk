@@ -6,7 +6,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import clerk.concurrent.Scheduler;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 /** Manages a system that collects and processes data. */
@@ -14,15 +13,15 @@ public final class Profiler<I, O> {
   private static final Logger logger = ClerkLogger.createLogger();
 
   private final Iterable<Supplier<I>> sources;
-  private final Processor<I, O> processor;
+  private final DataProcessor<I, O> processor;
   private final Scheduler scheduler;
 
   private boolean isRunning = false;
 
   @Inject
   Profiler(
-    Iterable<Supplier<I>> sources,
-    Processor<I, O> processor,
+    @DataSource Iterable<Supplier<I>> sources,
+    DataProcessor<I, O> processor,
     Scheduler scheduler) {
       this.sources = sources;
       this.processor = processor;
@@ -39,13 +38,9 @@ public final class Profiler<I, O> {
     if (!isRunning) {
       logger.fine("starting the profiler");
       for (Supplier<I> source: sources) {
-        // is there a reason to use a listenable future?
-        // the problem here is we don't really know how the data will be
-        // collected
-        scheduler.schedule(() -> processor.add(source.get()));
+        scheduler.schedule(() -> processor.accept(source.get()));
         logger.fine("started sampling from " + source.getClass().getSimpleName());
       }
-      // just in case there were no sources
       isRunning = true;
       logger.fine("started the profiler");
     } else {
@@ -62,15 +57,10 @@ public final class Profiler<I, O> {
       logger.fine("stopping the profiler");
       scheduler.cancel();
       logger.fine("stopped the profiler");
-      return dump();
+      return processor.get();
     } else {
       logger.warning("profiler not currently running");
       return null;
     }
-  }
-
-  /** Raw method to pull data while running. Does this need to be safe? */
-  public O dump() {
-    return processor.process();
   }
 }

@@ -15,6 +15,36 @@ java_library(
 )
 
 java_library(
+  name = "direct_scheduler",
+  visibility = [
+    "//core/clerk:__subpackages__",
+    "//profilers/clerk:__subpackages__",
+  ],
+  srcs = [
+    "DirectScheduler.java",
+  ],
+  deps = [
+    ":concurrent",
+  ]
+)
+
+java_library(
+  name = "direct_sampling",
+  visibility = ["//visibility:public"],
+  srcs = [
+    "DirectSamplingModule.java",
+  ],
+  deps = [
+    ":concurrent",
+    ":direct_scheduler",
+    ":dagger",
+  ],
+  exports = [
+    ":direct_scheduler",
+  ]
+)
+
+java_library(
   name = "periodic_scheduler",
   visibility = [
     "//core/clerk:__subpackages__",
@@ -31,10 +61,10 @@ java_library(
 )
 
 java_library(
-  name = "periodic_scheduling",
+  name = "periodic_sampling",
   visibility = ["//visibility:public"],
   srcs = [
-    "PeriodicSchedulingModule.java",
+    "PeriodicSamplingModule.java",
   ],
   deps = [
     ":concurrent",

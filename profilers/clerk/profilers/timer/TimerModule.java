@@ -1,47 +1,45 @@
 package clerk.profilers.timer;
 
-import clerk.Processor;
-import clerk.concurrent.Scheduler;
-import dagger.Binds;
+import clerk.DataProcessor;
+import clerk.DataSource;
 import dagger.Module;
 import dagger.Provides;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 /** Module to time how long the profiler has run. */
 @Module
 public interface TimerModule {
   @Provides
-  static Iterable<Supplier<Duration>> provideSources() {
-    return List.of(
-      new Supplier<Duration>() {
-        private Instant start = Instant.now();
+  @DataSource
+  static Iterable<Supplier<Instant>> provideSources() {
+    return List.of(() -> Instant.now());
+  }
 
-        @Override
-        public Duration get() {
-          Instant now = Instant.now();
-          Duration elapsed = Duration.between(start, Instant.now());
-          start = now;
-          return elapsed;
+  @Provides
+  static DataProcessor<Instant, Duration> provideProcessor() {
+    return new DataProcessor<Instant, Duration>() {
+      private Instant start;
+      private Instant end;
+
+      @Override
+      public void accept(Instant timestamp) {
+        if (start == null) {
+          this.start = timestamp;
+        } else if (end == null) {
+          this.end = timestamp;
+        } else {
+          this.start = this.end;
+          this.end = timestamp;
         }
       }
-    )
-  }
-
-  // create a two-shot scheduler
-  @Provides
-  static Scheduler provideScheduler() {
-    return new Scheduler() {
-      @Override
-      public void schedule(Runnable r) { }
 
       @Override
-      public void cancel() { }
+      public Duration get() {
+        return Duration.between(start, end);
+      }
     };
   }
-
-  @Binds
-  abstract DataProcessor<Duration, Duration> provideProcessor(SourceWrapper processor);
 }

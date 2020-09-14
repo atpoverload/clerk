@@ -15,7 +15,10 @@ public final class SourceWrapper<O> extends Processor<O, O> {
   }
 
   @Override
-  public O process() {
-    source.get();
+  public void accept(O o) { }
+
+  @Override
+  public O get() {
+    return source.get();
   }
 }

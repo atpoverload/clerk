@@ -1,19 +1,20 @@
 package clerk.profilers.timer;
 
 import clerk.Profiler;
+import clerk.concurrent.DirectSamplingModule;
 import dagger.Component;
+import java.time.Instant;
 import java.time.Duration;
 
 public class Timer {
-  @Component(modules = {TimerModule.class})
+  @Component(modules = {DirectSamplingModule.class, TimerModule.class})
   interface ClerkFactory {
-    Profiler<Void, Duration> newClerk();
+    Profiler<Instant, Duration> newClerk();
   }
 
   private static final ClerkFactory clerkFactory = DaggerTimer_ClerkFactory.builder().build();
 
   private static Profiler clerk;
-  private static Duration profile = Duration.ZERO;
 
   // starts a profiler if there is not one
   public static void start() {
@@ -24,15 +25,14 @@ public class Timer {
   }
 
   // stops the profiler if there is one
-  public static void stop() {
+  public static Duration stop() {
+    Duration profile = Duration.ZERO;
+    
     if (clerk != null) {
       profile = (Duration) clerk.stop();
       clerk = null;
     }
-  }
 
-  // kill the profiler so that we start fresh
-  public static Duration dump() {
-    return (Duration) clerk.dump();
+    return profile;
   }
 }

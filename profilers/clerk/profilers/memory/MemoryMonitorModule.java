@@ -1,29 +1,42 @@
 package clerk.profilers.memory;
 
-import clerk.Processor;
-import clerk.profilers.DataSorter;
+import clerk.DataProcessor;
+import clerk.DataSource;
 import dagger.Module;
 import dagger.Provides;
-import java.time.Instant;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Supplier;
 
 /** Module to time how long the profiler has run. */
 @Module
 public interface MemoryMonitorModule {
   @Provides
+  @DataSource
   static Iterable<Supplier<MemoryStats>> provideSources() {
     return List.of(() -> new MemoryStats());
   }
 
   @Provides
-  static Processor<MemoryStats, Map<Instant, MemoryStats>> provideProcessor() {
-    return new DataSorter<Instant, MemoryStats>() {
+  static DataProcessor<MemoryStats, Long> provideProcessor() {
+    return new DataProcessor<MemoryStats, Long>() {
+      private MemoryStats start;
+      private MemoryStats end;
+
       @Override
-      protected Instant getKey(MemoryStats stats) {
-        return Instant.now();
+      public void accept(MemoryStats timestamp) {
+        if (start == null) {
+          this.start = timestamp;
+        } else if (end == null) {
+          this.end = timestamp;
+        } else {
+          this.start = this.end;
+          this.end = timestamp;
+        }
+      }
+
+      @Override
+      public Long get() {
+        return start.getFreeMemory() - end.getFreeMemory();
       }
     };
   }

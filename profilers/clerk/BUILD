@@ -9,6 +9,15 @@ java_binary(
   ],
   deps = [
     "//profilers/clerk/profilers/memory",
-    # "//profilers/clerk/profilers/timer",
+    "//profilers/clerk/profilers/timer",
   ],
 )
+
+# java_binary(
+#   name = "dummy",
+#   visibility = ["//visibility:public"],
+#   main_class = "MemoryProfiler",
+#   srcs = [
+#     "MemoryProfiler.java"
+#   ],
+# )

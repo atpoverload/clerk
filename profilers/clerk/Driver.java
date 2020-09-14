@@ -1,30 +1,40 @@
 package clerk;
 
+import static java.util.concurrent.Executors.newScheduledThreadPool;
+
 import clerk.profilers.memory.MemoryMonitor;
-// import clerk.profilers.timer.Timer;
+import java.util.concurrent.ExecutorService;
 
 public class Driver {
   public static void main(String[] args) throws Exception {
-    MemoryMonitor.start();
+    int length = 10000;
+    int workers = 10;
+
     for (int i = 0; i < 10; i++) {
-      Thread.sleep(1000);
-      System.out.println(MemoryMonitor.dump());
+      MemoryMonitor.start();
+      ExecutorService executor = newScheduledThreadPool(1);
+      executor.execute(() -> {
+        int[] vals = new int[length];
+        for (int k = 0; k < vals.length; k++) {
+          vals[k] = k;
+        }
+        System.out.println(Thread.currentThread().getName() + " reporting " + MemoryMonitor.stop() + " + reserved");
+        MemoryMonitor.start();
+      });
+
+      executor.shutdown();
     }
-    MemoryMonitor.stop();
 
-    System.out.println(MemoryMonitor.dump());
+    // Thread.sleep(250);
 
-    System.out.println(MemoryMonitor.dump());
+    // MemoryMonitor.start();
+    // for (int i = 0; i < 10; i++) {
+    //   int[] vals = new int[length];
+    //   for (int k = 0; k < vals.length; k++) {
+    //     vals[k] = i * k;
+    //   }
+    // }
+    // Thread.sleep(250);
+    // System.out.println(MemoryMonitor.stop());
   }
-
-  // public static void main(String[] args) throws Exception {
-  //   Timer.start();
-  //   for (int i = 0; i < 10; i++) {
-  //     Thread.sleep(1000);
-  //     System.out.println(Timer.dump());
-  //   }
-  //   Timer.stop();
-  //
-  //   System.out.println(Timer.dump());
-  // }
 }

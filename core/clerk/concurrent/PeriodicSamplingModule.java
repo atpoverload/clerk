@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /** Module to provide a sampling rate from dargs or a default value. */
 @Module
-public interface PeriodicSchedulingModule {
+public interface PeriodicSampingModule {
   static final AtomicInteger counter = new AtomicInteger();
   static final int DEFAULT_RATE_MS = 41; // formalize this
   static final int THREAD_POOL_SIZE = 4; // formalize this
