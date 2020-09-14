@@ -36,4 +36,14 @@ public class Timer {
 
     return profile;
   }
+
+  public static void main(String[] args) throws Exception {
+    Runnable workload = () -> {try {Thread.sleep(1000);} catch (Exception e) { }};
+
+    for (int i = 0; i < 10; i++) {
+      Timer.start();
+      workload.run();
+      System.out.println(workload.getClass().getSimpleName() + " finished in " + Timer.stop());
+    }
+  }
 }
