@@ -36,11 +36,4 @@ public class Timer {
 
     return profile;
   }
-
-  public static void main(String[] args) throws Exception {
-    String pid = args[0];
-    Timer.start();
-    while (new File("/proc", pid).exists()) { Thread.sleep(50); }
-    System.out.println(pid + " finished in " + Timer.stop());
-  }
 }

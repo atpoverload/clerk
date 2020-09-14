@@ -21,14 +21,14 @@ interface TimerModule {
   @Provides
   static Processor<Instant, Duration> provideProcessor() {
     return new Processor<Instant, Duration>() {
-      private Instant start;
-      private Instant end;
+      private Instant start = Instant.EPOCH;
+      private Instant end = Instant.EPOCH;
 
       @Override
       public void accept(Instant timestamp) {
-        if (start == null) {
+        if (start.equals(Instant.EPOCH)) {
           this.start = timestamp;
-        } else if (end == null) {
+        } else if (end.equals(Instant.EPOCH)) {
           this.end = timestamp;
         } else {
           this.start = this.end;
