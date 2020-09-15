@@ -2,7 +2,6 @@ package clerk;
 
 import clerk.concurrent.TaskRunner;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 
 /** Manages a system that collects and processes data through a user API. */
