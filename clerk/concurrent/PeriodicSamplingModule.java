@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /** Module to provide periodic sampling with an adjustable period. */
 @Module
-public interface PeriodicSampingModule {
+public interface PeriodicSamplingModule {
   static final AtomicInteger counter = new AtomicInteger();
   static final int DEFAULT_RATE_MS = 41; // formalize this
   static final int THREAD_POOL_SIZE = 4; // formalize this

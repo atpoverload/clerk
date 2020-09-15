@@ -47,7 +47,7 @@ java_library(
   ],
   srcs = [
     "PeriodicTaskRunner.java",
-    "PeriodicSchedulingRate.java",
+    "SchedulingPeriod.java",
   ],
   deps = [
     ":concurrent",

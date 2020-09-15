@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.function.Supplier;
 
-/** Module to time how long the profiler has run. */
+/** Module to measure how long the profiler has run. */
 @Module
 interface TimerModule {
   @Provides

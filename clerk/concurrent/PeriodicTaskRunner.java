@@ -4,7 +4,6 @@ import static java.lang.Math.min;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
-import clerk.TaskRunner;
 import java.util.concurrent.ScheduledExecutorService;
 import java.time.Duration;
 import java.time.Instant;
@@ -23,13 +22,13 @@ final class PeriodicTaskRunner implements TaskRunner {
 
   /** Executes a task that will be rescheduled. */
   @Override
-  public void schedule(Runnable r) {
+  public void start(Runnable r) {
     executor.execute(() -> runAndReschedule(r));
   }
 
   /** Shuts down the underlying executor service. */
   @Override
-  public void cancel() {
+  public void stop() {
     executor.shutdown();
   }
 
