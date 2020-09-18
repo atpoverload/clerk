@@ -14,13 +14,13 @@ import java.util.function.Supplier;
 interface TimerModule {
   @Provides
   @DataSource
-  static Iterable<Supplier<Instant>> provideSources() {
+  static Iterable<Supplier<?>> provideSources() {
     return List.of(() -> Instant.now());
   }
 
   @Provides
-  static Processor<Instant, Duration> provideProcessor() {
-    return new Processor<Instant, Duration>() {
+  static Processor<?, Duration> provideProcessor() {
+    return (Processor<?, Duration>) new Processor<Instant, Duration>() {
       private Instant start = Instant.EPOCH;
       private Instant end = Instant.EPOCH;
 

@@ -27,6 +27,7 @@ java_library(
   visibility = ["//visibility:public"],
   srcs = [
     "Profiler.java",
+    "Clerk.java",
   ],
   deps = [
     ":clerk",
