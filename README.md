@@ -1,6 +1,6 @@
 # `clerk`
 
-`clerk` is a data collection framework. Instead of providing a specific data target, `clerk` tries to unify common strategies using [dagger](https://dagger.dev/) while maintaining a precise, lightweight, and easily configurable back-end.
+`clerk` is a generalized data collection framework. Instead of providing a specific data target, `clerk` tries to unify common strategies using [dagger](https://dagger.dev/) while maintaining a precise, lightweight, and easily configurable back-end.
 
 ## Building a profiler
 
@@ -34,21 +34,24 @@ public final class Profiler {
 }
 ```
 
-This is not extensible; even attempting to change the return type requires changes to both the processor and the profiler. While this is trivial for individual projects, consider large scale systems, like a benchmarking framework. It would be nice to extend our profiler while keeping it self-contains.
+This is not extensible; even attempting to change the return type requires changes to both the processor and the profiler. While this is trivial for individual projects, consider large scale systems, like a benchmarking framework. It would be nice to extend our profiler's behavior without re-writing code'.
 
 `clerk` attempts to address this problem in Java by decoupling the data collection into data sources, processors, and execution.
 
-### `DataSource`
+ - `DataSource`: `Iterable<Supplier<?>>` for anonymous sampling.
+ - `Processor`: extension of `Consumer` and `Supplier` interfaces to consume data and process data.
+ - `Execution`: an `Executor` that ties a user API to the data collection.
 
-`clerk` takes an `Iterable` of `Supplier`s with anonymous output types. These injections are marked with `@DataSource` to distiguish them as `clerk`'s dependencies'. This construction can be done either explicitly or using dagger's `@IntoSet`.
+Once these components have been designed, `clerk` users dagger to assemble an output-typed `Profiler`. As a result, there is some strictness regarding component design to ensure they do not break.
 
-### `Processor`
+Here are some guidelines to a reliable profiler:
 
-`clerk` requires the developer to provide a `Processor`, which just implement
-
-### `Execution`
+ - Keep data sources lightweight.
 
  - Data Sources:
+
+ Data sources are are annotated with `@DataSource` to distiguish them as `clerk`'s dependencies'. This construction can be done either explicitly or using `@IntoSet`.
+
 
 Integrating clerk into an application is (probably) the same as any other profiler:
 
