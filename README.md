@@ -1,26 +1,54 @@
 # `clerk`
 
-`clerk` is a statistical profiling framework. Instead of providing a specific data target, `clerk` tries to unify common profiling strategies. Although `clerk` provides modules for users, it is intended as a skeleton to build from.
+`clerk` is a data collection framework. Instead of providing a specific data target, `clerk` tries to unify common strategies using [dagger](https://dagger.dev/) while maintaining a precise, lightweight, and easily configurable back-end.
 
-`clerk` is designed to be lightweight and precise. As a result, the framework can be a little strict. We do provide some basic units to eliminate boilerplate.
+## Building a profiler
 
-## building
+`clerk` is implemented under the assumption that a user intends to collect and process data from a source. A decoupled implementation may look like:
 
-If you want to use a pre-built profiler, you can pull the associated `jar`. `clerk` provides the following modules:
+```java
+Supplier<Foo> source = new FooDataSource();
+ArrayList<Foo> data = new ArrayList<>();
+for (int i = 0; i < 100; i++) {
+  data.add(source.get());
+}
 
- - timer
- - memory-tracker
- - thread-tracker
+Function<ArrayList<Foo>, Bar> processor = new FoosToBarProcessor();
+Bar result = processor.apply(data);
+```
 
-If you want to build from source, you will need the following:
+It is simple enough to wrap this into a class:
 
- - JDK 1.8 and 1.11
- - `bazel`
- <!-- - `maven` or `bazel` -->
+```java
+public final class Profiler {
+  public Profiler(source, data, processor);
 
-To build a specific profiler, run `./build [profiling module]`.
+  public Bar profile() {
+    for (int i = 0; i < 100; i++) {
+      data.add(source.get());
+    }
+    Bar result = processor.apply(data);
+    data.clear();
+    return result;
+  }
+}
+```
 
-## Profiling Applications
+This is not extensible; even attempting to change the return type requires changes to both the processor and the profiler. While this is trivial for individual projects, consider large scale systems, like a benchmarking framework. It would be nice to extend our profiler while keeping it self-contains.
+
+`clerk` attempts to address this problem in Java by decoupling the data collection into data sources, processors, and execution.
+
+### `DataSource`
+
+`clerk` takes an `Iterable` of `Supplier`s with anonymous output types. These injections are marked with `@DataSource` to distiguish them as `clerk`'s dependencies'. This construction can be done either explicitly or using dagger's `@IntoSet`.
+
+### `Processor`
+
+`clerk` requires the developer to provide a `Processor`, which just implement
+
+### `Execution`
+
+ - Data Sources:
 
 Integrating clerk into an application is (probably) the same as any other profiler:
 
@@ -70,7 +98,7 @@ There are a couple caveats in `clerk`'s design to allow it to maintain a lightwe
  - `clerk` does not handle exceptions
  - `clerk` has no concept of race conditions
 
-As a result, `clerk` requires some careful planning to be used effectively.
+As a result, `clerk` requires some planning to be used effectively.
 
 ### clerk.core.Profiler
 
