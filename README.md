@@ -6,6 +6,7 @@
 
 `clerk` is implemented under the assumption that a user intends to collect and process data from a source. A decoupled implementation may look like:
 
+<!-- change the code below to actually profiler correctly -->
 ```java
 Supplier<Foo> source = new FooDataSource();
 ArrayList<Foo> data = new ArrayList<>();
@@ -42,7 +43,50 @@ This is not extensible; even attempting to change the return type requires chang
  - `Processor`: extension of `Consumer` and `Supplier` interfaces to consume data and process data.
  - `Execution`: an `Executor` that ties a user API to the data collection.
 
-Once these components have been designed, `clerk` users dagger to assemble an output-typed `Profiler`. As a result, there is some strictness regarding component design to ensure they do not break.
+Once these components have been designed, `clerk` users dagger to assemble an output-typed `Profiler`. As a result, there is some strictness regarding component design to ensure they do not break. With this model, a `clerk` implementation could be:
+
+```java
+public final class Profiler {
+  class FoosToBarProcessor implements Processor<Foo, Bar> {
+    private final ArrayList<Foo> data = new ArrayList<>();
+
+    @Override
+    public void accept(Foo foo) {
+      data.add(foo);
+    }
+
+    @Override
+    public Bar get() {
+      return foosToBar(data);
+    }
+  }
+  @Module
+  interface FooBarModule {
+    @Provides
+    @DataSource
+    @IntoSet
+    static Supplier<?> provideSource() {
+      return Foo::new
+    }
+
+    @Provides
+    static Processor<?, Bar> provideProcessor() {
+      return new FoosToBarProcessor();
+    }
+  }
+
+  @Component(modules = {FooBarModule.class, PeriodicSamplingModule.class})
+  interface ClerkFactory {
+    Clerk<Bar> newClerk();
+  }
+
+  private static final ClerkFactory clerkFactory = DaggerProfiler_ClerkFactory.builder().build();
+
+  public static Clerk newProfiler() {
+    return clerkFactory.newClerk();
+  }
+}
+```
 
 Here are some guidelines to a reliable profiler:
 
@@ -52,4 +96,4 @@ Here are some guidelines to a reliable profiler:
 
 ### Enforce safety during transactions
 
-`clerk` will pull the result of the provided processor when requested to `stop` or `dump`. With the asynchronous modules, this can create race conditions in shared data structures. Some of `clerk`'s modules can provide limited protection against these situations
+`clerk` will pull the result of the provided processor when requested to `stop` or `dump`. With the asynchronous modules, this can create race conditions in shared data structures. Some of `clerk`'s modules can provide limited protection against concurrent races but it cannot enforce type safety. Although this will not necessarily cause your program to crash, it will likely prevent data collection.
