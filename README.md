@@ -46,101 +46,10 @@ Once these components have been designed, `clerk` users dagger to assemble an ou
 
 Here are some guidelines to a reliable profiler:
 
- - Keep data sources lightweight.
+### Keep data sources lightweight
 
- - Data Sources:
+`clerk` makes no assumptions about the user's code when connecting data sources. Instead, it allows an execution module to generalize connections. This allows decoupling of data collection into processing stages. Instead of implementing all code within the data source, instead let `clerk` send it downstream to the appropriate consumer. We provide some common execution strategies but you may need to fine-tune it to your environment.
 
- Data sources are are annotated with `@DataSource` to distiguish them as `clerk`'s dependencies'. This construction can be done either explicitly or using `@IntoSet`.
+### Enforce safety during transactions
 
-
-Integrating clerk into an application is (probably) the same as any other profiler:
-
-```java
-import clerk.Clerk;
-
-public class A {
-  private static Runnable getWorkload() {...}
-
-  private static Runnable printSummary(T profile) {...}
-
-  public static void main(String[] args) {
-    Runnable workload = getWorkload();
-
-    Clerk.start();
-    workload.run();
-    Clerk.stop();
-
-    printSummary(Clerk.dump());
-  }
-}
-```
-
-`clerk.Clerk` provides the following interface:
-
-```java
-// starts the profiler. If a profiler is already running,
-// the action is reported and ignored.
-public static void start();
-
-// stops the profiler. If a profiler is not running,
-// the action is reported and ignored.
-public static void stop();
-
-// returns a profile from data collected since the last call of dump().
-public static T dump();
-```
-
-## Developer API
-
-`clerk` is intended for developer use, so it provides an API to help construct new profilers quickly.
-
-There are a couple caveats in `clerk`'s design to allow it to maintain a lightweight structure:
-
- - `clerk` does not store processed data
- - `clerk` components are not dynamically constructed
- - `clerk` does not handle exceptions
- - `clerk` has no concept of race conditions
-
-As a result, `clerk` requires some planning to be used effectively.
-
-### clerk.core.Profiler
-
-The base profiler exposes the same interface discussed in the profiling section. However, the underlying profiler is not inherently safe, so components can leak. As a result, it is a little safer to use a wrapper similar to `clerk.Clerk` that disposes and constructs the profiler as needed. In a future release, I hope to provide a method to glob modules together into a class, similar to `hilt`.
-
-`clerk` uses a multiple-producer, single-consumer model to handle data sampling. Each profiler pipes the output of data sources into a processor using a scheduler. Users call `dump()` to retrieve data from the processor.
-
-The profiler expects the following injections:
-
-```java
-Iterable<Supplier<I>> sources;
-DataProcessor<I, O> processor;
-Scheduler scheduler;
-```
-
-### Data Sources
-
-`clerk` naively pipes the output of any data source into the processor. This means failures between the two components should be handled on the user side. This choice is made to prevent the need for debugging from within `clerk`.
-
-`clerk` does not require data sources to be provided. This is to handle profilers that do not require sampling (such as `clerk.timer.TimerModule`).
-
-### DataProcessor
-
-Traditionally, profilers produce flat data traces to the user, requiring post-processing to make evaluations on data. While it is simple enough to dump flat profiles, one of the goals of `clerk` is simplify implementation of online processing. Successful implementations can support online optimizations, self-aware systems, and
-
-`clerk` uses a simple data processing interface to consume data. This interface is somewhat flexible and only requires the developer to be consistent with their typing. It is quite simple to dump flat data as demonstrated in `clerk.api.ListStorage`. This interface also allows chaining of processors together to support modular operations. Please refer to chappie and eflect for examples of connecting processors to achieve this effect.
-
-### Scheduler
-
-`clerk` uses a scheduler to asynchronously pipe data into processors:
-
-```java
-interface Scheduler {
-  // runs a task
-  public void schedule(Runnable r);
-
-  // stops all running tasks
-  public void cancel();
-}
-```
-
-Although you can provide your own scheduler, it is recommend that you use one of `clerk`'s provided scheduling modules. They have been optimized for both performance and correctness.
+`clerk` will pull the result of the provided processor when requested to `stop` or `dump`. With the asynchronous modules, this can create race conditions in shared data structures. Some of `clerk`'s modules can provide limited protection against these situations
