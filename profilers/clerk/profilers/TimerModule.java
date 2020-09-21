@@ -2,6 +2,7 @@ package clerk.profilers;
 
 import clerk.Processor;
 import clerk.DataSource;
+import dagger.multibindings.IntoSet;
 import dagger.Module;
 import dagger.Provides;
 import java.time.Duration;
@@ -14,8 +15,9 @@ import java.util.function.Supplier;
 interface TimerModule {
   @Provides
   @DataSource
-  static Iterable<Supplier<?>> provideSources() {
-    return List.of(() -> Instant.now());
+  @IntoSet
+  static Supplier<?> provideSources() {
+    return Instant::now;
   }
 
   @Provides

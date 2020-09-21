@@ -2,6 +2,7 @@ package clerk;
 
 import clerk.concurrent.TaskRunner;
 import java.util.function.Supplier;
+import java.util.Set;
 import javax.inject.Inject;
 
 /** Manages a system that collects and processes data through a user API. */
@@ -14,7 +15,7 @@ public final class Clerk<O> {
 
   @Inject
   Clerk(
-    @DataSource Iterable<Supplier<?>> sources,
+    @DataSource Set<Supplier<?>> sources,
     Processor<?, O> processor,
     TaskRunner executor) {
       this.sources = sources;
