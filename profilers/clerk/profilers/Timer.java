@@ -2,7 +2,8 @@ package clerk.profilers;
 
 import clerk.Clerk;
 import clerk.Profiler;
-import clerk.concurrent.DirectSamplingModule;
+// import clerk.concurrent.DirectSamplingModule;
+import clerk.concurrent.PeriodicSamplingModule;
 import dagger.Component;
 import java.io.File;
 import java.time.Instant;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 /** A profiler that measures elapsed time between calls as a {@link Duration}. */
 public class Timer implements Profiler<Duration> {
-  @Component(modules = {DirectSamplingModule.class, TimerModule.class})
+  @Component(modules = {PeriodicSamplingModule.class, TimerModule.class})
   interface ClerkFactory {
     Clerk<Duration> newClerk();
   }

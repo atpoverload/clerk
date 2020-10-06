@@ -7,8 +7,6 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import java.util.concurrent.ScheduledExecutorService;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.concurrent.Future;
 import javax.inject.Inject;
 
 /** Scheduler that periodically runs tasks on a scheduled executor service. */
@@ -16,8 +14,6 @@ final class PeriodicTaskRunner implements TaskRunner {
   private final Duration period;
   private final ScheduledExecutorService executor;
   private final ArrayList<Future<?>> tasks = new ArrayList<>();
-
-  private boolean ready = true;
 
   @Inject
   PeriodicTaskRunner(@SchedulingPeriod Duration period, ScheduledExecutorService executor) {
@@ -28,18 +24,15 @@ final class PeriodicTaskRunner implements TaskRunner {
   /** Executes a task that will be rescheduled. */
   @Override
   public void start(Runnable r) {
-    while (!ready) { }
     tasks.add(executor.submit(() -> runAndReschedule(r)));
   }
 
   /** Shuts down the underlying executor service. */
   @Override
   public void stop() {
-    ready = false;
     for (Future<?> task: tasks) {
       task.cancel(false);
     }
-    tasks.clear();
   }
 
   /** Runs the workload and then schedules it to run at the next period start. */
@@ -50,17 +43,6 @@ final class PeriodicTaskRunner implements TaskRunner {
     r.run();
     Duration rescheduleTime = period.minus(Duration.between(start, Instant.now()));
 
-    System.out.println("task running?");
-    try {
-      Thread.sleep(500);
-    } catch (Exception e) {
-      System.out.println("how did we break?");
-      return;
-    }
-
-    if (!ready) {
-      return;
-    }
     if (rescheduleTime.toMillis() > 0) {
       tasks.add(executor.schedule(() -> runAndReschedule(r), rescheduleTime.toMillis(), MILLISECONDS));
     } else if (rescheduleTime.toNanos() > 0) {

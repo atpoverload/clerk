@@ -13,7 +13,8 @@ java_library(
   deps = [
     "//clerk",
     "//clerk:profiler",
-    "//clerk/concurrent:direct_sampling",
+    # "//clerk/concurrent:direct_sampling",
+    "//clerk/concurrent:periodic_sampling",
     ":dagger",
   ]
 )
