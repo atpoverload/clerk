@@ -13,6 +13,7 @@ java_library(
   deps = [
     "//clerk",
     "//clerk/data:direct_sampling",
+    "//clerk/util:logger",
     ":dagger",
   ]
 )
