@@ -12,9 +12,7 @@ java_library(
   ],
   deps = [
     "//clerk",
-    "//clerk:profiler",
-    # "//clerk/concurrent:direct_sampling",
-    "//clerk/concurrent:periodic_sampling",
+    "//clerk/data:direct_sampling",
     ":dagger",
   ]
 )
@@ -22,11 +20,8 @@ java_library(
 java_binary(
   name = "time_it",
   visibility = ["//visibility:public"],
-  main_class = "clerk.profilers.TimeIt",
-  srcs = [
-    "TimeIt.java",
-  ],
-  deps = [
+  main_class = "clerk.profilers.Timer",
+  runtime_deps = [
     ":timer",
   ]
 )

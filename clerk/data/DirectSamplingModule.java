@@ -1,5 +1,6 @@
-package clerk.concurrent;
+package clerk.data;
 
+import clerk.ClerkExecutor;
 import dagger.Module;
 import dagger.Provides;
 
@@ -7,7 +8,7 @@ import dagger.Provides;
 @Module
 public interface DirectSamplingModule {
   @Provides
-  static TaskRunner bindTaskRunner() {
-    return new DirectTaskRunner();
+  static ClerkExecutor provideClerkExecutor() {
+    return new SynchronousExecutor();
   }
 }

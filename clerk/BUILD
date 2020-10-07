@@ -4,11 +4,12 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 dagger_rules()
 
 java_library(
-  name = "clerk",
+  name = "component",
   visibility = ["//visibility:public"],
   srcs = [
+    "ClerkComponent.java",
+    "ClerkExecutor.java",
     "Processor.java",
-    "DataSource.java"
   ],
   deps = [
     ":dagger",
@@ -16,23 +17,16 @@ java_library(
 )
 
 java_library(
-  name = "logger",
-  srcs = [
-    "ClerkLogger.java",
-  ],
-)
-
-java_library(
-  name = "profiler",
+  name = "clerk",
   visibility = ["//visibility:public"],
   srcs = [
-    "Profiler.java",
     "Clerk.java",
   ],
   deps = [
-    ":clerk",
-    ":logger",
-    "//clerk/concurrent",
+    ":component",
     ":dagger",
   ],
+  exports = [
+    ":component",
+  ]
 )

@@ -1,43 +1,42 @@
 package clerk.profilers;
 
 import clerk.Clerk;
-import clerk.Profiler;
-// import clerk.concurrent.DirectSamplingModule;
-import clerk.concurrent.PeriodicSamplingModule;
+import clerk.data.DirectSamplingModule;
 import dagger.Component;
-import java.io.File;
-import java.time.Instant;
 import java.time.Duration;
-import java.util.ArrayList;
 
 /** A profiler that measures elapsed time between calls as a {@link Duration}. */
-public class Timer implements Profiler<Duration> {
-  @Component(modules = {PeriodicSamplingModule.class, TimerModule.class})
+public class Timer { // implements Profiler<Duration> {
+  @Component(modules = {DirectSamplingModule.class, TimerModule.class})
   interface ClerkFactory {
     Clerk<Duration> newClerk();
   }
 
   private static final ClerkFactory clerkFactory = DaggerTimer_ClerkFactory.builder().build();
 
-  private Clerk<Duration> clerk;
+  public static void main(String[] args) throws Exception {
+    // let's do a config here?
 
-  // starts a profiler if there is not one
-  public void start() {
-    if (clerk == null) {
-      clerk = clerkFactory.newClerk();
-      clerk.start();
+    // String pid = args[0];
+    // File procPid = new File("/proc", args[0]);
+    // Runnable workload = () -> while (procPid.exists()) { }
+
+    long sleepTime = Long.parseLong(args[0]);
+    Runnable workload =
+        () -> {
+          try {
+            Thread.sleep(sleepTime);
+          } catch (Exception e) {
+
+          }
+        };
+
+    Clerk<Duration> timer = clerkFactory.newClerk();
+    for (int i = 0; i < 3; i++) {
+      timer.start();
+      workload.run();
+      timer.stop();
+      System.out.println("Ran for " + timer.dump());
     }
-  }
-
-  // stops the profiler if there is one
-  public Duration stop() {
-    Duration profile = Duration.ZERO;
-
-    if (clerk != null) {
-      profile = clerk.stop();
-      clerk = null;
-    }
-
-    return profile;
   }
 }
