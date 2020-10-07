@@ -4,11 +4,11 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 dagger_rules()
 
 java_library(
-  name = "timer",
+  name = "stopwatch",
   visibility = ["//visibility:public"],
   srcs = [
-    "Timer.java",
-    "TimerModule.java",
+    "Stopwatch.java",
+    "StopwatchModule.java",
   ],
   deps = [
     "//clerk",
@@ -19,10 +19,10 @@ java_library(
 )
 
 java_binary(
-  name = "time_it",
+  name = "timeit",
   visibility = ["//visibility:public"],
-  main_class = "clerk.profilers.Timer",
+  main_class = "clerk.profilers.Stopwatch",
   runtime_deps = [
-    ":timer",
+    ":stopwatch",
   ]
 )

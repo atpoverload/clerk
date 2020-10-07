@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 /** Module to measure how long the clerk has run since starting. */
 @Module
-interface TimerModule {
+interface StopwatchModule {
   @Provides
   @ClerkComponent
   @IntoSet
