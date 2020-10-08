@@ -15,7 +15,7 @@ interface StopwatchModule {
   @Provides
   @ClerkComponent
   @IntoSet
-  static Supplier<?> provideSources() {
+  static Supplier<?> provideSource() {
     return Instant::now;
   }
 

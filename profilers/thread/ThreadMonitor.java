@@ -1,26 +1,28 @@
 package clerk.profilers;
 
 import clerk.Clerk;
-import clerk.data.DirectSamplingModule;
+import clerk.data.PeriodicSamplingModule;
 import clerk.util.ClerkLogger;
 import dagger.Component;
-import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.logging.Logger;
 
-/** A profiler that measures elapsed time between calls as a {@link Duration}. */
-public class Stopwatch {
+/** A profiler that measures elapsed time between calls as a {@link Instant}. */
+public class ThreadMonitor {
   private static final Logger logger = ClerkLogger.createLogger();
 
-  @Component(modules = {DirectSamplingModule.class, StopwatchModule.class})
+  @Component(modules = {PeriodicSamplingModule.class, ThreadMonitoringModule.class})
   interface ClerkFactory {
-    Clerk<Duration> newClerk();
+    Clerk<Map<Instant, Integer>> newClerk();
   }
 
-  private static final ClerkFactory clerkFactory = DaggerStopwatch_ClerkFactory.builder().build();
+  private static final ClerkFactory clerkFactory =
+      DaggerThreadMonitor_ClerkFactory.builder().build();
 
-  private static Duration timeIt(Runnable r) {
-    Clerk<Duration> clerk = clerkFactory.newClerk();
+  private static Map<Instant, Integer> watch(Runnable r) {
+    Clerk<Map<Instant, Integer>> clerk = clerkFactory.newClerk();
     clerk.start();
     r.run();
     clerk.stop();
@@ -42,7 +44,7 @@ public class Stopwatch {
               e.printStackTrace();
             }
           };
-      logger.info("command \"" + args[1] + "\" ran for " + timeIt(workload));
+      logger.info("command \"" + args[1] + "\" ran for " + watch(workload));
     }
   }
 }

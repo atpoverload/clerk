@@ -1,4 +1,4 @@
-package clerk.concurrent;
+package clerk.data;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
@@ -31,10 +31,17 @@ public interface PeriodicSamplingModule {
   }
 
   @Provides
+  @ClerkComponent
   static ScheduledExecutorService provideExecutor() {
     int poolSize =
         Integer.parseInt(System.getProperty("clerk.sampling.threads", DEFAULT_POOL_SIZE));
-    return newScheduledThreadPool(poolSize, r -> new Thread(r, clerkName(r.getClass())));
+    return newScheduledThreadPool(
+        poolSize,
+        r -> {
+          Thread t = new Thread(r, clerkName(r.getClass()));
+          t.setDaemon(true);
+          return t;
+        });
   }
 
   @Binds
