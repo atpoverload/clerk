@@ -18,9 +18,8 @@ public interface PeriodicSamplingModule {
   static final String DEFAULT_RATE_MS = "41";
   static final String DEFAULT_POOL_SIZE = "4";
 
-  static String clerkName(Class cls) {
-    return String.join(
-        "-", "clerk", String.format("%02d", counter.getAndIncrement()), cls.getSimpleName());
+  static String clerkName() {
+    return String.join("-", "clerk", String.format("%02d", counter.getAndIncrement()));
   }
 
   @Provides
@@ -38,7 +37,7 @@ public interface PeriodicSamplingModule {
     return newScheduledThreadPool(
         poolSize,
         r -> {
-          Thread t = new Thread(r, clerkName(r.getClass()));
+          Thread t = new Thread(r, clerkName());
           t.setDaemon(true);
           return t;
         });
