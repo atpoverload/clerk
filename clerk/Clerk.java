@@ -1,11 +1,15 @@
 package clerk;
 
+import clerk.util.ClerkLogger;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 
 /** Manages a system that collects and processes data through a user API. */
 public final class Clerk<O> {
+  private static final Logger logger = ClerkLogger.createLogger();
+
   private final Iterable<Supplier<?>> sources;
   private final Processor<?, O> processor;
   private final ClerkExecutor executor;
@@ -53,6 +57,13 @@ public final class Clerk<O> {
 
   /** Helper method that casts the input type. If the input type is . */
   private static <I> void pipe(Supplier<?> source, Processor<I, ?> processor) {
-    processor.add((I) source.get());
+    Object o = source.get();
+    try {
+      processor.add((I) o);
+    } catch (ClassCastException e) {
+      logger.severe("data source " + source.getClass() + " was not the expected type:");
+      logger.severe(e.getMessage().split("\\(")[0]);
+      throw e;
+    }
   }
 }

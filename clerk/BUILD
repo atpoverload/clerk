@@ -24,6 +24,7 @@ java_library(
   ],
   deps = [
     ":component",
+    "//clerk/util:logger",
     ":dagger",
   ],
   exports = [
