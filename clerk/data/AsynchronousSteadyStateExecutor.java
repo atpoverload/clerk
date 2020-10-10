@@ -15,16 +15,18 @@ import javax.inject.Inject;
 /**
  * Executor that periodically runs submitted tasks.
  *
- * <p>This executor is a wrapper around a ScheduledExecutorService that uses schedule() to dispatch
- * work to some future time. Because schedule() is not necessarily executed on the calling thread,
- * this implements sleepless, periodic execution. This is preferred to sleep-looping threads for the
- * following reasons:
+ * <p>This wraps around a ScheduledExecutorService and uses schedule() re-run the workload,
+ * implementing sleepless, periodic execution. I prefer this to sleep-looping for the following
+ * reasons: 1) Interrupts interfere with sleeping, breaking steady-state execution. 2) Looping
+ * sleeps requires locking a single thread to a workload.
  *
- * <p>Interrupts interfere with sleeping, breaking steady-state execution.
+ * <p>All submitted workloads are scheduled on the same period. We are working towards other
+ * schedule management schemes. A crude workaround is to use an internal timer within a data source.
+ * An example of this is shown in {@link DeferringSupplier}.
  *
- * <p>Looping sleeps result in a single thread locked to a workload.
- *
- * <p>Termination of tasks are synchronized using atomics.
+ * <p>Termination of tasks is done through atomic flags to avoid shutting down the executor. This
+ * allows it to be reusable so that we do not need to explicitly rebuild the clerk if we stop
+ * sampling.
  */
 final class AsynchronousSteadyStateExecutor implements ClerkExecutor {
   private final Duration period;
@@ -55,7 +57,7 @@ final class AsynchronousSteadyStateExecutor implements ClerkExecutor {
         });
   }
 
-  /** Safely prevents creation of new tasks. */
+  /** Safely prevents creation of new tasks until all current tasks are dead. */
   @Override
   public void stop() {
     ready.set(false);

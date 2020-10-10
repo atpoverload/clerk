@@ -11,7 +11,12 @@ import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/** Module to provide periodic sampling with an adjustable period and worker count. */
+/**
+ * Module to provide a periodic sampling implementation.
+ *
+ * <p>The sampling rate and worker count are customizable from the system properties with prefix
+ * "clerk.sampling".
+ */
 @Module
 public interface PeriodicSamplingModule {
   static final AtomicInteger counter = new AtomicInteger();
@@ -33,7 +38,7 @@ public interface PeriodicSamplingModule {
   @ClerkComponent
   static ScheduledExecutorService provideExecutor() {
     int poolSize =
-        Integer.parseInt(System.getProperty("clerk.sampling.threads", DEFAULT_POOL_SIZE));
+        Integer.parseInt(System.getProperty("clerk.sampling.workers", DEFAULT_POOL_SIZE));
     return newScheduledThreadPool(
         poolSize,
         r -> {

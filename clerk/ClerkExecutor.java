@@ -1,6 +1,7 @@
 package clerk;
 
 /** Interface for executing tasks. */
+// TODO(timur): this needs a better naming convention
 public interface ClerkExecutor {
 
   /** Run a workload. */

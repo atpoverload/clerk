@@ -8,7 +8,7 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-/** Logger to track the events. */
+/** Wrapper around a logger. Messages will also provide the timestamp and current thread. */
 public final class ClerkLogger {
   private static final SimpleDateFormat dateFormatter =
       new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a z");

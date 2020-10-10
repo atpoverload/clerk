@@ -55,7 +55,12 @@ public final class Clerk<O> {
     return processor.process();
   }
 
-  /** Helper method that casts the input type. If the input type is . */
+  /**
+   * Helper method that casts the data source to the processor's input type.
+   *
+   * <p>If the input type is incorrect at runtime, then the failure will be reported before
+   * abandoning the workload.
+   */
   private static <I> void pipe(Supplier<?> source, Processor<I, ?> processor) {
     Object o = source.get();
     try {
