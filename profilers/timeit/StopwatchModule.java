@@ -1,33 +1,32 @@
 package clerk.profilers;
 
+import clerk.ClerkComponent;
 import clerk.Processor;
-import clerk.DataSource;
-import dagger.multibindings.IntoSet;
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoSet;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 import java.util.function.Supplier;
 
-/** Module to measure how long the profiler has run. */
+/** Module to measure how long the clerk has run since starting. */
 @Module
-interface TimerModule {
+interface StopwatchModule {
   @Provides
-  @DataSource
+  @ClerkComponent
   @IntoSet
-  static Supplier<?> provideSources() {
+  static Supplier<?> provideSource() {
     return Instant::now;
   }
 
   @Provides
   static Processor<?, Duration> provideProcessor() {
-    return (Processor<?, Duration>) new Processor<Instant, Duration>() {
+    return new Processor<Instant, Duration>() {
       private Instant start = Instant.EPOCH;
       private Instant end = Instant.EPOCH;
 
       @Override
-      public void accept(Instant timestamp) {
+      public void add(Instant timestamp) {
         if (start.equals(Instant.EPOCH)) {
           this.start = timestamp;
         } else if (end.equals(Instant.EPOCH)) {
@@ -39,7 +38,7 @@ interface TimerModule {
       }
 
       @Override
-      public Duration get() {
+      public Duration process() {
         return Duration.between(start, end);
       }
     };

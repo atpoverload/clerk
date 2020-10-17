@@ -1,7 +1,10 @@
 package clerk;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 /** Interface that consumes and produces data. */
-public interface Processor<I, O> extends Consumer<I>, Supplier<O> { }
+public interface Processor<I, O> {
+  /** Adds data to the processor. */
+  void add(I i);
+
+  /** Processes the data and returns the result. */
+  O process();
+}

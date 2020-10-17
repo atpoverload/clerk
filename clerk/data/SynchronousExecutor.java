@@ -1,9 +1,10 @@
-package clerk.concurrent;
+package clerk.data;
 
+import clerk.ClerkExecutor;
 import java.util.ArrayList;
 
-/** Runner that executes all tasks when start and stop are called. */
-final class DirectTaskRunner implements TaskRunner {
+/** Executor that executes workloads on start and stop. */
+final class SynchronousExecutor implements ClerkExecutor {
   private final ArrayList<Runnable> tasks = new ArrayList<>();
 
   /** Stores a task and runs it. */
@@ -16,7 +17,7 @@ final class DirectTaskRunner implements TaskRunner {
   /** Runs all stored tasks and clears all tasks. */
   @Override
   public void stop() {
-    for (Runnable r: tasks) {
+    for (Runnable r : tasks) {
       r.run();
     }
     tasks.clear();

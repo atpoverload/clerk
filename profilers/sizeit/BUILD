@@ -4,28 +4,25 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 dagger_rules()
 
 java_library(
-  name = "timer",
+  name = "memory_monitor",
   visibility = ["//visibility:public"],
   srcs = [
-    "Timer.java",
-    "TimerModule.java",
+    "MemoryMonitor.java",
+    "MemoryMonitoringModule.java",
   ],
   deps = [
     "//clerk",
-    "//clerk:profiler",
-    "//clerk/concurrent:direct_sampling",
+    "//clerk/data:periodic_sampling",
+    "//clerk/util:logger",
     ":dagger",
   ]
 )
 
 java_binary(
-  name = "time_it",
+  name = "sizeit",
   visibility = ["//visibility:public"],
-  main_class = "clerk.profilers.TimeIt",
-  srcs = [
-    "TimeIt.java",
-  ],
-  deps = [
-    ":timer",
+  main_class = "clerk.profilers.MemoryMonitor",
+  runtime_deps = [
+    ":memory_monitor",
   ]
 )
