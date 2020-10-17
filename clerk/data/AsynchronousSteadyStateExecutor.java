@@ -3,14 +3,12 @@ package clerk.data;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
-import clerk.ClerkComponent;
 import clerk.ClerkExecutor;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.inject.Inject;
 
 /**
  * Executor that periodically runs submitted tasks.
@@ -28,15 +26,13 @@ import javax.inject.Inject;
  * allows it to be reusable so that we do not need to explicitly rebuild the clerk if we stop
  * sampling.
  */
-final class AsynchronousSteadyStateExecutor implements ClerkExecutor {
+public final class AsynchronousSteadyStateExecutor implements ClerkExecutor {
   private final Duration period;
   private final ScheduledExecutorService executor;
   private final AtomicInteger tasks = new AtomicInteger(0);
   private final AtomicBoolean ready = new AtomicBoolean(true);
 
-  @Inject
-  AsynchronousSteadyStateExecutor(
-      @ClerkComponent Duration period, @ClerkComponent ScheduledExecutorService executor) {
+  public AsynchronousSteadyStateExecutor(Duration period, ScheduledExecutorService executor) {
     this.period = period;
     this.executor = executor;
   }

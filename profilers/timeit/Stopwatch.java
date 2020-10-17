@@ -1,30 +1,48 @@
 package clerk.profilers;
 
 import clerk.Clerk;
-import clerk.data.DirectSamplingModule;
+import clerk.Processor;
+import clerk.data.SynchronousExecutor;
 import clerk.util.ClerkLogger;
-import dagger.Component;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 /** A profiler that measures elapsed time between calls as a {@link Duration}. */
 public class Stopwatch {
   private static final Logger logger = ClerkLogger.createLogger();
 
-  @Component(modules = {DirectSamplingModule.class, StopwatchModule.class})
-  interface ClerkFactory {
-    Clerk<Duration> newClerk();
-  }
-
-  private static final ClerkFactory clerkFactory = DaggerStopwatch_ClerkFactory.builder().build();
-
   private static Duration timeIt(Runnable r) {
-    Clerk<Duration> clerk = clerkFactory.newClerk();
+    Clerk<Duration> clerk =
+        new Clerk<>(List.of(Instant::now), new StopwatchTimer(), new SynchronousExecutor());
     clerk.start();
     r.run();
     clerk.stop();
     return clerk.dump();
+  }
+
+  private static class StopwatchTimer implements Processor<Instant, Duration> {
+    private Instant start = Instant.EPOCH;
+    private Instant end = Instant.EPOCH;
+
+    @Override
+    public void add(Instant timestamp) {
+      if (start.equals(Instant.EPOCH)) {
+        this.start = timestamp;
+      } else if (end.equals(Instant.EPOCH)) {
+        this.end = timestamp;
+      } else {
+        this.start = this.end;
+        this.end = timestamp;
+      }
+    }
+
+    @Override
+    public Duration process() {
+      return Duration.between(start, end);
+    }
   }
 
   public static void main(String[] args) throws Exception {

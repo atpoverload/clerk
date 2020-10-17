@@ -4,7 +4,6 @@ import clerk.util.ClerkLogger;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-import javax.inject.Inject;
 
 /** Manages a system that collects and processes data through a user API. */
 public final class Clerk<O> {
@@ -16,9 +15,7 @@ public final class Clerk<O> {
 
   private boolean isRunning = false;
 
-  @Inject
-  Clerk(
-      @ClerkComponent Set<Supplier<?>> sources, Processor<?, O> processor, ClerkExecutor executor) {
+  public Clerk(Iterable<Supplier<?>> sources, Processor<?, O> processor, ClerkExecutor executor) {
     this.sources = sources;
     this.processor = processor;
     this.executor = executor;
