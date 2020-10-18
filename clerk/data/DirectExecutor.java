@@ -4,10 +4,10 @@ import clerk.ClerkExecutor;
 import java.util.ArrayList;
 
 /** Executor that executes workloads on start and stop. */
-public final class SynchronousExecutor implements ClerkExecutor {
+public final class DirectExecutor implements ClerkExecutor {
   private final ArrayList<Runnable> tasks = new ArrayList<>();
 
-  public SynchronousExecutor() { }
+  public DirectExecutor() {}
 
   /** Stores a task and runs it. */
   @Override

@@ -1,13 +1,12 @@
 package clerk;
 
 import clerk.util.ClerkLogger;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /** Manages a system that collects and processes data through a user API. */
 public final class Clerk<O> {
-  private static final Logger logger = ClerkLogger.createLogger();
+  private static final Logger logger = ClerkLogger.getLogger();
 
   private final Iterable<Supplier<?>> sources;
   private final Processor<?, O> processor;

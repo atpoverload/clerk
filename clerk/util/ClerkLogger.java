@@ -8,7 +8,7 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-/** Wrapper around a logger. Messages will also provide the timestamp and current thread. */
+/** Provides a logger that prints a prefix with the current timestamp and calling thread. */
 public final class ClerkLogger {
   private static final SimpleDateFormat dateFormatter =
       new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a z");
@@ -27,10 +27,14 @@ public final class ClerkLogger {
   private static boolean setup = false;
 
   private static String logPrefix(Date date) {
-    return "clerk (" + dateFormatter.format(date) + ") [" + Thread.currentThread().getName() + "]:";
+    return String.join(
+        " ",
+        "clerk",
+        "(" + dateFormatter.format(date) + ")",
+        "[" + Thread.currentThread().getName() + "]:");
   }
 
-  public static Logger createLogger() {
+  public static synchronized Logger getLogger() {
     if (!setup) {
       try {
         // TODO(timur): add a file handler for transactions

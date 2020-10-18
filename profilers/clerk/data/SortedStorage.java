@@ -1,12 +1,12 @@
 package clerk.data;
 
-import static java.util.Collections.unmodifiableSet;
+import static java.util.Collections.unmodifiableList;
 
 import clerk.Processor;
-import java.util.Set;
+import java.util.List;
 import java.util.TreeSet;
 
-public final class SortedStorage<T extends Comparable<T>> implements Processor<T, Set<T>> {
+public final class SortedStorage<T extends Comparable<T>> implements Processor<T, List<T>> {
   private final TreeSet<T> data = new TreeSet<>();
 
   @Override
@@ -17,10 +17,10 @@ public final class SortedStorage<T extends Comparable<T>> implements Processor<T
   }
 
   @Override
-  public Set<T> get() {
-    Set<T> data = unmodifiableSet(this.data);
+  public List<T> get() {
+    List<T> data = unmodifiableList(this.data);
     synchronized (data) {
-      this.data.clear()
+      this.data.clear();
     }
     return data;
   }

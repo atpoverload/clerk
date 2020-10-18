@@ -1,6 +1,6 @@
 package clerk;
 
-/** Interface for executing tasks. */
+/** Interface for executing tasks. Typically a wrapper around a {@link Executor}. */
 // TODO(timur): this needs a better naming convention
 public interface ClerkExecutor {
 

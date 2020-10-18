@@ -1,4 +1,4 @@
-package clerk.profilers;
+package clerk.contrib;
 
 import clerk.Clerk;
 import clerk.Processor;
@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 /** A profiler that measures elapsed time between calls as a {@link Duration}. */
 public class Stopwatch {
-  private static final Logger logger = ClerkLogger.createLogger();
+  private static final Logger logger = ClerkLogger.getLogger();
 
   // inner class to track the two most recent {@code Instant}s
   private static class StopwatchTimer implements Processor<Instant, Duration> {
