@@ -8,7 +8,8 @@ import dagger.Provides;
 import java.util.Set;
 import java.util.function.Supplier;
 
-/** Module to provide clerk with the necessary data and pumbling through an inject graph. */
+/** Module to provide clerk with the necessary data and pumbling through an injection graph. */
+// i guess this is clever but i feel like it's brittle by virtue of wildcards
 @Module
 public interface ClerkModule {
   @Provides
