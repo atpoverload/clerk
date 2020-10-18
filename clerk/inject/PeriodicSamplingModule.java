@@ -4,7 +4,6 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 import clerk.ClerkExecutor;
 import clerk.data.AsynchronousSteadyStateExecutor;
-import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import java.time.Duration;
@@ -46,8 +45,8 @@ public interface PeriodicSamplingModule {
         });
   }
 
-  @Binds
-  abstract ClerkExecutor provideClerkExecutor(
+  @Provides
+  static ClerkExecutor provideClerkExecutor(
       @ClerkComponent Duration period, @ClerkComponent ScheduledExecutorService executor) {
     return new AsynchronousSteadyStateExecutor(period, executor);
   }
