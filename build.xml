@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="clerk" default="jar">
+	<target name="init">
+    <property name="package.dir" value="clerk"/>
+    <property name="src.dir" value="clerk"/>
+    <property name="build.dir" value="build"/>
+    <property name="build.classes.dir" value="${build.dir}/classes"/>
+    <property name="library.jar" location="clerk.jar"/>
+  </target>
+
+	<target name="clean" depends="init" description="remove build files created this script">
+		<delete dir="${build.dir}"/>
+		<delete file="${library.jar}"/>
+  </target>
+
+	<target name="compile" depends="init" description="compile chappie source">
+    <mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.classes.dir}"/>
+		<javac
+      source="1.9" target="1.9"
+      srcdir="${src.dir}"
+      destdir="${build.classes.dir}"
+      excludes="**/inject/*"
+		/>
+	</target>
+
+  <target name="jar" depends="compile">
+		<jar jarfile="${library.jar}" basedir="${build.classes.dir}"/>
+    <delete dir="${build.dir}"/>
+  </target>
+</project>
