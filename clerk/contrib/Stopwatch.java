@@ -47,7 +47,7 @@ public class Stopwatch {
   }
 
   /** Times a workload similar to python's timeit module. */
-  public static void timeIt(Runnable workload, int iters, int runs) {
+  public static void timeit(Runnable workload, int iters, int runs) {
     long runtime = Long.MAX_VALUE;
     for (int i = 0; i < runs; i++) {
       long time = 0;
@@ -64,7 +64,7 @@ public class Stopwatch {
 
   public static void main(String[] args) throws Exception {
     if (args.length == 0) {
-      timeIt(() -> {}, 10000000, 3);
+      timeit(() -> {}, 10000000, 3);
     } else if (args.length > 0) {
       Runnable workload =
           () -> {

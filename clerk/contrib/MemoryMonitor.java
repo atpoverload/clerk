@@ -1,4 +1,4 @@
-package clerk.profilers;
+package clerk.contrib;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 /** A profiler that measures elapsed time between calls as a {@link Instant}. */
 public class MemoryMonitor {
-  private static final Logger logger = ClerkLogger.createLogger();
+  private static final Logger logger = ClerkLogger.getLogger();
   private static final String DEFAULT_RATE_MS = "41";
   private static final String DEFAULT_POOL_SIZE = "4";
   private static final AtomicInteger counter = new AtomicInteger();
@@ -34,18 +34,6 @@ public class MemoryMonitor {
 
   static String clerkName() {
     return String.join("-", "clerk", String.format("%02d", counter.getAndIncrement()));
-  }
-
-  private static TreeMap<Instant, Long> sizeit(Runnable r) {
-    Clerk<TreeMap<Instant, Long>> clerk =
-        new Clerk<>(
-            List.of(() -> Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()),
-            new MemoryTracker(),
-            new AsynchronousSteadyStateExecutor(period, executor));
-    clerk.start();
-    r.run();
-    clerk.stop();
-    return clerk.dump();
   }
 
   private static class MemoryTracker implements Processor<Long, TreeMap<Instant, Long>> {
@@ -66,6 +54,18 @@ public class MemoryMonitor {
       }
       return data;
     }
+  }
+
+  private static TreeMap<Instant, Long> sizeit(Runnable r) {
+    Clerk<TreeMap<Instant, Long>> clerk =
+        new Clerk<>(
+            List.of(() -> Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()),
+            new MemoryTracker(),
+            new AsynchronousSteadyStateExecutor(period, executor));
+    clerk.start();
+    r.run();
+    clerk.stop();
+    return clerk.dump();
   }
 
   public static void main(String[] args) throws Exception {

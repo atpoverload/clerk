@@ -13,3 +13,17 @@ java_binary(
     "//clerk/util:logger",
   ]
 )
+
+java_binary(
+  name = "sizeit",
+  visibility = ["//visibility:public"],
+  main_class = "clerk.contrib.MemoryMonitor",
+  srcs = [
+    "MemoryMonitor.java",
+  ],
+  deps = [
+    "//clerk",
+    "//clerk/data",
+    "//clerk/util:logger",
+  ]
+)
