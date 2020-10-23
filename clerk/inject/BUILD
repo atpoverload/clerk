@@ -38,24 +38,8 @@ java_library(
   ],
 )
 
-# java_library(
-#   name = "clerk",
-#   visibility = ["//visibility:public"],
-#   srcs = [
-#     "Clerk.java",
-#   ],
-#   deps = [
-#     ":component",
-#     "//clerk/util:logger",
-#     ":dagger",
-#   ],
-#   exports = [
-#     ":component",
-#   ]
-# )
-
 java_library(
-  name = "inject",
+  name = "module",
   visibility = ["//visibility:public"],
   srcs = [
     "ClerkModule.java",
@@ -66,6 +50,6 @@ java_library(
     ":dagger",
   ],
   exports = [
-    ":component",
+    ":clerk",
   ]
 )
