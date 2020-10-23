@@ -50,6 +50,6 @@ java_library(
     ":dagger",
   ],
   exports = [
-    ":clerk",
+    "//clerk",
   ]
 )
