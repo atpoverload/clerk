@@ -1,7 +1,7 @@
-package clerk.contrib.inject;
+package clerk.examples.inject;
 
 import clerk.Processor;
-import clerk.contrib.data.RelativePairStorage;
+import clerk.examples.data.RelativePairStorage;
 import clerk.inject.ClerkComponent;
 import dagger.Module;
 import dagger.Provides;

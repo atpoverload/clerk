@@ -1,8 +1,7 @@
-package clerk.contrib;
+package clerk.examples;
 
-import clerk.Clerk;
 import clerk.SynchronousClerk;
-import clerk.contrib.data.RelativePairStorage;
+import clerk.examples.data.RelativePairStorage;
 import clerk.util.ClerkLogger;
 import java.time.Duration;
 import java.time.Instant;
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
  * {@code stop()} is returned.
  */
 public class Stopwatch {
-  public static Clerk<Duration> newStopwatch() {
+  public static SynchronousClerk<Duration> newStopwatch() {
     return new SynchronousClerk<>(
         List.of(Instant::now),
         new RelativePairStorage<Instant, Duration>() {
@@ -34,7 +33,7 @@ public class Stopwatch {
 
   /** Returns the elapsed time of a workload. */
   public static Duration time(Runnable workload) {
-    Clerk<Duration> clerk = newStopwatch();
+    SynchronousClerk<Duration> clerk = newStopwatch();
     clerk.start();
     workload.run();
     clerk.stop();

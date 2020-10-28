@@ -40,7 +40,7 @@ public interface AsynchronousClerkModule {
   }
 
   @Provides
-  static AsynchronousClerk provideClerk(
+  static Clerk<O> provideClerk(
       @ClerkComponent Set<Supplier<?>> sources,
       Processor<?, ?> processor,
       @ClerkComponent ScheduledExecutorService executor,

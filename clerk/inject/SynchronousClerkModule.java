@@ -1,5 +1,6 @@
 package clerk.inject;
 
+import clerk.Clerk;
 import clerk.Processor;
 import clerk.SynchronousClerk;
 import dagger.Module;
@@ -12,8 +13,7 @@ import java.util.function.Supplier;
 @Module
 public interface SynchronousClerkModule {
   @Provides
-  static SynchronousClerk provideClerk(
-      @ClerkComponent Set<Supplier<?>> sources, Processor<?, ?> processor) {
+  static Clerk provideClerk(@ClerkComponent Set<Supplier<?>> sources, Processor<?, ?> processor) {
     return new SynchronousClerk<>(sources, processor);
   }
 }
