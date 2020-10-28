@@ -1,23 +1,16 @@
 package clerk.inject;
 
-import static java.util.concurrent.Executors.newScheduledThreadPool;
-
-import clerk.ClerkExecutor;
-import clerk.data.AsynchronousSteadyStateExecutor;
+import clerk.AsynchronousClerk;
+import clerk.Processor;
 import dagger.Module;
 import dagger.Provides;
-import java.time.Duration;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
+import java.util.function.Supplier;
 
-/**
- * Module to provide a periodic sampling implementation.
- *
- * <p>The sampling rate and worker count are customizable from the system properties with prefix
- * "clerk.sampling".
- */
+/** Module to provide clerk with the necessary data and pumbling through an injection graph. */
+// i guess this is clever but i feel like it's brittle by virtue of wildcards
 @Module
-public interface PeriodicSamplingModule {
+public interface AsynchronousClerkModule {
   static final AtomicInteger counter = new AtomicInteger();
   static final String DEFAULT_RATE_MS = "41";
   static final String DEFAULT_POOL_SIZE = "4";
@@ -33,6 +26,7 @@ public interface PeriodicSamplingModule {
         Long.parseLong(System.getProperty("clerk.sampling.rate", DEFAULT_RATE_MS)));
   }
 
+  // TODO(timurbey): this should take a policy instead
   @Provides
   @ClerkComponent
   static ScheduledExecutorService provideExecutor() {
@@ -46,8 +40,11 @@ public interface PeriodicSamplingModule {
   }
 
   @Provides
-  static ClerkExecutor provideClerkExecutor(
-      @ClerkComponent Duration period, @ClerkComponent ScheduledExecutorService executor) {
-    return new AsynchronousSteadyStateExecutor(period, executor);
+  static AsynchronousClerk provideClerk(
+      @ClerkComponent Set<Supplier<?>> sources,
+      Processor<?, ?> processor,
+      @ClerkComponent ScheduledExecutorService executor,
+      @ClerkComponent Duration period) {
+    return new AsynchronousClerk<>(sources, processor, executor, period);
   }
 }

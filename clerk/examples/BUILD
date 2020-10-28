@@ -8,8 +8,8 @@ java_binary(
     "Stopwatch.java",
   ],
   deps = [
-    "//clerk",
-    "//clerk/data",
+    "//clerk:sync",
+    "//clerk/contrib/data",
     "//clerk/util:logger",
   ]
 )
@@ -22,8 +22,8 @@ java_binary(
     "MemoryMonitor.java",
   ],
   deps = [
-    "//clerk",
-    "//clerk/data",
+    "//clerk:async",
+    "//clerk/contrib/data",
     "//clerk/util:logger",
   ]
 )

@@ -16,40 +16,35 @@ java_library(
 )
 
 java_library(
-  name = "direct_sampling_module",
-  visibility = ["//visibility:public"],
-  srcs = ["DirectSamplingModule.java"],
-  deps = [
-    "//clerk",
-    "//clerk/data",
-    ":dagger",
-  ],
-)
-
-java_library(
-  name = "periodic_sampling_module",
-  visibility = ["//visibility:public"],
-  srcs = ["PeriodicSamplingModule.java"],
-  deps = [
-    ":component",
-    "//clerk",
-    "//clerk/data",
-    ":dagger",
-  ],
-)
-
-java_library(
-  name = "module",
+  name = "sync_module",
   visibility = ["//visibility:public"],
   srcs = [
-    "ClerkModule.java",
+    "SynchronousClerkModule.java",
   ],
   deps = [
     ":component",
-    "//clerk",
+    "//clerk:sync",
     ":dagger",
   ],
   exports = [
     "//clerk",
+    "//clerk:sync",
+  ]
+)
+
+java_library(
+  name = "async_module",
+  visibility = ["//visibility:public"],
+  srcs = [
+    "AsynchronousClerkModule.java",
+  ],
+  deps = [
+    ":component",
+    "//clerk:async",
+    ":dagger",
+  ],
+  exports = [
+    "//clerk",
+    "//clerk:async",
   ]
 )

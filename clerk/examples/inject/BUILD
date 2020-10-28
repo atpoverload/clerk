@@ -12,10 +12,9 @@ java_binary(
     "StopwatchModule.java",
   ],
   deps = [
-    "//clerk",
-    "//clerk/data",
-    "//clerk/inject",
-    "//clerk/inject:direct_sampling_module",
+    "//clerk/contrib/data",
+    "//clerk/inject:component",
+    "//clerk/inject:sync_module",
     "//clerk/util:logger",
     ":dagger"
   ]

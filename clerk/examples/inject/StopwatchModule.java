@@ -1,6 +1,7 @@
 package clerk.contrib.inject;
 
 import clerk.Processor;
+import clerk.contrib.data.RelativePairStorage;
 import clerk.inject.ClerkComponent;
 import dagger.Module;
 import dagger.Provides;
@@ -21,25 +22,10 @@ public interface StopwatchModule {
 
   @Provides
   static Processor<?, ?> provideProcessor() {
-    return new Processor<Instant, Duration>() {
-      private Instant start = Instant.EPOCH;
-      private Instant end = Instant.EPOCH;
-
-      @Override
-      public void add(Instant timestamp) {
-        if (start.equals(Instant.EPOCH)) {
-          this.start = timestamp;
-        } else if (end.equals(Instant.EPOCH)) {
-          this.end = timestamp;
-        } else {
-          this.start = this.end;
-          this.end = timestamp;
-        }
-      }
-
+    return new RelativePairStorage<Instant, Duration>() {
       @Override
       public Duration process() {
-        return Duration.between(start, end);
+        return Duration.between(getFirst(), getSecond());
       }
     };
   }

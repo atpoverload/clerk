@@ -5,10 +5,39 @@ java_library(
   visibility = ["//visibility:public"],
   srcs = [
     "Clerk.java",
-    "ClerkExecutor.java",
     "Processor.java",
   ],
   deps = [
     "//clerk/util:logger",
   ],
+)
+
+java_library(
+  name = "sync",
+  visibility = ["//visibility:public"],
+  srcs = [
+    "SynchronousClerk.java",
+  ],
+  deps = [
+    ":clerk",
+    "//clerk/util:logger",
+  ],
+  exports = [
+    ":clerk",
+  ]
+)
+
+java_library(
+  name = "async",
+  visibility = ["//visibility:public"],
+  srcs = [
+    "AsynchronousClerk.java",
+  ],
+  deps = [
+    ":clerk",
+    "//clerk/util:logger",
+  ],
+  exports = [
+    ":clerk",
+  ]
 )

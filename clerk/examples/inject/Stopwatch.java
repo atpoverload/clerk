@@ -1,37 +1,46 @@
 package clerk.contrib.inject;
 
 import clerk.Clerk;
-import clerk.inject.ClerkModule;
-import clerk.inject.DirectSamplingModule;
+import clerk.inject.SynchronousClerkModule;
 import clerk.util.ClerkLogger;
 import dagger.Component;
 import java.time.Duration;
 import java.util.logging.Logger;
 
-/** A profiler that measures elapsed time between calls as a {@link Duration}. */
+/**
+ * A class that provides a clerk that returns a {@link Duration} from {@code read()} representing
+ * elapsed time since last call to {@code start()}.
+ *
+ * <p>If {@code read()} is called while running, the elapsed time since {@code start()} is returned.
+ *
+ * <p>If {@code read()} is called while not running, the elapsed time between {@code start()} and
+ * {@code stop()} is returned.
+ */
 public class Stopwatch {
-  private static final Logger logger = ClerkLogger.getLogger();
-
-  @Component(modules = {ClerkModule.class, StopwatchModule.class, DirectSamplingModule.class})
+  @Component(modules = {SynchronousClerkModule.class, StopwatchModule.class})
   interface ClerkFactory {
     Clerk newClerk();
   }
 
   private static final ClerkFactory clerkFactory = DaggerStopwatch_ClerkFactory.builder().build();
 
-  private Clerk<Duration> clerk;
+  public static Clerk<Duration> newStopwatch() {
+    return clerkFactory.newClerk();
+  }
+
+  private static final Logger logger = ClerkLogger.getLogger();
 
   /** Returns the elapsed time of a workload. */
   public static Duration time(Runnable workload) {
-    Clerk<Duration> clerk = clerkFactory.newClerk();
+    Clerk<Duration> clerk = newStopwatch();
     clerk.start();
     workload.run();
     clerk.stop();
-    return clerk.dump();
+    return clerk.read();
   }
 
   /** Times a workload similar to python's timeit module. */
-  public static void timeit(Runnable workload, int iters, int runs) {
+  public static void time(Runnable workload, int iters, int runs) {
     long runtime = Long.MAX_VALUE;
     for (int i = 0; i < runs; i++) {
       long time = 0;
@@ -48,7 +57,7 @@ public class Stopwatch {
 
   public static void main(String[] args) throws Exception {
     if (args.length == 0) {
-      timeit(() -> {}, 10000000, 3);
+      time(() -> {}, 10000000, 3);
     } else if (args.length > 0) {
       Runnable workload =
           () -> {
