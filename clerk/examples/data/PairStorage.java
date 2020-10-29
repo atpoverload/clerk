@@ -3,11 +3,11 @@ package clerk.examples.data;
 import clerk.Processor;
 
 /** A processor that only stores the last 2 pieces of data added. */
-public abstract class RelativePairStorage<I, O> implements Processor<I, O> {
+public abstract class PairStorage<I, O> implements Processor<I, O> {
   private I first;
   private I second;
 
-  public RelativePairStorage() {}
+  public PairStorage() {}
 
   @Override
   public final void add(I i) {

@@ -1,7 +1,7 @@
 package clerk.examples;
 
 import clerk.SynchronousClerk;
-import clerk.examples.data.RelativePairStorage;
+import clerk.examples.data.PairStorage;
 import clerk.util.ClerkLogger;
 import java.time.Duration;
 import java.time.Instant;
@@ -21,7 +21,7 @@ public class Stopwatch {
   public static SynchronousClerk<Duration> newStopwatch() {
     return new SynchronousClerk<>(
         List.of(Instant::now),
-        new RelativePairStorage<Instant, Duration>() {
+        new PairStorage<Instant, Duration>() {
           @Override
           public Duration process() {
             return Duration.between(getFirst(), getSecond());
