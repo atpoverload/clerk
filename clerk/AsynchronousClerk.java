@@ -21,9 +21,8 @@ public final class AsynchronousClerk<O> implements Clerk<O> {
   private final Processor<?, O> processor;
 
   // execution components
-  // TODO(timurbey): replace this with some sort of policy
-  private final Duration period;
   private final ScheduledExecutorService executor;
+  private final Scheduler scheduler;
 
   // management so the tasks are terminated without shutting down the executor
   // TODO(timurbey): this should probably be a better locking mechanism, like a semaphore
@@ -36,11 +35,11 @@ public final class AsynchronousClerk<O> implements Clerk<O> {
       Iterable<Supplier<?>> sources,
       Processor<?, O> processor,
       ScheduledExecutorService executor,
-      Duration period) {
+      Scheduler scheduler) {
     this.sources = sources;
     this.processor = processor;
     this.executor = executor;
-    this.period = period;
+    this.scheduler = scheduler;
   }
 
   /**
@@ -105,7 +104,7 @@ public final class AsynchronousClerk<O> implements Clerk<O> {
 
     Instant start = Instant.now();
     Clerk.pipe(source, processor);
-    Duration rescheduleTime = period.minus(Duration.between(start, Instant.now()));
+    Duration rescheduleTime = scheduler.getNextSchedulingTime(source, start);
 
     if (rescheduleTime.toMillis() > 0) {
       executor.schedule(() -> runAndReschedule(source), rescheduleTime.toMillis(), MILLISECONDS);

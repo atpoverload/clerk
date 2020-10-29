@@ -6,6 +6,7 @@ java_library(
   srcs = [
     "Clerk.java",
     "Processor.java",
+    "Scheduler.java"
   ],
   deps = [
     "//clerk/util:logger",

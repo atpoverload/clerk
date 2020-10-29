@@ -23,6 +23,7 @@ java_binary(
   ],
   deps = [
     "//clerk:async",
+    "//clerk/scheduling",
     "//clerk/examples/data",
     "//clerk/util:logger",
   ]

@@ -4,6 +4,7 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 import clerk.AsynchronousClerk;
 import clerk.examples.data.ListStorage;
+import clerk.scheduling.SteadyStateScheduler;
 import clerk.util.ClerkLogger;
 import java.time.Duration;
 import java.time.Instant;
@@ -44,7 +45,7 @@ public class MemoryMonitor {
                     Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())),
         new ListStorage<MemorySnapshot>(),
         executor,
-        period);
+        new SteadyStateScheduler(Instant::now, period));
   }
 
   private static List<MemorySnapshot> size(Runnable r) {
@@ -93,7 +94,7 @@ public class MemoryMonitor {
     public final Instant timestamp;
     public final long memory;
 
-    private MemorySnapshot(Instant timestamp, long memory) {
+    public MemorySnapshot(Instant timestamp, long memory) {
       this.timestamp = timestamp;
       this.memory = memory;
     }

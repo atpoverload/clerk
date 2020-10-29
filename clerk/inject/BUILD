@@ -41,6 +41,7 @@ java_library(
   deps = [
     ":component",
     "//clerk:async",
+    "//clerk/scheduling",
     ":dagger",
   ],
   exports = [

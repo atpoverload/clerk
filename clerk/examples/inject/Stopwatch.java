@@ -1,4 +1,4 @@
-package clerk.contrib.inject;
+package clerk.examples.inject;
 
 import clerk.Clerk;
 import clerk.inject.SynchronousClerkModule;

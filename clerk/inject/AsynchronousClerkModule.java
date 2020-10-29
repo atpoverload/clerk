@@ -1,10 +1,19 @@
 package clerk.inject;
 
+import static java.util.concurrent.Executors.newScheduledThreadPool;
+
 import clerk.AsynchronousClerk;
+import clerk.Clerk;
 import clerk.Processor;
+import clerk.Scheduler;
+import clerk.scheduling.SteadyStateScheduler;
 import dagger.Module;
 import dagger.Provides;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 /** Module to provide clerk with the necessary data and pumbling through an injection graph. */
@@ -20,10 +29,11 @@ public interface AsynchronousClerkModule {
   }
 
   @Provides
-  @ClerkComponent
-  static Duration provideSamplingRate() {
-    return Duration.ofMillis(
-        Long.parseLong(System.getProperty("clerk.sampling.rate", DEFAULT_RATE_MS)));
+  static Scheduler provideScheduler() {
+    return new SteadyStateScheduler(
+        Instant::now,
+        Duration.ofMillis(
+            Long.parseLong(System.getProperty("clerk.sampling.rate", DEFAULT_RATE_MS))));
   }
 
   // TODO(timurbey): this should take a policy instead
@@ -40,11 +50,11 @@ public interface AsynchronousClerkModule {
   }
 
   @Provides
-  static Clerk<O> provideClerk(
+  static Clerk provideClerk(
       @ClerkComponent Set<Supplier<?>> sources,
       Processor<?, ?> processor,
       @ClerkComponent ScheduledExecutorService executor,
-      @ClerkComponent Duration period) {
-    return new AsynchronousClerk<>(sources, processor, executor, period);
+      Scheduler scheduler) {
+    return new AsynchronousClerk<>(sources, processor, executor, scheduler);
   }
 }
