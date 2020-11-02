@@ -9,14 +9,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SynchronousClerkTest {
+public class DirectClerkTest {
   private AtomicInteger counter;
-  private SynchronousClerk<?> clerk;
+  private DirectClerk<?> clerk;
 
   @Before
   public void setUp() {
     counter = new AtomicInteger();
-    clerk = new SynchronousClerk<Integer>(List.of(counter::incrementAndGet), new DummyStorage<>());
+    clerk = new DirectClerk<Integer>(List.of(counter::incrementAndGet), new DummyStorage<>());
   }
 
   @After

@@ -25,7 +25,11 @@
 	</target>
 
   <target name="jar" depends="compile">
-		<jar jarfile="${library.jar}" basedir="${build.classes.dir}"/>
+		<manifest file="CLERK_TEMPORARY_MANIFEST.MF">
+			<attribute name="main-class" value="clerk.examples.Stopwatch"/>
+		</manifest>
+		<jar jarfile="${library.jar}" basedir="${build.classes.dir}" manifest = "CLERK_TEMPORARY_MANIFEST.MF"/>
     <delete dir="${build.dir}"/>
+		<delete file="CLERK_TEMPORARY_MANIFEST.MF"/>
   </target>
 </project>

@@ -1,9 +1,8 @@
 package clerk.examples.inject;
 
-import clerk.Clerk;
-import clerk.examples.MemoryMonitor.MemorySnapshot;
-import clerk.inject.AsynchronousClerkModule;
-import clerk.util.ClerkLogger;
+import clerk.inject.Clerk;
+import clerk.inject.ClerkExecutorModule;
+import clerk.util.ClerkUtil;
 import dagger.Component;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,9 +17,9 @@ import java.util.logging.Logger;
  * {@code stop()} is returned.
  */
 public class MemoryMonitor {
-  @Component(modules = {AsynchronousClerkModule.class, MemoryMonitorModule.class})
+  @Component(modules = {ClerkExecutorModule.class, MemoryMonitorModule.class})
   interface ClerkFactory {
-    Clerk newClerk();
+    Clerk<List<MemorySnapshot>> newClerk();
   }
 
   private static final ClerkFactory clerkFactory =
@@ -30,13 +29,16 @@ public class MemoryMonitor {
     return clerkFactory.newClerk();
   }
 
-  private static final Logger logger = ClerkLogger.getLogger();
+  private static final Logger logger = ClerkUtil.getLogger();
 
   private static List<MemorySnapshot> size(Runnable r) {
     Clerk<List<MemorySnapshot>> clerk = newMemoryMonitor();
-    clerk.start();
-    r.run();
-    clerk.stop();
+    for (int i = 0; i < 5; i++) {
+      clerk.start();
+      r.run();
+      clerk.stop();
+      System.out.println(clerk.read());
+    }
     return clerk.read();
   }
 

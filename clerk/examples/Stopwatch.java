@@ -1,25 +1,27 @@
 package clerk.examples;
 
-import clerk.SynchronousClerk;
+import clerk.DirectClerk;
 import clerk.examples.data.PairStorage;
-import clerk.util.ClerkLogger;
+import clerk.util.ClerkUtil;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * A class that provides a clerk that returns a {@link Duration} from {@code read()} representing
- * elapsed time since last call to {@code start()}.
+ * A clerk that returns a {@link Duration} from {@code read()} representing elapsed time since last
+ * call to {@code start()}.
  *
  * <p>If {@code read()} is called while running, the elapsed time since {@code start()} is returned.
  *
  * <p>If {@code read()} is called while not running, the elapsed time between {@code start()} and
  * {@code stop()} is returned.
  */
-public class Stopwatch {
-  public static SynchronousClerk<Duration> newStopwatch() {
-    return new SynchronousClerk<>(
+public class Stopwatch extends DirectClerk<Duration> {
+  private static final Logger logger = ClerkUtil.getLogger();
+
+  public Stopwatch() {
+    super(
         List.of(Instant::now),
         new PairStorage<Instant, Duration>() {
           @Override
@@ -29,15 +31,13 @@ public class Stopwatch {
         });
   }
 
-  private static final Logger logger = ClerkLogger.getLogger();
-
   /** Returns the elapsed time of a workload. */
   public static Duration time(Runnable workload) {
-    SynchronousClerk<Duration> clerk = newStopwatch();
-    clerk.start();
+    Stopwatch stopwatch = new Stopwatch();
+    stopwatch.start();
     workload.run();
-    clerk.stop();
-    return clerk.read();
+    stopwatch.stop();
+    return stopwatch.read();
   }
 
   /** Times a workload similar to python's timeit module. */

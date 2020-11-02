@@ -1,21 +1,21 @@
 load("@rules_java//java:defs.bzl", "java_test")
 
 java_test(
-  name = "SynchronousClerkTest",
-  srcs = ["SynchronousClerkTest.java"],
-  test_class = "clerk.SynchronousClerkTest",
+  name = "DirectClerkTest",
+  srcs = ["DirectClerkTest.java"],
+  test_class = "clerk.DirectClerkTest",
   deps = [
-    "//clerk:sync",
+    "//clerk",
     "//clerk/examples/data",
   ],
 )
 
 java_test(
-  name = "AsynchronousClerkTest",
-  srcs = ["AsynchronousClerkTest.java"],
-  test_class = "clerk.AsynchronousClerkTest",
+  name = "DeferredClerkTest",
+  srcs = ["DeferredClerkTest.java"],
+  test_class = "clerk.DeferredClerkTest",
   deps = [
-    "//clerk:async",
+    "//clerk",
     "//clerk/examples/data",
   ],
 )

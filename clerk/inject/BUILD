@@ -10,42 +10,33 @@ java_library(
     "ClerkComponent.java",
   ],
   deps = [
-    "//clerk",
     ":dagger",
   ]
 )
 
 java_library(
-  name = "sync_module",
+  name = "clerk",
   visibility = ["//visibility:public"],
   srcs = [
-    "SynchronousClerkModule.java",
+    "Clerk.java",
   ],
   deps = [
     ":component",
-    "//clerk:sync",
+    "//clerk:processor",
+    "//clerk/util",
     ":dagger",
   ],
-  exports = [
-    "//clerk",
-    "//clerk:sync",
-  ]
 )
 
 java_library(
-  name = "async_module",
+  name = "executor_module",
   visibility = ["//visibility:public"],
   srcs = [
-    "AsynchronousClerkModule.java",
+    "ClerkExecutorModule.java",
   ],
   deps = [
     ":component",
-    "//clerk:async",
-    "//clerk/scheduling",
+    ":clerk",
     ":dagger",
   ],
-  exports = [
-    "//clerk",
-    "//clerk:async",
-  ]
 )

@@ -1,45 +1,40 @@
-package clerk;
+package clerk.inject;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
-import clerk.util.ClerkLogger;
+import clerk.Processor;
+import clerk.util.ClerkUtil;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 
-/** A clerk that collects data asynchronously. */
-public final class AsynchronousClerk<O> implements Clerk<O> {
-  private static final Logger logger = ClerkLogger.getLogger();
+/** An asynchronous clerk that is built with dagger. */
+public final class Clerk<O> {
+  private static final Logger logger = ClerkUtil.getLogger();
 
-  // data sources
-  private final Iterable<Supplier<?>> sources;
+  private final Map<String, Supplier<?>> sources;
   private final Processor<?, O> processor;
 
-  // execution components
   private final ScheduledExecutorService executor;
-  private final Scheduler scheduler;
-
-  // management so the tasks are terminated without shutting down the executor
-  // TODO(timurbey): this should probably be a better locking mechanism, like a semaphore
-  private final AtomicInteger tasks = new AtomicInteger(0);
-  private final AtomicBoolean ready = new AtomicBoolean(true);
+  private final Map<String, Duration> periods;
 
   private boolean isRunning = false;
 
-  public AsynchronousClerk(
-      Iterable<Supplier<?>> sources,
+  @Inject
+  Clerk(
+      @ClerkComponent Map<String, Supplier<?>> sources,
+      @ClerkComponent Map<String, Duration> periods,
       Processor<?, O> processor,
-      ScheduledExecutorService executor,
-      Scheduler scheduler) {
+      @ClerkComponent ScheduledExecutorService executor) {
     this.sources = sources;
+    this.periods = periods;
     this.processor = processor;
     this.executor = executor;
-    this.scheduler = scheduler;
   }
 
   /**
@@ -47,18 +42,15 @@ public final class AsynchronousClerk<O> implements Clerk<O> {
    *
    * <p>NOTE: the profiler will report a warning if this call is made while running.
    */
-  @Override
   public void start() {
     if (!isRunning) {
-      for (Supplier<?> source : sources) {
+      isRunning = true;
+      for (String source : sources.keySet()) {
         executor.execute(
             () -> {
-              while (!ready.get()) {}
               runAndReschedule(source);
-              tasks.getAndIncrement();
             });
       }
-      isRunning = true;
     } else {
       logger.warning("clerk was told to start while running!");
     }
@@ -69,10 +61,8 @@ public final class AsynchronousClerk<O> implements Clerk<O> {
    *
    * <p>NOTE: the profiler will report a warning if this call is made while not running.
    */
-  @Override
   public void stop() {
     if (isRunning) {
-      ready.set(false);
       isRunning = false;
     } else {
       logger.warning("clerk was told to stop while not running!");
@@ -82,7 +72,6 @@ public final class AsynchronousClerk<O> implements Clerk<O> {
   /** Returns the output of the processor. */
   // TODO(timurbey): it may be better to enforce the return of a listenable future with the
   // generics. we would have to deal with assembling the futures ourselves
-  @Override
   public O read() {
     return processor.process();
   }
@@ -93,18 +82,14 @@ public final class AsynchronousClerk<O> implements Clerk<O> {
    * <p>If the executor has been told to stop, no new tasks are created. When the final task
    * terminates, the executor is reset to ready.
    */
-  private void runAndReschedule(Supplier<?> source) {
-    tasks.getAndDecrement();
-    if (!ready.get()) {
-      if (tasks.get() == 0) {
-        ready.set(true);
-      }
+  private void runAndReschedule(String source) {
+    if (!isRunning) {
       return;
     }
 
     Instant start = Instant.now();
-    Clerk.pipe(source, processor);
-    Duration rescheduleTime = scheduler.getNextSchedulingTime(source, start);
+    ClerkUtil.pipe(sources.get(source), processor);
+    Duration rescheduleTime = periods.get(source).minus(Duration.between(start, Instant.now()));
 
     if (rescheduleTime.toMillis() > 0) {
       executor.schedule(() -> runAndReschedule(source), rescheduleTime.toMillis(), MILLISECONDS);
@@ -113,7 +98,5 @@ public final class AsynchronousClerk<O> implements Clerk<O> {
     } else {
       executor.execute(() -> runAndReschedule(source));
     }
-
-    tasks.getAndIncrement();
   }
 }

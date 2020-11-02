@@ -8,23 +8,8 @@ java_binary(
     "Stopwatch.java",
   ],
   deps = [
-    "//clerk:sync",
+    "//clerk",
     "//clerk/examples/data",
-    "//clerk/util:logger",
-  ]
-)
-
-java_binary(
-  name = "sizeit",
-  visibility = ["//visibility:public"],
-  main_class = "clerk.examples.MemoryMonitor",
-  srcs = [
-    "MemoryMonitor.java",
-  ],
-  deps = [
-    "//clerk:async",
-    "//clerk/scheduling",
-    "//clerk/examples/data",
-    "//clerk/util:logger",
+    "//clerk/util",
   ]
 )
