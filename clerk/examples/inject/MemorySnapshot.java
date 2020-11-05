@@ -10,4 +10,9 @@ public class MemorySnapshot {
     this.timestamp = timestamp;
     this.memory = memory;
   }
+
+  @Override
+  public String toString() {
+    return String.join("@", Long.toString(memory), timestamp.toString());
+  }
 }

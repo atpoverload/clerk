@@ -4,6 +4,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 import clerk.util.ClerkUtil;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
@@ -29,6 +30,11 @@ public class DeferredClerk<O> implements SimpleClerk<Future<O>> {
   private final Semaphore lock = new Semaphore(1);
 
   private boolean isRunning = false;
+
+  public DeferredClerk(Supplier<?> source, Processor<?, O> processor) {
+    this.sources = List.of(source);
+    this.processor = processor;
+  }
 
   public DeferredClerk(Iterable<Supplier<?>> sources, Processor<?, O> processor) {
     this.sources = sources;

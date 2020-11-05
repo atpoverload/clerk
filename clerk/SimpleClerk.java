@@ -1,6 +1,6 @@
 package clerk;
 
-/** Manages a system that collects and processes data. */
+/** Interface to represent a system that collects and processes data. */
 public interface SimpleClerk<O> {
   /** Starts collecting data. */
   public void start();

@@ -40,3 +40,16 @@ java_library(
     ":dagger",
   ],
 )
+
+java_library(
+  name = "app_executor_module",
+  visibility = ["//visibility:public"],
+  srcs = [
+    "ClerkApplicationExecutorModule.java",
+  ],
+  deps = [
+    ":component",
+    ":clerk",
+    ":dagger",
+  ],
+)

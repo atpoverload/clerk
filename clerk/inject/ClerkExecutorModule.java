@@ -4,12 +4,21 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
 import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/** Module to provide clerk with the necessary data and pumbling through an injection graph. */
-// i guess this is clever but i feel like it's brittle by virtue of wildcards
+/**
+ * Module to provide a user customizable interface for the execution policy.
+ *
+ * <p>All users of this module will share default properties defined by "clerk.property".
+ *
+ * <p>This currently supports a default .period in ms and a .worker count.
+ */
+// TODO(timurbey): in **theory**, i'd like to support a more verbose set of options such as time
+// units from the jvm options
 @Module
 public interface ClerkExecutorModule {
   static final AtomicInteger counter = new AtomicInteger();
@@ -21,16 +30,20 @@ public interface ClerkExecutorModule {
   }
 
   @Provides
+  @IntoMap
+  @StringKey("default_period")
   @ClerkComponent
   static Duration provideDefaultPeriod() {
-    return Duration.ofMillis(Long.parseLong(System.getProperty("clerk.rate", DEFAULT_PERIOD_MS)));
+    return Duration.ofMillis(
+        Long.parseLong(System.getProperty(String.join(".", "clerk", "period"), DEFAULT_PERIOD_MS)));
   }
 
   @Provides
   @ClerkComponent
   static ScheduledExecutorService provideExecutor() {
     return newScheduledThreadPool(
-        Integer.parseInt(System.getProperty("clerk.workers", DEFAULT_POOL_SIZE)),
+        Integer.parseInt(
+            System.getProperty(String.join(".", "clerk", "workers"), DEFAULT_POOL_SIZE)),
         r -> {
           Thread t = new Thread(r, clerkName());
           t.setDaemon(true);

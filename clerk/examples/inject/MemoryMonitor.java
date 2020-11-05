@@ -8,13 +8,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * A class that provides a clerk that returns a {@link List<MemorySnapshot>} from {@code read()}
- * representing elapsed time since last call to {@code start()}.
+ * A class that provides a clerk that returns {@link MemorySnapshot}s from the most recent session.
  *
- * <p>If {@code read()} is called while running, the elapsed time since {@code start()} is returned.
- *
- * <p>If {@code read()} is called while not running, the elapsed time between {@code start()} and
- * {@code stop()} is returned.
+ * <p>{@code ListStorage} clears the underlying data, so that the data can only be consumed from the
+ * {@link Clerk} once.
  */
 public class MemoryMonitor {
   @Component(modules = {ClerkExecutorModule.class, MemoryMonitorModule.class})
@@ -33,12 +30,9 @@ public class MemoryMonitor {
 
   private static List<MemorySnapshot> size(Runnable r) {
     Clerk<List<MemorySnapshot>> clerk = newMemoryMonitor();
-    for (int i = 0; i < 5; i++) {
-      clerk.start();
-      r.run();
-      clerk.stop();
-      System.out.println(clerk.read());
-    }
+    clerk.start();
+    r.run();
+    clerk.stop();
     return clerk.read();
   }
 

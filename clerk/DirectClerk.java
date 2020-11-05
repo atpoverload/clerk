@@ -1,6 +1,7 @@
 package clerk;
 
 import clerk.util.ClerkUtil;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -17,6 +18,11 @@ public class DirectClerk<O> implements SimpleClerk<O> {
   private final Processor<?, O> processor;
 
   private boolean isRunning = false;
+
+  public DirectClerk(Supplier<?> source, Processor<?, O> processor) {
+    this.sources = List.of(source);
+    this.processor = processor;
+  }
 
   public DirectClerk(Iterable<Supplier<?>> sources, Processor<?, O> processor) {
     this.sources = sources;
@@ -53,7 +59,10 @@ public class DirectClerk<O> implements SimpleClerk<O> {
     }
   }
 
-  /** Puts a sample from each data source into the processor and returns the result. */
+  /**
+   * Puts a sample from each data source into the processor if the clerk is running, and then
+   * returns the result of the process.
+   */
   @Override
   public final O read() {
     if (isRunning) {

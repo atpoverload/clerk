@@ -26,7 +26,7 @@ public final class Clerk<O> {
   private boolean isRunning = false;
 
   @Inject
-  Clerk(
+  public Clerk(
       @ClerkComponent Map<String, Supplier<?>> sources,
       @ClerkComponent Map<String, Duration> periods,
       Processor<?, O> processor,
@@ -89,7 +89,10 @@ public final class Clerk<O> {
 
     Instant start = Instant.now();
     ClerkUtil.pipe(sources.get(source), processor);
-    Duration rescheduleTime = periods.get(source).minus(Duration.between(start, Instant.now()));
+    Duration rescheduleTime =
+        periods
+            .getOrDefault(source, periods.get("default_period"))
+            .minus(Duration.between(start, Instant.now()));
 
     if (rescheduleTime.toMillis() > 0) {
       executor.schedule(() -> runAndReschedule(source), rescheduleTime.toMillis(), MILLISECONDS);

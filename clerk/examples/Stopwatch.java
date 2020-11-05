@@ -5,7 +5,6 @@ import clerk.examples.data.PairStorage;
 import clerk.util.ClerkUtil;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -16,13 +15,15 @@ import java.util.logging.Logger;
  *
  * <p>If {@code read()} is called while not running, the elapsed time between {@code start()} and
  * {@code stop()} is returned.
+ *
+ * <p>Note that while this is similar to python's timeit module, it is not performance optimized.
  */
 public class Stopwatch extends DirectClerk<Duration> {
   private static final Logger logger = ClerkUtil.getLogger();
 
   public Stopwatch() {
     super(
-        List.of(Instant::now),
+        () -> Instant.now(),
         new PairStorage<Instant, Duration>() {
           @Override
           public Duration process() {

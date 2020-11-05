@@ -10,7 +10,7 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-/** Provides a logger that prints a prefix with the current timestamp and calling thread. */
+/** Utilities for general clerk needs. */
 public final class ClerkUtil {
   private static final SimpleDateFormat dateFormatter =
       new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a z");
@@ -36,11 +36,12 @@ public final class ClerkUtil {
         "[" + Thread.currentThread().getName() + "]:");
   }
 
-  /** Helper method that sets up the logger before returning it, if necessary. */
+  /** Sets up the logger, if necessary, and returns it. */
+  // TODO(timurbey): let's explore personalized loggers.
   public static synchronized Logger getLogger() {
     if (!setup) {
       try {
-        // TODO(timur): add a file handler for transactions
+        // TODO(timurbey): add a file handler for transactions
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);
 
@@ -61,10 +62,10 @@ public final class ClerkUtil {
   }
 
   /**
-   * Helper method that casts the data source to the processor's input type.
+   * Casts the data source to the processor's input type and adds it.
    *
-   * <p>If the input type is incorrect at runtime, then the failure will be reported before
-   * abandoning the workload.
+   * <p>If the input type is incorrect at runtime, the failure will be reported before re-throwing
+   * the {@link ClassCastException}.
    */
   public static <I> void pipe(Supplier<?> source, Processor<I, ?> processor) {
     try {
