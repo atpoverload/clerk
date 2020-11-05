@@ -36,7 +36,6 @@ java_library(
   ],
   deps = [
     ":component",
-    ":clerk",
     ":dagger",
   ],
 )
@@ -49,7 +48,6 @@ java_library(
   ],
   deps = [
     ":component",
-    ":clerk",
     ":dagger",
   ],
 )

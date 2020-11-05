@@ -5,7 +5,6 @@ dagger_rules()
 
 java_binary(
   name = "sizeit",
-  visibility = ["//visibility:public"],
   main_class = "clerk.examples.inject.MemoryMonitor",
   srcs = [
     "MemoryMonitor.java",

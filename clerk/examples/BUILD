@@ -2,7 +2,6 @@ load("@rules_java//java:defs.bzl", "java_binary")
 
 java_binary(
   name = "timeit",
-  visibility = ["//visibility:public"],
   main_class = "clerk.examples.Stopwatch",
   srcs = [
     "Stopwatch.java",
