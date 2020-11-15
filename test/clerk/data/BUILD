@@ -5,24 +5,24 @@ java_test(
   srcs = ["DummyStorageTest.java"],
   test_class = "clerk.examples.data.DummyStorageTest",
   deps = [
-    "//clerk/examples/data",
+    "//clerk/data",
   ],
 )
 
 java_test(
   name = "ListStorageTest",
   srcs = ["ListStorageTest.java"],
-  test_class = "clerk.examples.data.ListStorageTest",
+  test_class = "clerk.data.ListStorageTest",
   deps = [
-    "//clerk/examples/data",
+    "//clerk/data",
   ],
 )
 
 java_test(
   name = "PairStorageTest",
   srcs = ["PairStorageTest.java"],
-  test_class = "clerk.examples.data.PairStorageTest",
+  test_class = "clerk.data.PairStorageTest",
   deps = [
-    "//clerk/examples/data",
+    "//clerk/data",
   ],
 )

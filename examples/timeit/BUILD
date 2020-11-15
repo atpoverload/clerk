@@ -7,8 +7,8 @@ java_binary(
     "Stopwatch.java",
   ],
   deps = [
-    "//clerk",
-    "//clerk/examples/data",
-    "//clerk/util",
+    "@clerk//clerk",
+    "@clerk//clerk/data",
+    "@clerk//clerk/util",
   ]
 )

@@ -1,0 +1,31 @@
+workspace(name = "clerk_examples")
+
+local_repository(
+  name = "clerk",
+  path = "../..",
+)
+
+load("@clerk//:clerk_deps.bzl", "clerk_deps")
+clerk_deps()
+
+# NEEDED FOR DAGGER
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
+
+maven_install(
+    artifacts = DAGGER_ARTIFACTS,
+    repositories = DAGGER_REPOSITORIES,
+)
+
+# PROTOBUF DEPS
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
+git_repository(
+  name = "com_google_protobuf",
+  commit = "2514f0bd7da7e2af1bed4c5d1b84f031c4d12c10",
+  shallow_since = "1605300819 -0800",
+  remote = "https://github.com/protocolbuffers/protobuf.git",
+)
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+protobuf_deps()

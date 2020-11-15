@@ -1,4 +1,4 @@
-package clerk.examples.data;
+package clerk.data;
 
 import static org.junit.Assert.assertEquals;
 

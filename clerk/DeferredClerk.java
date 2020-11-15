@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * will return a future that will collect data if the clerk is running, consume all other futures,
  * and return the output of the processor.
  *
- * <p>NOTE: This is a non-blocking implementation in constrat to the {@link DirectClerk}.
+ * <p>NOTE: This is a non-blocking implementation in contrast to the {@link DirectClerk}.
  */
 public class DeferredClerk<O> implements SimpleClerk<Future<O>> {
   private static final Logger logger = ClerkUtil.getLogger();
@@ -93,13 +93,16 @@ public class DeferredClerk<O> implements SimpleClerk<Future<O>> {
   }
 
   private void pipeData() {
-    try {
-      lock.acquire();
-      for (Supplier<?> source : sources) {
-        executor.submit(() -> ClerkUtil.pipe(source, processor));
-      }
-      lock.release();
-    } catch (Exception e) {
-    }
+    executor.submit(
+        () -> {
+          try {
+            lock.acquire();
+            for (Supplier<?> source : sources) {
+              ClerkUtil.pipe(source, processor);
+            }
+            lock.release();
+          } catch (Exception e) {
+          }
+        });
   }
 }

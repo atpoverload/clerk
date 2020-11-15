@@ -1,5 +1,6 @@
-package clerk.examples.inject;
+package clerk.examples;
 
+import clerk.examples.protos.ClerkExampleProtos.MemorySnapshot;
 import clerk.inject.Clerk;
 import clerk.inject.ClerkExecutorModule;
 import clerk.util.ClerkUtil;
@@ -40,7 +41,7 @@ public class MemoryMonitor {
     long memory = 0;
     long size = 0;
     for (MemorySnapshot snapshot : snapshots) {
-      memory += snapshot.memory;
+      memory += (snapshot.getTotalMemory() - snapshot.getFreeMemory());
       size++;
     }
     if (size > 0) {
@@ -82,7 +83,7 @@ public class MemoryMonitor {
               e.printStackTrace();
             }
           };
-      logger.info("ran \"" + String.join(" ", args) + "\" in " + size(workload));
+      logger.info("\"" + String.join(" ", args) + "\" consumed " + mean(size(workload)) / 1000000 + " MB");
     }
   }
 }

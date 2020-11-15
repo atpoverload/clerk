@@ -6,7 +6,7 @@ java_test(
   test_class = "clerk.DirectClerkTest",
   deps = [
     "//clerk",
-    "//clerk/examples/data",
+    "//clerk/data",
   ],
 )
 
@@ -16,6 +16,6 @@ java_test(
   test_class = "clerk.DeferredClerkTest",
   deps = [
     "//clerk",
-    "//clerk/examples/data",
+    "//clerk/data",
   ],
 )

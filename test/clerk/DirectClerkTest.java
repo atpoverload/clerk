@@ -2,7 +2,7 @@ package clerk;
 
 import static org.junit.Assert.assertEquals;
 
-import clerk.examples.data.DummyStorage;
+import clerk.data.DummyStorage;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.After;
