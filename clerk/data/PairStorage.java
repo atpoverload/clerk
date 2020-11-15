@@ -1,4 +1,4 @@
-package clerk.examples.data;
+package clerk.data;
 
 import clerk.Processor;
 
