@@ -1,5 +1,8 @@
-package clerk.inject;
+package clerk.testing.inject;
 
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+
+import clerk.inject.ClerkComponent;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;

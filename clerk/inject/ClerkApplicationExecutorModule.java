@@ -25,8 +25,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Module
 public interface ClerkApplicationExecutorModule {
   static final AtomicInteger counter = new AtomicInteger();
-  static final String DEFAULT_POOL_SIZE = "4";
   static final String DEFAULT_PERIOD_MS = "41";
+  static final String DEFAULT_POOL_SIZE = "4";
 
   static String clerkName(String appName) {
     return String.join("-", "clerk", appName, String.format("%02d", counter.getAndIncrement()));

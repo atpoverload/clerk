@@ -1,0 +1,68 @@
+package clerk.inject;
+
+import static clerk.testing.inject.TestDataModule.awaitTestBarrier;
+import static org.junit.Assert.assertEquals;
+
+import clerk.testing.inject.TestDataModule;
+import clerk.testing.inject.TestExecutorModule;
+import dagger.Component;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ClerkTest {
+  @Component(modules = {TestDataModule.class, TestExecutorModule.class})
+  interface ClerkFactory {
+    Clerk<Integer> newClerk();
+  }
+
+  private static final ClerkFactory clerkFactory = DaggerClerkTest_ClerkFactory.builder().build();
+
+  private Clerk<?> clerk;
+
+  @Before
+  public void setUp() {
+    clerk = clerkFactory.newClerk();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    clerk.stop();
+    awaitTestBarrier();
+    clerk = null;
+  }
+
+  @Test
+  public void read_noCalls() throws Exception {
+    assertEquals(null, clerk.read());
+  }
+
+  @Test
+  public void stopRead_noCalls() throws Exception {
+    clerk.stop();
+    assertEquals(null, clerk.read());
+  }
+
+  @Test
+  public void startRead_oneCall() throws Exception {
+    clerk.start();
+    awaitTestBarrier();
+    assertEquals(1, clerk.read());
+  }
+
+  @Test
+  public void startStopRead_oneCall() throws Exception {
+    clerk.start();
+    clerk.stop();
+    awaitTestBarrier();
+    assertEquals(1, clerk.read());
+  }
+
+  @Test
+  public void startStartRead_oneCall() throws Exception {
+    clerk.start();
+    clerk.start();
+    awaitTestBarrier();
+    assertEquals(1, clerk.read());
+  }
+}
