@@ -19,21 +19,20 @@ public final class Clerk<O> {
 
   private final Map<String, Supplier<?>> sources;
   private final Processor<?, O> processor;
-
-  private final ScheduledExecutorService executor;
   private final Map<String, Duration> periods;
+  private final ScheduledExecutorService executor;
 
   private boolean isRunning = false;
 
   @Inject
   public Clerk(
       @ClerkComponent Map<String, Supplier<?>> sources,
-      @ClerkComponent Map<String, Duration> periods,
       Processor<?, O> processor,
+      @ClerkComponent Map<String, Duration> periods,
       @ClerkComponent ScheduledExecutorService executor) {
     this.sources = sources;
-    this.periods = periods;
     this.processor = processor;
+    this.periods = periods;
     this.executor = executor;
   }
 

@@ -40,11 +40,12 @@ stopwatch.stop();
 System.out.println("ran workload in " + stopwatch.read());
 ```
 
-Frequently, these collectors are used synchronously. This makes the injection framework overkill since the execution policies is easy to manage. This is done to explicitly differentiate between serial vs parallel data collection.
+Frequently, these collectors are used synchronously. This makes the injection framework overkill since the execution policy is easy to manage. This is done to explicitly differentiate between serial vs parallel data collection.
 
 ## `Clerk` with dependency injection
 
-For parallel data collection, there is a injection framework that can enforce complex policies. This manages execution policies across multiple data source.
+For parallel data collection, there is a injection framework that can enforce complex policies. This manages execution policies across multiple data sources.
+
 `Clerk` expects the following injections:
 
 ```java
