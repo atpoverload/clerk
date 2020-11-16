@@ -1,9 +1,8 @@
 package clerk;
 
-import clerk.execution.ExecutionPolicy;
 import clerk.util.ClerkUtil;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -17,8 +16,7 @@ public final class Clerk<O> {
 
   private final Map<String, Supplier<?>> sources;
   private final Processor<?, O> processor;
-  private final Map<String, ExecutionPolicy> policies;
-  private final ScheduledExecutorService executor;
+  private final Map<String, Executor> policies;
 
   private boolean isRunning = false;
 
@@ -26,12 +24,10 @@ public final class Clerk<O> {
   public Clerk(
       @ClerkComponent Map<String, Supplier<?>> sources,
       Processor<?, O> processor,
-      @ClerkComponent Map<String, ExecutionPolicy> policies,
-      @ClerkComponent ScheduledExecutorService executor) {
+      @ClerkComponent Map<String, Executor> policies) {
     this.sources = sources;
     this.processor = processor;
     this.policies = policies;
-    this.executor = executor;
   }
 
   /**
@@ -43,12 +39,15 @@ public final class Clerk<O> {
     if (!isRunning) {
       isRunning = true;
       for (String sourceName : sources.keySet()) {
-        executor.execute(
-            () -> {
-              policies
-                  .getOrDefault(sourceName, policies.get(DEFAULT_POLICY_KEY))
-                  .execute(() -> ClerkUtil.pipe(sources.get(sourceName), processor), executor);
-            });
+        policies
+            .getOrDefault(sourceName, policies.get(DEFAULT_POLICY_KEY))
+            .execute(
+                () -> {
+                  if (!isRunning) {
+                    throw new RuntimeException("the clerk was terminated");
+                  }
+                  ClerkUtil.pipe(sources.get(sourceName), processor);
+                });
       }
     } else {
       logger.warning("clerk was told to start while running!");

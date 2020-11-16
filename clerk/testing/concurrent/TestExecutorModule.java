@@ -1,11 +1,9 @@
-package clerk.testing.execution;
+package clerk.testing.concurrent;
 
 import static clerk.Clerk.DEFAULT_POLICY_KEY;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 import clerk.ClerkComponent;
-import clerk.execution.ExecutionPolicy;
-import clerk.execution.SteadyStatePeriodicExecutionPolicy;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;

@@ -4,33 +4,31 @@ load("@dagger//:workspace_defs.bzl", "dagger_rules")
 dagger_rules()
 
 java_library(
-  name = "processor",
+  name = "steady_state",
   visibility = ["//visibility:public"],
   srcs = [
-    "Processor.java",
-  ],
-)
-java_library(
-  name = "component",
-  visibility = ["//visibility:public"],
-  srcs = [
-    "ClerkComponent.java",
+    "PeriodicSteadyStateExecutor.java",
   ],
   deps = [
-    ":dagger",
-  ]
-)
-
-java_library(
-  name = "clerk",
-  visibility = ["//visibility:public"],
-  srcs = [
-    "Clerk.java",
-  ],
-  deps = [
-    ":component",
-    "//clerk:processor",
+    "//clerk:component",
     "//clerk/util",
     ":dagger",
   ],
+)
+
+java_library(
+  name = "executor_module",
+  visibility = ["//visibility:public"],
+  srcs = [
+    "ClerkExecutorModule.java",
+  ],
+  deps = [
+    ":steady_state",
+    "//clerk",
+    "//clerk:component",
+    ":dagger",
+  ],
+  exports = [
+    ":steady_state",
+  ]
 )
