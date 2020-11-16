@@ -23,6 +23,7 @@ java_library(
   deps = [
     ":component",
     "//clerk:processor",
+    "//clerk/execution",
     "//clerk/util",
     ":dagger",
   ],
@@ -36,6 +37,8 @@ java_library(
   ],
   deps = [
     ":component",
+    "//clerk/execution:steady_state",
+    "//clerk/inject:clerk",
     ":dagger",
   ],
 )
@@ -48,6 +51,8 @@ java_library(
   ],
   deps = [
     ":component",
+    "//clerk/execution:steady_state",
+    "//clerk/inject:clerk",
     ":dagger",
   ],
 )

@@ -17,6 +17,9 @@ java_library(
   deps = [
     ":execution",
   ],
+  exports = [
+    ":execution"
+  ]
 )
 
 java_library(
@@ -28,4 +31,7 @@ java_library(
   deps = [
     ":execution",
   ],
+  exports = [
+    ":execution"
+  ]
 )

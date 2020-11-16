@@ -83,7 +83,8 @@ public class MemoryMonitor {
               e.printStackTrace();
             }
           };
-      logger.info("\"" + String.join(" ", args) + "\" consumed " + mean(size(workload)) / 1000000 + " MB");
+      logger.info(
+          "\"" + String.join(" ", args) + "\" consumed " + mean(size(workload)) / 1000000 + " MB");
     }
   }
 }

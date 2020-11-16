@@ -6,5 +6,8 @@ java_library(
   srcs = glob(["*.java"]),
   deps = [
     "//clerk:processor",
+  ],
+  exports = [
+    "//clerk:processor",
   ]
 )

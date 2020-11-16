@@ -2,6 +2,9 @@ package clerk.testing.inject;
 
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
+import clerk.execution.ExecutionPolicy;
+import clerk.execution.SteadyStateExecutionPolicy;
+import clerk.inject.Clerk;
 import clerk.inject.ClerkComponent;
 import dagger.Module;
 import dagger.Provides;
@@ -15,10 +18,10 @@ import java.util.concurrent.ScheduledExecutorService;
 public interface TestExecutorModule {
   @Provides
   @IntoMap
-  @StringKey("default_period")
+  @StringKey(Clerk.DEFAULT_POLICY)
   @ClerkComponent
-  static Duration provideDefaultPeriod() {
-    return Duration.ofMillis(0);
+  static ExecutionPolicy provideDefaultPeriod() {
+    return new SteadyStateExecutionPolicy(Duration.ofMillis(0));
   }
 
   @Provides

@@ -13,8 +13,8 @@ java_binary(
   ],
   deps = [
     ":memory_snapshot_java_proto",
-    "@clerk//clerk:processor",
     "@clerk//clerk/data",
+    "@clerk//clerk/execution",
     "@clerk//clerk/inject:executor_module",
     "@clerk//clerk/inject:clerk",
     "@clerk//clerk/inject:component",
