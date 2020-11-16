@@ -1,7 +1,7 @@
 package clerk.examples;
 
-import clerk.DirectClerk;
-import clerk.examples.data.PairStorage;
+import clerk.clerks.DirectClerk;
+import clerk.data.PairStorage;
 import clerk.util.ClerkUtil;
 import java.time.Duration;
 import java.time.Instant;
