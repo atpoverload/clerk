@@ -10,8 +10,8 @@ java_library(
     "TestDataModule.java",
   ],
   deps = [
+    "//clerk:component",
     "//clerk/data",
-    "//clerk/inject:component",
     ":dagger",
   ],
 )
@@ -23,9 +23,9 @@ java_library(
     "TestExecutorModule.java",
   ],
   deps = [
+    "//clerk",
+    "//clerk:component",
     "//clerk/execution:steady_state",
-    "//clerk/inject:clerk",
-    "//clerk/inject:component",
     ":dagger",
   ],
   exports = [

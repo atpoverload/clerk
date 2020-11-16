@@ -2,7 +2,7 @@ package clerk.execution;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-/** Execution policy that runs a runnable once. */
+/** Execution policy that runs once. */
 public final class SingleExecutionPolicy implements ExecutionPolicy {
   public SingleExecutionPolicy() {}
 

@@ -1,11 +1,11 @@
-package clerk.testing.inject;
+package clerk.testing.execution;
 
+import static clerk.Clerk.DEFAULT_POLICY_KEY;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
+import clerk.ClerkComponent;
 import clerk.execution.ExecutionPolicy;
-import clerk.execution.SteadyStateExecutionPolicy;
-import clerk.inject.Clerk;
-import clerk.inject.ClerkComponent;
+import clerk.execution.SteadyStatePeriodicExecutionPolicy;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
@@ -18,10 +18,10 @@ import java.util.concurrent.ScheduledExecutorService;
 public interface TestExecutorModule {
   @Provides
   @IntoMap
-  @StringKey(Clerk.DEFAULT_POLICY)
+  @StringKey(DEFAULT_POLICY_KEY)
   @ClerkComponent
-  static ExecutionPolicy provideDefaultPeriod() {
-    return new SteadyStateExecutionPolicy(Duration.ofMillis(0));
+  static ExecutionPolicy provideDefaultPolicy() {
+    return new SteadyStatePeriodicExecutionPolicy(Duration.ofMillis(0));
   }
 
   @Provides

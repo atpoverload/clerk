@@ -37,7 +37,7 @@ public final class ClerkUtil {
   }
 
   /** Sets up the logger, if necessary, and returns it. */
-  // TODO(timurbey): let's explore personalized loggers.
+  // TODO(timurbey): there should be an injection to customize the logger
   public static synchronized Logger getLogger() {
     if (!setup) {
       try {

@@ -1,7 +1,8 @@
-package clerk;
+package clerk.clerks;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
+import clerk.Processor;
 import clerk.util.ClerkUtil;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,9 @@
-package clerk.inject;
+package clerk.execution;
 
+import static clerk.Clerk.DEFAULT_POLICY_KEY;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
-import clerk.execution.ExecutionPolicy;
-import clerk.execution.SteadyStateExecutionPolicy;
+import clerk.ClerkComponent;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
@@ -33,10 +33,10 @@ public interface ClerkExecutorModule {
 
   @Provides
   @IntoMap
-  @StringKey(Clerk.DEFAULT_POLICY)
+  @StringKey(DEFAULT_POLICY_KEY)
   @ClerkComponent
-  static ExecutionPolicy provideDefaultPeriod() {
-    return new SteadyStateExecutionPolicy(
+  static ExecutionPolicy provideDefaultPolicy() {
+    return new SteadyStatePeriodicExecutionPolicy(
         Duration.ofMillis(
             Long.parseLong(
                 System.getProperty(String.join(".", "clerk", "period"), DEFAULT_PERIOD_MS))));

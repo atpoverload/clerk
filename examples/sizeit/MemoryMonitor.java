@@ -1,8 +1,8 @@
 package clerk.examples;
 
+import clerk.Clerk;
 import clerk.examples.protos.ClerkExampleProtos.MemorySnapshot;
-import clerk.inject.Clerk;
-import clerk.inject.ClerkExecutorModule;
+import clerk.execution.ClerkExecutorModule;
 import clerk.util.ClerkUtil;
 import dagger.Component;
 import java.util.List;

@@ -1,5 +1,6 @@
-package clerk;
+package clerk.clerks;
 
+import clerk.Processor;
 import clerk.util.ClerkUtil;
 import java.util.List;
 import java.util.function.Supplier;

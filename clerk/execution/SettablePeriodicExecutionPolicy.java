@@ -7,11 +7,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ScheduledExecutorService;
 
-/** Execution policy that schedules a provided runnable to run every period. */
-public final class SteadyStateExecutionPolicy implements ExecutionPolicy {
-  private final Duration period;
+/** Execution policy that schedules a runnable to at a settable, steady period. */
+public final class SettablePeriodicExecutionPolicy implements ExecutionPolicy {
+  private Duration period = Duration.ZERO;
 
-  public SteadyStateExecutionPolicy(Duration period) {
+  public SettablePeriodicExecutionPolicy() {}
+
+  public void setPeriod(Duration period) {
     this.period = period;
   }
 

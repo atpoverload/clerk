@@ -1,11 +1,11 @@
-package clerk.inject;
+package clerk;
 
-import static clerk.testing.inject.TestDataModule.awaitTestBarrier;
-import static clerk.testing.inject.TestDataModule.resetTestBarrier;
+import static clerk.testing.data.TestDataModule.awaitTestBarrier;
+import static clerk.testing.data.TestDataModule.resetTestBarrier;
 import static org.junit.Assert.assertEquals;
 
-import clerk.testing.inject.TestDataModule;
-import clerk.testing.inject.TestExecutorModule;
+import clerk.testing.data.TestDataModule;
+import clerk.testing.execution.TestExecutorModule;
 import dagger.Component;
 import org.junit.After;
 import org.junit.Before;

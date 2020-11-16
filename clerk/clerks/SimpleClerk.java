@@ -1,4 +1,4 @@
-package clerk;
+package clerk.clerks;
 
 /** Interface to represent a system that collects and processes data. */
 public interface SimpleClerk<O> {

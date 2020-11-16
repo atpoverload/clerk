@@ -18,7 +18,7 @@ public final class ListStorage<I> implements Processor<I, List<I>> {
     }
   }
 
-  /** Pops and returns data with synchronization. */
+  /** Pops and returns data with light synchronization. */
   @Override
   public final List<I> process() {
     ArrayList<I> data = this.data;

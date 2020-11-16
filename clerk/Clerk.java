@@ -1,6 +1,5 @@
-package clerk.inject;
+package clerk;
 
-import clerk.Processor;
 import clerk.execution.ExecutionPolicy;
 import clerk.util.ClerkUtil;
 import java.util.Map;
@@ -10,8 +9,9 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 /** An asynchronous clerk that is built with dagger. */
+// TODO(timurbey): since this is where most of the magic happens, let's write more docs.
 public final class Clerk<O> {
-  public static final String DEFAULT_POLICY = "default_policy";
+  public static final String DEFAULT_POLICY_KEY = "default_policy";
 
   private static final Logger logger = ClerkUtil.getLogger();
 
@@ -46,7 +46,7 @@ public final class Clerk<O> {
         executor.execute(
             () -> {
               policies
-                  .getOrDefault(sourceName, policies.get(DEFAULT_POLICY))
+                  .getOrDefault(sourceName, policies.get(DEFAULT_POLICY_KEY))
                   .execute(() -> ClerkUtil.pipe(sources.get(sourceName), processor), executor);
             });
       }

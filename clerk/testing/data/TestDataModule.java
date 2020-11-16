@@ -1,8 +1,8 @@
-package clerk.testing.inject;
+package clerk.testing.data;
 
+import clerk.ClerkComponent;
 import clerk.Processor;
 import clerk.data.DummyStorage;
-import clerk.inject.ClerkComponent;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;

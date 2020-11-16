@@ -2,20 +2,19 @@ package clerk.execution;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.Duration;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SteadyStateExecutionPolicyTest {
-  private SteadyStateExecutionPolicy policy;
+public class SettablePeriodicExecutionPolicyTest {
+  private SettablePeriodicExecutionPolicy policy;
   private ScheduledThreadPoolExecutor executor;
 
   @Before
   public void setUp() {
-    policy = new SteadyStateExecutionPolicy(Duration.ofMillis(0));
+    policy = new SettablePeriodicExecutionPolicy();
     executor = new ScheduledThreadPoolExecutor(1);
   }
 
