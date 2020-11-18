@@ -88,9 +88,6 @@ public class PeriodicClerk<O> {
    * returns the result of the process.
    */
   public final O read() {
-    if (isRunning) {
-      pipeData();
-    }
     return processor.process();
   }
 
@@ -99,6 +96,7 @@ public class PeriodicClerk<O> {
       executor.execute(
           () -> {
             if (!isRunning) {
+              logger.info("terminating collection from " + source.getClass());
               throw new RuntimeException("the clerk was terminated");
             }
             ClerkUtil.pipe(source, processor);

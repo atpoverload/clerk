@@ -19,7 +19,6 @@ public class ClerkUtilTest {
   @Test
   public void runAndRescheduleTest() throws Exception {
     ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
-
     CyclicBarrier barrier = new CyclicBarrier(2);
     Runnable workload =
         () -> {
@@ -30,6 +29,7 @@ public class ClerkUtilTest {
 
           }
         };
+
     executor.execute(() -> ClerkUtil.runAndReschedule(workload, executor, Duration.ZERO));
 
     for (int i = 0; i < 4; i++) {
