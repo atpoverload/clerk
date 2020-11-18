@@ -22,27 +22,3 @@ java_test(
     "//java/clerk/data",
   ],
 )
-
-java_test(
-  name = "PeriodicClerkTest",
-  srcs = ["PeriodicClerkTest.java"],
-  test_class = "clerk.PeriodicClerkTest",
-  deps = [
-    "//java/clerk:clerks",
-    "//java/clerk/data",
-    "//java/clerk/testing:barrier",
-    "//java/clerk/testing/data:dummy_storage",
-  ],
-)
-
-java_test(
-  name = "ClerkTest",
-  srcs = ["ClerkTest.java"],
-  test_class = "clerk.ClerkTest",
-  deps = [
-    "//java/clerk",
-    "//java/clerk/testing/data:test_data_module",
-    "//java/clerk/testing/execution:test_executor_module",
-    ":dagger",
-  ],
-)
