@@ -16,14 +16,6 @@ public class ClerkUtilTest {
     assertEquals(1, (int) processor.process());
   }
 
-  // erasure is breaking this test
-  // @Test
-  // public void pipeTest_fail() throws Exception {
-  //   DummyStorage<Instant> processor = new DummyStorage<>();
-  //   assertThrows(ClassCastException.class, () -> ClerkUtil.pipe(() -> Duration.ZERO, processor));
-  //   assertEquals(null, processor.process());
-  // }
-
   @Test
   public void runAndRescheduleTest() throws Exception {
     ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);

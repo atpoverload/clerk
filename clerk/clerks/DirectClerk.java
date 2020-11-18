@@ -7,12 +7,12 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
- * A clerk that collects data on {@code start()}, {@code stop()}, and {@code read()} depending on if
- * it is running.
+ * A clerk that collects data on {@code start()} and {@code stop()}. {@code read()} will collect
+ * data if the clerk is running.
  *
  * <p>NOTE: Source and processor data operations are called by the API calling thread.
  */
-public class DirectClerk<O> implements SimpleClerk<O> {
+public class DirectClerk<O> {
   private static final Logger logger = ClerkUtil.getLogger();
 
   private final Iterable<Supplier<?>> sources;
@@ -33,9 +33,8 @@ public class DirectClerk<O> implements SimpleClerk<O> {
   /**
    * Puts a sample from each data source into the processor.
    *
-   * <p>NOTE: the profiler will report a warning if invoked while running.
+   * <p>NOTE: the profiler will report a warning if started while running.
    */
-  @Override
   public final void start() {
     if (!isRunning) {
       pipeData();
@@ -48,9 +47,8 @@ public class DirectClerk<O> implements SimpleClerk<O> {
   /**
    * Puts a sample from each data source into the processor.
    *
-   * <p>NOTE: the profiler will report a warning if invoked while not running.
+   * <p>NOTE: the profiler will report a warning if stopped while not running.
    */
-  @Override
   public final void stop() {
     if (isRunning) {
       pipeData();
@@ -62,9 +60,8 @@ public class DirectClerk<O> implements SimpleClerk<O> {
 
   /**
    * Puts a sample from each data source into the processor if the clerk is running, and then
-   * returns the result of the process.
+   * returns the processor's output.
    */
-  @Override
   public final O read() {
     if (isRunning) {
       pipeData();

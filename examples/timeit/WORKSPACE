@@ -4,6 +4,3 @@ local_repository(
   name = "clerk",
   path = "../..",
 )
-
-load("@clerk//:clerk_deps.bzl", "clerk_deps")
-clerk_deps()

@@ -1,4 +1,4 @@
-package clerk.testing.concurrent;
+package clerk.testing.module;
 
 import static clerk.Clerk.DEFAULT_POLICY_KEY;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;

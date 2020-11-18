@@ -1,13 +1,12 @@
 package clerk.examples;
 
-import clerk.clerks.PeriodicSteadyStateClerk;
-import clerk.data.ListStorage;
+import clerk.Clerk;
+import clerk.examples.ExampleProtos.MemorySnapshot;
+import clerk.module.ClerkExecutorModule;
 import clerk.util.ClerkUtil;
-import java.time.Duration;
-import java.time.Instant;
+import dagger.Component;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
@@ -16,20 +15,23 @@ import java.util.logging.Logger;
  * <p>{@code ListStorage} clears the underlying data, so that the data can only be consumed from the
  * {@link Clerk} once.
  */
-public final class MemoryMonitor extends PeriodicSteadyStateClerk<List<MemorySnapshot>> {
-  private static final Logger logger = ClerkUtil.getLogger();
-
-  private static final Supplier<MemorySnapshot> snapshotSource =
-      () ->
-          new MemorySnapshot(
-              Instant.now(), Runtime.getRuntime().totalMemory(), Runtime.getRuntime().freeMemory());
-
-  public MemoryMonitor() {
-    super(snapshotSource, new ListStorage<MemorySnapshot>(), Duration.ofMillis(4));
+public class MemoryMonitor {
+  @Component(modules = {ClerkExecutorModule.class, MemoryMonitorModule.class})
+  interface ClerkFactory {
+    Clerk<List<MemorySnapshot>> newClerk();
   }
 
+  private static final ClerkFactory clerkFactory =
+      DaggerMemoryMonitor_ClerkFactory.builder().build();
+
+  public static Clerk<List<MemorySnapshot>> newMemoryMonitor() {
+    return clerkFactory.newClerk();
+  }
+
+  private static final Logger logger = ClerkUtil.getLogger();
+
   private static List<MemorySnapshot> size(Runnable r) {
-    MemoryMonitor clerk = new MemoryMonitor();
+    Clerk<List<MemorySnapshot>> clerk = newMemoryMonitor();
     clerk.start();
     r.run();
     clerk.stop();
@@ -40,7 +42,7 @@ public final class MemoryMonitor extends PeriodicSteadyStateClerk<List<MemorySna
     long memory = 0;
     long size = 0;
     for (MemorySnapshot snapshot : snapshots) {
-      memory += snapshot.totalMemory - snapshot.freeMemory;
+      memory += (snapshot.getTotalMemory() - snapshot.getFreeMemory());
       size++;
     }
     if (size > 0) {
@@ -71,10 +73,10 @@ public final class MemoryMonitor extends PeriodicSteadyStateClerk<List<MemorySna
 
   public static void main(String[] args) throws Exception {
     if (args.length == 0) {
-      int n = 100000;
+      int n = 1;
       size(
           () -> {
-            ArrayList<Integer> l = new ArrayList<>();
+            ArrayList<Integer> l = new ArrayList<>(10000);
             for (int i = 0; i < n; i++) {
               l.add(i);
             }
@@ -92,7 +94,7 @@ public final class MemoryMonitor extends PeriodicSteadyStateClerk<List<MemorySna
             }
           };
       logger.info(
-          "\"" + String.join(" ", args) + "\" consumed " + mean(size(workload)) / 1000000 + "MB");
+          "\"" + String.join(" ", args) + "\" consumed " + mean(size(workload)) / 1000000 + " MB");
     }
   }
 }

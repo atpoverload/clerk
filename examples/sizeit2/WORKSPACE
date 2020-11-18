@@ -5,6 +5,18 @@ local_repository(
   path = "../..",
 )
 
+load("@clerk//:clerk_deps.bzl", "clerk_deps")
+clerk_deps()
+
+# NEEDED FOR DAGGER
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("@dagger//:workspace_defs.bzl", "DAGGER_ARTIFACTS", "DAGGER_REPOSITORIES")
+
+maven_install(
+    artifacts = DAGGER_ARTIFACTS,
+    repositories = DAGGER_REPOSITORIES,
+)
+
 # PROTOBUF DEPS
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 

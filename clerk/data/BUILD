@@ -7,7 +7,4 @@ java_library(
   deps = [
     "//clerk:processor",
   ],
-  exports = [
-    "//clerk:processor",
-  ]
 )

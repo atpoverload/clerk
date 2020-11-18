@@ -1,7 +1,4 @@
 load("@rules_java//java:defs.bzl", "java_library")
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-
-dagger_rules()
 
 java_library(
   name = "processor",
@@ -17,7 +14,7 @@ java_library(
     "ClerkComponent.java",
   ],
   deps = [
-    ":dagger",
+    "@maven//:javax_inject_javax_inject",
   ]
 )
 
@@ -31,6 +28,6 @@ java_library(
     ":component",
     "//clerk:processor",
     "//clerk/util",
-    ":dagger",
+    "@maven//:javax_inject_javax_inject",
   ],
 )

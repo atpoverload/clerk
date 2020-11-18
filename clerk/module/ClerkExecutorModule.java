@@ -1,10 +1,10 @@
-package clerk.concurrent;
+package clerk.module;
 
-import static clerk.Clerk.DEFAULT_POLICY_KEY;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
+import clerk.Clerk;
 import clerk.ClerkComponent;
-import dagger.Binds;
+import clerk.concurrent.PeriodicSteadyStateExecutor;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
@@ -24,10 +24,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 // TODO(timurbey): in **theory**, i'd like to support a more verbose set of options such as time
 // units from the jvm options
 @Module
-public abstract class ClerkExecutorModule {
-  private static final AtomicInteger counter = new AtomicInteger();
-  private static final String DEFAULT_PERIOD_MS = "41";
-  private static final String DEFAULT_POOL_SIZE = "4";
+public interface ClerkExecutorModule {
+  static final AtomicInteger counter = new AtomicInteger();
+  static final String DEFAULT_PERIOD_MS = "41";
+  static final String DEFAULT_POOL_SIZE = "4";
 
   static String clerkName() {
     return String.join("-", "clerk", String.format("%02d", counter.getAndIncrement()));
@@ -42,7 +42,7 @@ public abstract class ClerkExecutorModule {
 
   @Provides
   @ClerkComponent
-  static ScheduledExecutorService provideExecutor() {
+  static ScheduledExecutorService provideScheduledExecutorService() {
     return newScheduledThreadPool(
         Integer.parseInt(
             System.getProperty(String.join(".", "clerk", "workers"), DEFAULT_POOL_SIZE)),
@@ -53,9 +53,17 @@ public abstract class ClerkExecutorModule {
         });
   }
 
-  @Binds
+  @Provides
   @IntoMap
-  @StringKey(DEFAULT_POLICY_KEY)
+  @StringKey(Clerk.DEFAULT_POLICY_KEY)
   @ClerkComponent
-  abstract Executor provideDefaultExecutor(PeriodicSteadyStateExecutor executor);
+  static Executor provideDefaultExecutor(
+      @ClerkComponent ScheduledExecutorService executor, @ClerkComponent Duration period) {
+    String policy = System.getProperty(String.join(".", "clerk", "executor"), "steady_state");
+    if (policy.equals("steady_state")) {
+      return new PeriodicSteadyStateExecutor(executor, period);
+    } else {
+      return executor;
+    }
+  }
 }

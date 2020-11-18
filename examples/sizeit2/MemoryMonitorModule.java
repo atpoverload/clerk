@@ -3,7 +3,7 @@ package clerk.examples;
 import clerk.ClerkComponent;
 import clerk.Processor;
 import clerk.data.ListStorage;
-import clerk.examples.protos.ClerkExampleProtos.MemorySnapshot;
+import clerk.examples.ExampleProtos.MemorySnapshot;
 import com.google.protobuf.Timestamp;
 import dagger.Module;
 import dagger.Provides;

@@ -14,6 +14,8 @@ link to examples where the simple clerk is better
 
 `Clerk` is an injection framework that decouples data collection into three pieces - data sources, data processing, and collection policies. While this isn't necessary for all data collection problems, frequently data collectors do not have identical policies. Consider the case of an Android device; we have the ability to both periodically sample and set up handlers for events in the Android OS. When collecting this data, a general manager is preferable because it will be easier to synchronize.
 
+Typically, data collection implementations need to reuse components. Sharing these components correctly is critical for performance. Most applications use `java.util.concurrent` to manage data collection asynchronously.
+
 `Clerk` expects the following injections:
 
 ```java
@@ -21,3 +23,5 @@ link to examples where the simple clerk is better
 @ClerkComponent Map<String, Executor> policies;
 Processor<?, O> processor;
 ```
+
+### Sources

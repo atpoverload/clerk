@@ -17,6 +17,8 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /** Utilities for general clerk needs. */
+// TODO(timurbey): this does too many different things right now but I'm not sure how to deal with
+// it
 public final class ClerkUtil {
   private static final SimpleDateFormat dateFormatter =
       new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a z");

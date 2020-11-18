@@ -1,4 +1,4 @@
-package clerk.testing.data;
+package clerk.testing.module;
 
 import clerk.ClerkComponent;
 import clerk.Processor;
