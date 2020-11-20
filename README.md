@@ -2,6 +2,10 @@
 
 `clerk` is a generalized data collection framework for `Java`. `clerk` simplifies construction of data pipelines by decomposing the procedure into sources and processing while providing structural tools to connect them. The framework can be used with vanilla `Java` or an injection framework.
 
+# Building
+
+A vanilla `clerk` release can be built with `ant jar`. The `clerk.jar` contains all non-injection code and the contents of `examples/vanilla`.
+
 We provide two kinds of clerks:
  - the `SimpleClerk`
  - the injection backed `Clerk`
@@ -9,6 +13,7 @@ We provide two kinds of clerks:
 `SimpleClerk` is better when the data is well known.
 link to the simple clerk package
 link to examples where the simple clerk is better
+
 
 ## `clerk.Clerk`
 

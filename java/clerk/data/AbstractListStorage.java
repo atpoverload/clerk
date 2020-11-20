@@ -2,13 +2,10 @@ package clerk.data;
 
 import clerk.Processor;
 import java.util.ArrayList;
-import java.util.List;
 
 /** A processor that stores data in a list as added and pops the list when processed. */
-public final class ListStorage<I> implements Processor<I, List<I>> {
+public abstract class AbstractListStorage<I, O> implements Processor<I, O> {
   private ArrayList<I> data = new ArrayList<>();
-
-  public ListStorage() {}
 
   /** Adds data with synchronization. */
   @Override
@@ -18,13 +15,10 @@ public final class ListStorage<I> implements Processor<I, List<I>> {
     }
   }
 
-  /** Pops and returns data with light synchronization. */
-  @Override
-  public final List<I> process() {
+  /** Pops and returns data. */
+  protected final synchronized ArrayList<I> getData() {
     ArrayList<I> data = this.data;
-    synchronized (data) {
-      this.data = new ArrayList<>();
-    }
+    this.data = new ArrayList<>();
     return data;
   }
 }

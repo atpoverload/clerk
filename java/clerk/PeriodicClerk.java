@@ -3,10 +3,11 @@ package clerk;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
+import clerk.concurrent.PeriodicExecutor;
 import clerk.util.ClerkUtil;
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -17,7 +18,7 @@ public class PeriodicClerk<O> {
   private final Iterable<Supplier<?>> sources;
   private final Processor<?, O> processor;
   private final Duration period;
-  private final ScheduledExecutorService executor;
+  private final Executor executor;
 
   private boolean isRunning = false;
 
@@ -26,12 +27,14 @@ public class PeriodicClerk<O> {
     this.processor = processor;
     this.period = period;
     this.executor =
-        newSingleThreadScheduledExecutor(
-            r -> {
-              Thread t = new Thread(r);
-              t.setDaemon(true);
-              return t;
-            });
+        new PeriodicExecutor(
+            newSingleThreadScheduledExecutor(
+                r -> {
+                  Thread t = new Thread(r);
+                  t.setDaemon(true);
+                  return t;
+                }),
+            period);
   }
 
   public PeriodicClerk(Iterable<Supplier<?>> sources, Processor<?, O> processor, Duration period) {
@@ -47,13 +50,15 @@ public class PeriodicClerk<O> {
       workers = sourceCount;
     }
     this.executor =
-        newScheduledThreadPool(
-            workers,
-            r -> {
-              Thread t = new Thread(r);
-              t.setDaemon(true);
-              return t;
-            });
+        new PeriodicExecutor(
+            newScheduledThreadPool(
+                workers,
+                r -> {
+                  Thread t = new Thread(r);
+                  t.setDaemon(true);
+                  return t;
+                }),
+            period);
   }
 
   /**

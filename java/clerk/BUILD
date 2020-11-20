@@ -6,6 +6,7 @@ java_library(
   srcs = glob(["*Clerk.java"], exclude = ["Clerk.java"]),
   deps = [
     "//java/clerk:processor",
+    "//java/clerk/concurrent",
     "//java/clerk/util",
   ],
 )
