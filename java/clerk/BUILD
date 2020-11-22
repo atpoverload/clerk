@@ -1,11 +1,36 @@
 load("@rules_java//java:defs.bzl", "java_library")
 
+CORE_CLASSES = ["Clerk.java", "Processor.java"]
+
+java_library(
+  name = "clerk",
+  visibility = ["//visibility:public"],
+  srcs = CORE_CLASSES,
+)
+
+java_library(
+  name = "abstract_clerk",
+  visibility = ["//visibility:public"],
+  srcs = [
+    "AbstractClerk.java",
+  ],
+  deps = [
+    ":clerk",
+  ],
+  exports = [
+    ":clerk",
+  ]
+)
+
 java_library(
   name = "clerks",
   visibility = ["//visibility:public"],
-  srcs = glob(["*Clerk.java"], exclude = ["Clerk.java"]),
+  srcs = [
+    "DirectClerk.java",
+    "PeriodicClerk.java"
+  ],
   deps = [
-    "//java/clerk:processor",
+    ":abstract_clerk",
     "//java/clerk/concurrent",
     "//java/clerk/util",
   ],
@@ -23,22 +48,14 @@ java_library(
 )
 
 java_library(
-  name = "processor",
+  name = "inject",
   visibility = ["//visibility:public"],
   srcs = [
-    "Processor.java",
-  ],
-)
-
-java_library(
-  name = "clerk",
-  visibility = ["//visibility:public"],
-  srcs = [
-    "Clerk.java",
+    "InjectableClerk.java",
   ],
   deps = [
+    ":clerk",
     ":component",
-    "//java/clerk:processor",
     "//java/clerk/util",
     "@maven//:javax_inject_javax_inject",
   ],

@@ -9,6 +9,10 @@ public abstract class PairStorage<I, O> implements Processor<I, O> {
 
   public PairStorage() {}
 
+  /**
+   * Sets the data. If there is no data, first is set. If there is no second piece of data, second
+   * is set. Otherwise, the first becomes second and second becomes the new value.
+   */
   @Override
   public final void add(I i) {
     if (first == null) {
@@ -21,10 +25,12 @@ public abstract class PairStorage<I, O> implements Processor<I, O> {
     }
   }
 
+  /** Gets the first piece of data. */
   protected final I getFirst() {
     return first;
   }
 
+  /** Gets the first piece of data. */
   protected final I getSecond() {
     return second;
   }

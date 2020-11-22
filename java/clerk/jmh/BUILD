@@ -1,29 +1,26 @@
 load("@rules_java//java:defs.bzl", "java_library")
 
 java_library(
-  name = "clerk",
+  name = "jmh",
   visibility = ["//visibility:public"],
   srcs = [
-    "ClerkResult.java",
-    "ClerkResultAggregator.java",
-    "PeriodicJmhClerk.java",
+    "ClerkProfiler.java",
   ],
   deps = [
-    "//java/clerk:clerks",
-    "//java/clerk/data",
+    "//java/clerk",
     "@rules_jmh_maven//:org_openjdk_jmh_jmh_core",
   ],
 )
 
 java_library(
-  name = "profilers",
+  name = "wrapper",
   visibility = ["//visibility:public"],
   srcs = [
-    "PeriodicClerkProfiler.java",
+    "WrappedClerkProfiler.java",
   ],
   deps = [
-    ":clerk",
-    "//java/clerk:clerks",
+    ":jmh",
+    "//java/clerk",
     "@rules_jmh_maven//:org_openjdk_jmh_jmh_core",
   ],
 )

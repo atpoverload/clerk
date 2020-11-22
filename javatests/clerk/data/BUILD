@@ -1,9 +1,9 @@
 load("@rules_java//java:defs.bzl", "java_test")
 
 java_test(
-  name = "ListStorageTest",
-  srcs = ["ListStorageTest.java"],
-  test_class = "clerk.data.ListStorageTest",
+  name = "ReturnableListStorageTest",
+  srcs = ["ReturnableListStorageTest.java"],
+  test_class = "clerk.data.ReturnableListStorageTest",
   deps = [
     "//java/clerk/data",
   ],

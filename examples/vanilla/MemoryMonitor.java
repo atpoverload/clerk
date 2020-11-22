@@ -1,7 +1,7 @@
 package clerk.examples;
 
 import clerk.PeriodicClerk;
-import clerk.data.ListStorage;
+import clerk.data.ReturnableListStorage;
 import clerk.util.ClerkUtil;
 import java.time.Duration;
 import java.time.Instant;
@@ -13,8 +13,8 @@ import java.util.logging.Logger;
 /**
  * A class that provides a clerk that returns {@link MemorySnapshot}s from the most recent session.
  *
- * <p>{@code ListStorage} clears the underlying data, so that the data can only be consumed from the
- * {@link Clerk} once.
+ * <p>{@code ReturnableListStorage} clears the underlying data, so that the data can only be
+ * consumed from the {@link Clerk} once.
  */
 public final class MemoryMonitor extends PeriodicClerk<List<MemorySnapshot>> {
   private static final Logger logger = ClerkUtil.getLogger();
@@ -25,7 +25,7 @@ public final class MemoryMonitor extends PeriodicClerk<List<MemorySnapshot>> {
               Instant.now(), Runtime.getRuntime().totalMemory(), Runtime.getRuntime().freeMemory());
 
   public MemoryMonitor() {
-    super(snapshotSource, new ListStorage<MemorySnapshot>(), Duration.ofMillis(4));
+    super(snapshotSource, new ReturnableListStorage<MemorySnapshot>(), Duration.ofMillis(4));
   }
 
   private static List<MemorySnapshot> size(Runnable r) {

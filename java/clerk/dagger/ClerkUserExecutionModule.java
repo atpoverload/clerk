@@ -1,8 +1,9 @@
-package clerk.module;
+package clerk.dagger;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 import clerk.ClerkComponent;
+import clerk.InjectableClerk;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 // TODO(timurbey): in **theory**, i'd like to support a more verbose set of options such as time
 // units from the jvm options
 @Module
-public interface ClerkUserExecutorModule {
+public interface ClerkUserExecutionModule {
   static final AtomicInteger counter = new AtomicInteger();
   static final String DEFAULT_PERIOD_MS = "41";
   static final String DEFAULT_POOL_SIZE = "4";
@@ -43,7 +44,7 @@ public interface ClerkUserExecutorModule {
 
   @Provides
   @IntoMap
-  @StringKey(Clerk.DEFAULT_POLICY_KEY)
+  @StringKey(InjectableClerk.DEFAULT_POLICY_KEY)
   @ClerkComponent
   static ExecutionPolicy providePeriod(@ClerkComponent Duration defaultPeriod) {
     return new SteadyStatePeriodicExecutionPolicy(defaultPeriod);

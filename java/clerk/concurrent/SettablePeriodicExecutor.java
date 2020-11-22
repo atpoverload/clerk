@@ -1,6 +1,6 @@
 package clerk.concurrent;
 
-import static clerk.util.ClerkUtil.runAndReschedule;
+import static clerk.concurrent.PeriodicExecutor.runAndReschedule;
 
 import java.time.Duration;
 import java.util.concurrent.Executor;
@@ -17,10 +17,12 @@ public final class SettablePeriodicExecutor implements Executor {
     this.period = period;
   }
 
+  /** Sets the period. */
   public void setPeriod(Duration period) {
     this.period = period;
   }
 
+  /** Returns the period. */
   public Duration getPeriod() {
     return period;
   }

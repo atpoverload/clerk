@@ -9,16 +9,6 @@ java_test(
   test_class = "clerk.DirectClerkTest",
   deps = [
     "//java/clerk:clerks",
-    "//java/clerk/data",
-  ],
-)
-
-java_test(
-  name = "FutureClerkTest",
-  srcs = ["FutureClerkTest.java"],
-  test_class = "clerk.FutureClerkTest",
-  deps = [
-    "//java/clerk:clerks",
-    "//java/clerk/data",
+    "//java/clerk/testing/data",
   ],
 )

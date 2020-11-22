@@ -5,6 +5,6 @@ java_library(
   visibility = ["//visibility:public"],
   srcs = glob(["*.java"]),
   deps = [
-    "//java/clerk:processor",
+    "//java/clerk",
   ],
 )

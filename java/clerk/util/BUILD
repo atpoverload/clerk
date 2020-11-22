@@ -6,7 +6,4 @@ java_library(
   srcs = [
     "ClerkUtil.java",
   ],
-  deps = [
-    "//java/clerk:processor",
-  ]
 )

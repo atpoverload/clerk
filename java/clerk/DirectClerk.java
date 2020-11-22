@@ -11,66 +11,55 @@ import java.util.logging.Logger;
  *
  * <p>NOTE: Source and processor data operations are called by the API calling thread.
  */
-public class DirectClerk<O> {
+public class DirectClerk<O> extends AbstractClerk<O> {
   private static final Logger logger = ClerkUtil.getLogger();
 
-  private final Iterable<Supplier<?>> sources;
-  private final Processor<?, O> processor;
-
-  private boolean isRunning = false;
-
   public DirectClerk(Supplier<?> source, Processor<?, O> processor) {
-    this.sources = List.of(source);
-    this.processor = processor;
+    super(List.of(source), processor);
   }
 
   public DirectClerk(Iterable<Supplier<?>> sources, Processor<?, O> processor) {
-    this.sources = sources;
-    this.processor = processor;
+    super(sources, processor);
   }
 
   /**
-   * Puts a sample from each data source into the processor.
+   * Pipes data into the processor.
    *
    * <p>NOTE: the profiler will report a warning if started while running.
    */
+  @Override
   public final void start() {
     if (!isRunning) {
-      pipeData();
       isRunning = true;
+      super.pipeData();
     } else {
-      logger.warning("clerk was told to start while running!");
+      logger.warning("start called while running!");
     }
   }
 
   /**
-   * Puts a sample from each data source into the processor.
+   * Pipes data into the processor.
    *
    * <p>NOTE: the profiler will report a warning if stopped while not running.
    */
+  @Override
   public final void stop() {
     if (isRunning) {
-      pipeData();
+      super.pipeData();
       isRunning = false;
     } else {
-      logger.warning("clerk was told to stop while not running!");
+      logger.warning("stop called while not running!");
     }
   }
 
   /**
-   * Puts a sample from each data source into the processor if the clerk is running, and then
-   * returns the processor's output.
+   * Pipes data into the processor if the clerk is running, and then returns the processor's output.
    */
+  @Override
   public final O read() {
     if (isRunning) {
-      pipeData();
+      super.pipeData();
     }
-    return processor.process();
-  }
-
-  private void pipeData() {
-    for (Supplier<?> source : sources) {
-      ClerkUtil.pipe(source, processor);
-    }
+    return super.read();
   }
 }

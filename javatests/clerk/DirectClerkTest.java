@@ -1,8 +1,8 @@
-package clerk.clerks;
+package clerk;
 
 import static org.junit.Assert.assertEquals;
 
-import clerk.data.DummyStorage;
+import clerk.testing.data.DummyStorage;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.After;
