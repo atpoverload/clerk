@@ -13,7 +13,7 @@ def dummy_benchmark(name, srcs, deps=[], tags=[], plugins=[], **kwargs):
     native.java_binary(
         name = name,
         srcs = srcs,
-        main_class = "clerk.testing.jmh.ClerkDummyDriver",
+        main_class = "clerk.testing.jmh.ClerkDummyProfiler",
         deps = deps + ["//java/clerk/testing/jmh", "@rules_jmh_maven//:org_openjdk_jmh_jmh_core"],
         plugins = plugins + [plugin_name],
         tags = tags,
