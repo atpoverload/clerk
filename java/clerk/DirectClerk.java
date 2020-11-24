@@ -11,15 +11,22 @@ import java.util.logging.Logger;
  *
  * <p>NOTE: Source and processor data operations are called by the API calling thread.
  */
-public class DirectClerk<O> extends AbstractClerk<O> {
+public class DirectClerk<O> implements Clerk<O> {
   private static final Logger logger = ClerkUtil.getLogger();
 
+  private final Iterable<Supplier<?>> sources;
+  private final Processor<?, O> processor;
+
+  private boolean isRunning;
+
   public DirectClerk(Supplier<?> source, Processor<?, O> processor) {
-    super(List.of(source), processor);
+    this.sources = List.of(source);
+    this.processor = processor;
   }
 
   public DirectClerk(Iterable<Supplier<?>> sources, Processor<?, O> processor) {
-    super(sources, processor);
+    this.sources = sources;
+    this.processor = processor;
   }
 
   /**
@@ -31,7 +38,7 @@ public class DirectClerk<O> extends AbstractClerk<O> {
   public final void start() {
     if (!isRunning) {
       isRunning = true;
-      super.pipeData();
+      pipeData();
     } else {
       logger.warning("start called while running!");
     }
@@ -45,7 +52,7 @@ public class DirectClerk<O> extends AbstractClerk<O> {
   @Override
   public final void stop() {
     if (isRunning) {
-      super.pipeData();
+      pipeData();
       isRunning = false;
     } else {
       logger.warning("stop called while not running!");
@@ -58,8 +65,15 @@ public class DirectClerk<O> extends AbstractClerk<O> {
   @Override
   public final O read() {
     if (isRunning) {
-      super.pipeData();
+      pipeData();
     }
-    return super.read();
+    return processor.process();
+  }
+
+  /** Pipes data from the sources to the processor on the calling thread. */
+  private void pipeData() {
+    for (Supplier<?> source : sources) {
+      Clerk.pipe(source, processor);
+    }
   }
 }

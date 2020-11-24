@@ -1,16 +1,15 @@
 load("@rules_java//java:defs.bzl", "java_library")
 
 java_library(
-  name = "jmh",
+  name = "sample",
   visibility = ["//visibility:public"],
   srcs = [
-    "ClerkDummyProfiler.java",
-    "TextResult.java",
+    "SampleProfiler.java",
+    "SamplingResult.java",
   ],
   deps = [
-    "//java/clerk:clerks",
-    "//java/clerk/data",
-    "//java/clerk/jmh:wrapper",
+    "@clerk//java/clerk:fixed_period",
+    "@clerk//java/clerk/data",
     "@rules_jmh_maven//:org_openjdk_jmh_jmh_core",
   ],
 )

@@ -60,8 +60,7 @@ public final class InjectableClerk<O> implements Clerk<O> {
   }
 
   /** Returns the output of the processor. */
-  // TODO(timurbey): it may be better to enforce the return of a listenable future with the
-  // generics. we would have to deal with assembling the futures ourselves
+  // TODO(timurbey): let's see if we can add a "reading flag" to deal with blocking
   @Override
   public O read() {
     return processor.process();
@@ -77,16 +76,7 @@ public final class InjectableClerk<O> implements Clerk<O> {
                 if (!isRunning) {
                   throw new RuntimeException("the clerk was terminated");
                 }
-                try {
-                  Clerk.pipe(sources.get(sourceName), processor);
-                } catch (ClassCastException e) {
-                  logger.severe(
-                      "data source "
-                          + sources.get(sourceName).getClass()
-                          + " did not produce the expected type:");
-                  logger.severe(e.getMessage().split("\\(")[0]);
-                  throw e;
-                }
+                Clerk.pipe(sources.get(sourceName), processor);
               });
     }
   }

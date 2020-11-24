@@ -36,30 +36,38 @@ public interface ClerkUserExecutionModule {
 
   @Provides
   @ClerkComponent
-  static Duration provideDefaultPolicy(@ClerkComponent String user) {
+  static Duration provideDefaultPeriod(@ClerkComponent String user) {
     return Duration.ofMillis(
         Long.parseLong(
             System.getProperty(String.join(".", "clerk", user, "period"), DEFAULT_PERIOD_MS)));
   }
 
   @Provides
-  @IntoMap
-  @StringKey(InjectableClerk.DEFAULT_POLICY_KEY)
   @ClerkComponent
-  static ExecutionPolicy providePeriod(@ClerkComponent Duration defaultPeriod) {
-    return new SteadyStatePeriodicExecutionPolicy(defaultPeriod);
-  }
-
-  @Provides
-  @ClerkComponent
-  static ScheduledExecutorService provideExecutor(@ClerkComponent String user) {
+  static ScheduledExecutorService provideScheduledExecutorService(@ClerkComponent String user) {
     return newScheduledThreadPool(
         Integer.parseInt(
             System.getProperty(String.join(".", "clerk", user, "workers"), DEFAULT_POOL_SIZE)),
         r -> {
-          Thread t = new Thread(r, clerkName(user));
+          Thread t = new Thread(r, clerkName());
           t.setDaemon(true);
           return t;
         });
+  }
+
+  @Provides
+  @IntoMap
+  @StringKey(InjectableClerk.DEFAULT_POLICY_KEY)
+  @ClerkComponent
+  static Executor provideDefaultExecutor(
+      @ClerkComponent String user,
+      @ClerkComponent ScheduledExecutorService executor,
+      @ClerkComponent Duration period) {
+    String policy = System.getProperty(String.join(".", "clerk", user, "executor"), "steady_state");
+    if (policy.equals("steady_state")) {
+      return new PeriodicExecutor(executor, period);
+    } else {
+      return executor;
+    }
   }
 }

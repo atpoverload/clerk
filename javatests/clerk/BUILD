@@ -8,7 +8,17 @@ java_test(
   srcs = ["DirectClerkTest.java"],
   test_class = "clerk.DirectClerkTest",
   deps = [
-    "//java/clerk:clerks",
+    "//java/clerk:direct",
+    "//java/clerk/testing/data",
+  ],
+)
+
+java_test(
+  name = "FixedPeriodClerkTest",
+  srcs = ["FixedPeriodClerkTest.java"],
+  test_class = "clerk.FixedPeriodClerkTest",
+  deps = [
+    "//java/clerk:fixed_period",
     "//java/clerk/testing/data",
   ],
 )

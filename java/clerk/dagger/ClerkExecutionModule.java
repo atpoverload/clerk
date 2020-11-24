@@ -32,13 +32,6 @@ public interface ClerkExecutionModule {
 
   @Provides
   @ClerkComponent
-  static Duration provideDefaultPeriod() {
-    return Duration.ofMillis(
-        Long.parseLong(System.getProperty(String.join(".", "clerk", "period"), DEFAULT_PERIOD_MS)));
-  }
-
-  @Provides
-  @ClerkComponent
   static ScheduledExecutorService provideScheduledExecutorService() {
     return newScheduledThreadPool(
         Integer.parseInt(
@@ -54,13 +47,11 @@ public interface ClerkExecutionModule {
   @IntoMap
   @StringKey(InjectableClerk.DEFAULT_POLICY_KEY)
   @ClerkComponent
-  static Executor provideDefaultExecutor(
-      @ClerkComponent ScheduledExecutorService executor, @ClerkComponent Duration period) {
-    String policy = System.getProperty(String.join(".", "clerk", "executor"), "steady_state");
-    if (policy.equals("steady_state")) {
-      return new PeriodicExecutor(executor, period);
-    } else {
-      return executor;
-    }
+  static Executor provideDefaultExecutor(@ClerkComponent ScheduledExecutorService executor) {
+    Duration period =
+        Duration.ofMillis(
+            Long.parseLong(
+                System.getProperty(String.join(".", "clerk", "period"), DEFAULT_PERIOD_MS)));
+    return new PeriodicExecutor(executor, period);
   }
 }
