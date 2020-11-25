@@ -4,7 +4,7 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 import clerk.ClerkComponent;
 import clerk.InjectableClerk;
-import clerk.concurrent.PeriodicExecutor;
+import clerk.data.FixedPeriodPolicy;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
@@ -52,6 +52,6 @@ public interface ClerkExecutionModule {
         Duration.ofMillis(
             Long.parseLong(
                 System.getProperty(String.join(".", "clerk", "period"), DEFAULT_PERIOD_MS)));
-    return new PeriodicExecutor(executor, period);
+    return new FixedPeriodPolicy(executor, period);
   }
 }

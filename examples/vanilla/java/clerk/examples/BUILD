@@ -7,8 +7,8 @@ java_binary(
     "Stopwatch.java",
   ],
   deps = [
-    "@clerk//java/clerk:clerks",
-    "@clerk//java/clerk/data",
+    "@clerk//java/clerk:direct",
+    "@clerk//java/clerk/data:processors",
     "@clerk//java/clerk/util",
   ]
 )
@@ -22,7 +22,7 @@ java_binary(
   ],
   deps = [
     "@clerk//java/clerk:fixed_period",
-    "@clerk//java/clerk/data",
+    "@clerk//java/clerk/data:processors",
     "@clerk//java/clerk/util",
   ]
 )

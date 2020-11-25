@@ -1,7 +1,4 @@
 load("@rules_java//java:defs.bzl", "java_test")
-load("@dagger//:workspace_defs.bzl", "dagger_rules")
-
-dagger_rules()
 
 java_test(
   name = "DirectClerkTest",
@@ -14,11 +11,11 @@ java_test(
 )
 
 java_test(
-  name = "FixedPeriodClerkTest",
-  srcs = ["FixedPeriodClerkTest.java"],
-  test_class = "clerk.FixedPeriodClerkTest",
+  name = "DeferringClerkTest",
+  srcs = ["DeferringClerkTest.java"],
+  test_class = "clerk.DeferringClerkTest",
   deps = [
-    "//java/clerk:fixed_period",
+    "//java/clerk:deferring",
     "//java/clerk/testing/data",
   ],
 )

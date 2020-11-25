@@ -17,9 +17,9 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-/** A {@link Profiler} that reports the number of samples collected by a clerk. */
+/** A profiler that reports the number of samples collected by a clerk. */
 public final class SampleProfiler implements ExternalProfiler {
-  private static final int period = 4;
+  private static final int period = Integer.parseInt(System.getProperty("clerk.jmh.period", "4"));
 
   private static Collection<Result> toResult(List<Instant> data) {
     int samples = data.size();
@@ -45,24 +45,23 @@ public final class SampleProfiler implements ExternalProfiler {
             Duration.ofMillis(period));
   }
 
-  // final methods that control the clerk
   /** Starts the clerk. */
   @Override
-  public void beforeTrial(BenchmarkParams benchmarkParams) {
+  public final void beforeTrial(BenchmarkParams benchmarkParams) {
     clerk.start();
   }
+
   /** Stops the clerk. */
   @Override
-  public Collection<? extends Result> afterTrial(
+  public final Collection<? extends Result> afterTrial(
       BenchmarkResult br, long pid, File stdOut, File stdErr) {
     clerk.stop();
     return clerk.read();
   }
 
-  /** Returns the name of the clerk. */
   @Override
   public String getDescription() {
-    return clerk.getClass().getSimpleName();
+    return "clerk-sample-counter";
   }
 
   // Default implementations for ExternalProfiler interface
@@ -88,8 +87,7 @@ public final class SampleProfiler implements ExternalProfiler {
 
   // driver for this profiler
   public static void main(String[] args) throws RunnerException {
-    Options opt =
-        new OptionsBuilder().addProfiler(SampleProfiler.class).warmupIterations(1).forks(1).build();
+    Options opt = new OptionsBuilder().addProfiler(SampleProfiler.class).build();
     new Runner(opt).run();
   }
 }

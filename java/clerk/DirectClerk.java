@@ -6,10 +6,9 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
- * A clerk that collects data on {@code start()} and {@code stop()}. {@code read()} will collect
- * data if the clerk is running.
+ * A clerk that collects data on {@code start()} and {@code stop()}.
  *
- * <p>NOTE: Source and processor data operations are called by the API calling thread.
+ * <p>NOTE: Data operations are done on the calling thread.
  */
 public class DirectClerk<O> implements Clerk<O> {
   private static final Logger logger = ClerkUtil.getLogger();
@@ -38,7 +37,7 @@ public class DirectClerk<O> implements Clerk<O> {
   public final void start() {
     if (!isRunning) {
       isRunning = true;
-      pipeData();
+      startCollecting();
     } else {
       logger.warning("start called while running!");
     }
@@ -52,26 +51,21 @@ public class DirectClerk<O> implements Clerk<O> {
   @Override
   public final void stop() {
     if (isRunning) {
-      pipeData();
+      startCollecting();
       isRunning = false;
     } else {
       logger.warning("stop called while not running!");
     }
   }
 
-  /**
-   * Pipes data into the processor if the clerk is running, and then returns the processor's output.
-   */
+  /** Return the processor's output. */
   @Override
   public final O read() {
-    if (isRunning) {
-      pipeData();
-    }
     return processor.process();
   }
 
   /** Pipes data from the sources to the processor on the calling thread. */
-  private void pipeData() {
+  private void startCollecting() {
     for (Supplier<?> source : sources) {
       Clerk.pipe(source, processor);
     }

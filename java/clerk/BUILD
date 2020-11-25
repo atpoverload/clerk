@@ -5,7 +5,8 @@ java_library(
   visibility = ["//visibility:public"],
   srcs = [
     "Clerk.java",
-    "Processor.java"
+    "Processor.java",
+    "CollectionPolicy.java",
   ],
 )
 
@@ -22,10 +23,22 @@ java_library(
 )
 
 java_library(
+  name = "deferring",
+  visibility = ["//visibility:public"],
+  srcs = [
+    "DeferringClerk.java",
+  ],
+  deps = [
+    ":clerk",
+    "//java/clerk/util",
+  ],
+)
+
+java_library(
   name = "fixed_period",
   visibility = ["//visibility:public"],
   srcs = [
-    "FixedPeriodClerk.java"
+    "FixedPeriodClerk.java",
   ],
   deps = [
     ":clerk",

@@ -25,6 +25,7 @@ public interface MemoryMonitorModule {
   }
 
   @Provides
+  @ClerkComponent
   static Processor<?, List<MemorySnapshot>> provideProcessor() {
     return new ReturnableListStorage<MemorySnapshot>();
   }

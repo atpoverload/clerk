@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /** A clerk that collects data at a fixed period. */
+// TODO(timurbey): there's a potential race if start() gets called concurrently.
 public class FixedPeriodClerk<O> implements Clerk<O> {
   private static final Logger logger = ClerkUtil.getLogger();
   private static final int DEFAULT_WORKER_COUNT = 4;
@@ -47,28 +48,29 @@ public class FixedPeriodClerk<O> implements Clerk<O> {
     this.sources = sources;
     this.processor = processor;
     this.period = period;
-    // try to make a thread for each source (should there be a limit?)
+    // try to make a thread for each source
+    // TODO(timurbey): should there be a limit?
     int sourceCount = (int) sources.spliterator().getExactSizeIfKnown();
     int workers = sourceCount > 0 ? sourceCount : DEFAULT_WORKER_COUNT;
     this.executor = newScheduledThreadPool(workers, daemonFactory);
   }
 
   /**
-   * Feeds the output of the data sources into the processor.
+   * Pipes data into the processor.
    *
    * <p>NOTE: the profiler will report a warning if started while running.
    */
   @Override
   public final void start() {
     if (!isRunning) {
-      pipeData();
+      startCollecting();
     } else {
-      logger.warning("clerk was told to start while running !");
+      logger.warning("clerk was told to start while running!");
     }
   }
 
   /**
-   * Stops feeding data into the processor.
+   * Stops piping data into the processor.
    *
    * <p>NOTE: the profiler will report a warning if stopped while not running.
    */
@@ -81,7 +83,7 @@ public class FixedPeriodClerk<O> implements Clerk<O> {
     }
   }
 
-  /** Get the data from the processor. */
+  /** Return the processor's output. */
   @Override
   public final O read() {
     return processor.process();
@@ -92,7 +94,7 @@ public class FixedPeriodClerk<O> implements Clerk<O> {
     executor.shutdown();
   }
 
-  private void pipeData() {
+  private void startCollecting() {
     // make sure the previous futures are done or cancelled
     for (Future<?> future : dataFutures) {
       // attempt to cancel the future; if we can't, get the result safely

@@ -44,6 +44,7 @@ public final class MemoryMonitor extends FixedPeriodClerk<List<MemorySnapshot>> 
         best = memory;
       }
     }
+    monitor.terminate();
     logger.info(
         iters
             + " loops, best of "

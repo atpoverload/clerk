@@ -35,15 +35,15 @@ public class Stopwatch extends DirectClerk<Duration> {
     long runtime = Long.MAX_VALUE;
     for (int i = 0; i < runs; i++) {
       long time = 0;
-      stopwatch.start();
       for (int j = 0; j < iters; j++) {
+        stopwatch.start();
         r.run();
+        stopwatch.stop();
         time += stopwatch.read().toNanos();
       }
       if (time < runtime) {
         runtime = time;
       }
-      stopwatch.stop();
     }
     logger.info(
         iters + " loops, best of " + runs + ": " + Duration.ofNanos(runtime / iters) + " per loop");

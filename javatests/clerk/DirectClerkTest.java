@@ -33,7 +33,7 @@ public class DirectClerkTest {
   @Test
   public void startRead_twoCalls() {
     clerk.start();
-    assertEquals(2, clerk.read());
+    assertEquals(1, clerk.read());
   }
 
   @Test
@@ -47,7 +47,7 @@ public class DirectClerkTest {
   public void startStartRead_twoCalls() {
     clerk.start();
     clerk.start();
-    assertEquals(2, clerk.read());
+    assertEquals(1, clerk.read());
   }
 
   @Test

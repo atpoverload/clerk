@@ -8,12 +8,18 @@ import java.util.Collection;
 import org.openjdk.jmh.results.Aggregator;
 import org.openjdk.jmh.results.Result;
 
+/** A result that reports the number of collected vs expected samples from a trial. */
 class SamplingResult extends Result<SamplingResult> {
   private final int samples;
   private final long expected;
 
   public SamplingResult(int samples, long expected) {
-    super(SECONDARY, PREFIX + "clerk-sampling", of((double) samples / expected), "%", AVG);
+    super(
+        SECONDARY,
+        PREFIX + "clerk-sampling",
+        of(100 * (double) samples / expected),
+        "% collected",
+        AVG);
     this.samples = samples;
     this.expected = expected;
   }

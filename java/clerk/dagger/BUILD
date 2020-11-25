@@ -12,7 +12,7 @@ java_library(
   deps = [
     "//java/clerk:component",
     "//java/clerk:inject",
-    "//java/clerk/concurrent",
+    "//java/clerk/data:policies",
     ":dagger",
   ],
 )
@@ -26,7 +26,7 @@ java_library(
   deps = [
     "//java/clerk:component",
     "//java/clerk:inject",
-    "//java/clerk/concurrent",
+    "//java/clerk/data:policies",
     ":dagger",
   ],
 )
