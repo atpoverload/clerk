@@ -2,6 +2,7 @@ package clerk.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -24,6 +25,12 @@ public final class ClerkUtil {
               record.getMessage(),
               System.lineSeparator());
         }
+      };
+  private static final ThreadFactory daemonThreadFactory =
+      r -> {
+        Thread t = new Thread(r);
+        t.setDaemon(true);
+        return t;
       };
 
   private static boolean setup = false;
@@ -59,6 +66,10 @@ public final class ClerkUtil {
       }
     }
     return Logger.getLogger("clerk");
+  }
+
+  public static ThreadFactory daemonThreadFactory() {
+    return daemonThreadFactory;
   }
 
   private ClerkUtil() {}
