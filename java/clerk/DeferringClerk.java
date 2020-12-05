@@ -4,6 +4,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 import clerk.util.ClerkUtil;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;

@@ -7,6 +7,7 @@ import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import clerk.data.FixedPeriodPolicy;
 import clerk.util.ClerkUtil;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
