@@ -23,7 +23,7 @@ public class DirectClerk<O> implements Clerk<O> {
     this.processor = processor;
   }
 
-  public DirectClerk(Iterable<Supplier<?>> sources, Processor<?, O> processor) {
+  public DirectClerk(Collection<Supplier<?>> sources, Processor<?, O> processor) {
     this.sources = sources;
     this.processor = processor;
   }

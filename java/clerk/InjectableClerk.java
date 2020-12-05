@@ -72,7 +72,7 @@ public final class InjectableClerk<O> implements Clerk<O> {
       }
       policies
           .getOrDefault(sourceName, policies.get(DEFAULT_POLICY_KEY))
-          .start(() -> Clerk.pipe(sources.get(sourceName), processor));
+          .start(sources.get(sourceName), processor);
     }
   }
 

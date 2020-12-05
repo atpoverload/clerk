@@ -37,7 +37,7 @@ public class DeferringClerk<O> implements Clerk<Future<O>> {
     this.processor = processor;
   }
 
-  public DeferringClerk(Iterable<Supplier<?>> sources, Processor<?, O> processor) {
+  public DeferringClerk(Collection<Supplier<?>> sources, Processor<?, O> processor) {
     this.sources = sources;
     this.processor = processor;
   }

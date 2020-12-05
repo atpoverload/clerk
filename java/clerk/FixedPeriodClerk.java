@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 // TODO(timurbey): there's a potential race if start() gets called concurrently.
 public class FixedPeriodClerk<O> implements Clerk<O> {
   private static final Logger logger = ClerkUtil.getLogger();
-  private static final int DEFAULT_WORKER_COUNT = 4;
 
   private final Iterable<Supplier<?>> sources;
   private final Processor<?, O> processor;
@@ -33,13 +32,12 @@ public class FixedPeriodClerk<O> implements Clerk<O> {
   }
 
   public FixedPeriodClerk(
-      Iterable<Supplier<?>> sources, Processor<?, O> processor, Duration period) {
+      Collection<Supplier<?>> sources, Processor<?, O> processor, Duration period) {
     this.sources = sources;
     this.processor = processor;
     // try to make a thread for each source
     // TODO(timurbey): should there be a limit?
-    int sourceCount = (int) sources.spliterator().getExactSizeIfKnown();
-    int workers = sourceCount > 0 ? sourceCount : DEFAULT_WORKER_COUNT;
+    int workers = sources.size();
     this.executor = newScheduledThreadPool(workers, daemonThreadFactory());
     this.policy = new FixedPeriodPolicy(this.executor, period);
   }
@@ -87,7 +85,7 @@ public class FixedPeriodClerk<O> implements Clerk<O> {
 
   private void startCollecting() {
     for (Supplier<?> source : sources) {
-      policy.start(() -> Clerk.pipe(source, processor));
+      policy.start(source, processor);
     }
   }
 }
