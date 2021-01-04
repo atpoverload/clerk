@@ -3,6 +3,7 @@ package clerk.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -26,9 +27,10 @@ public final class ClerkUtil {
               System.lineSeparator());
         }
       };
+  private static final AtomicInteger counter = new AtomicInteger();
   private static final ThreadFactory daemonThreadFactory =
       r -> {
-        Thread t = new Thread(r);
+        Thread t = new Thread(r, "clerk-" + counter.getAndIncrement());
         t.setDaemon(true);
         return t;
       };
