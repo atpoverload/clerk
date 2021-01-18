@@ -1,7 +1,5 @@
 package clerk;
 
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
-
 import clerk.util.ClerkUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,19 +26,22 @@ public class DeferringClerk<O> implements Clerk<Future<O>> {
 
   private final Iterable<Supplier<?>> sources;
   private final Processor<?, O> processor;
-  private final ExecutorService executor = newSingleThreadExecutor(daemonFactory);
+  private final ExecutorService executor;
   private final ArrayList<Future<?>> dataFutures = new ArrayList<>();
 
   private boolean isRunning;
 
-  public DeferringClerk(Supplier<?> source, Processor<?, O> processor) {
+  public DeferringClerk(Supplier<?> source, Processor<?, O> processor, ExecutorService executor) {
     this.sources = List.of(source);
     this.processor = processor;
+    this.executor = executor;
   }
 
-  public DeferringClerk(Collection<Supplier<?>> sources, Processor<?, O> processor) {
+  public DeferringClerk(
+      Collection<Supplier<?>> sources, Processor<?, O> processor, ExecutorService executor) {
     this.sources = sources;
     this.processor = processor;
+    this.executor = executor;
   }
 
   /**
@@ -52,7 +53,7 @@ public class DeferringClerk<O> implements Clerk<Future<O>> {
   public final void start() {
     if (!isRunning) {
       isRunning = true;
-      startCollecting();
+      collectData();
     } else {
       logger.warning("start called while running!");
     }
@@ -66,7 +67,7 @@ public class DeferringClerk<O> implements Clerk<Future<O>> {
   @Override
   public final void stop() {
     if (isRunning) {
-      startCollecting();
+      collectData();
       isRunning = false;
     } else {
       logger.warning("stop called while not running!");
@@ -97,13 +98,8 @@ public class DeferringClerk<O> implements Clerk<Future<O>> {
         });
   }
 
-  /** Shutdown the executor so the clerk cannot be reused. */
-  public final void terminate() {
-    executor.shutdown();
-  }
-
   /** Pipes data from the sources to the processor on the calling thread. */
-  private void startCollecting() {
+  private void collectData() {
     synchronized (dataFutures) {
       for (Supplier<?> source : sources) {
         dataFutures.add(executor.submit(() -> Clerk.pipe(source, processor)));

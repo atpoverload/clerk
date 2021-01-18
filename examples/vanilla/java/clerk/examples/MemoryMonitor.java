@@ -1,5 +1,7 @@
 package clerk.examples;
 
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+
 import clerk.FixedPeriodClerk;
 import clerk.data.ReturnableListStorage;
 import clerk.util.ClerkUtil;
@@ -7,6 +9,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -18,19 +23,30 @@ import java.util.logging.Logger;
  */
 public final class MemoryMonitor extends FixedPeriodClerk<List<MemorySnapshot>> {
   private static final Logger logger = ClerkUtil.getLogger();
-
+  private static final AtomicInteger counter = new AtomicInteger();
+  private static final ThreadFactory daemonThreadFactory =
+      r -> {
+        Thread t = new Thread(r, "clerk-" + counter.getAndIncrement());
+        t.setDaemon(true);
+        return t;
+      };
   private static final Supplier<MemorySnapshot> snapshotSource =
       () ->
           new MemorySnapshot(
               Instant.now(), Runtime.getRuntime().totalMemory(), Runtime.getRuntime().freeMemory());
 
-  public MemoryMonitor() {
-    super(snapshotSource, new ReturnableListStorage<MemorySnapshot>(), Duration.ofMillis(4));
+  public MemoryMonitor(ScheduledExecutorService executor) {
+    super(
+        snapshotSource,
+        new ReturnableListStorage<MemorySnapshot>(),
+        executor,
+        Duration.ofMillis(4));
   }
 
   /** Size a runnable. */
   public static void size(Runnable r, int iters, int runs) {
-    MemoryMonitor monitor = new MemoryMonitor();
+    ScheduledExecutorService executor = newSingleThreadScheduledExecutor(daemonThreadFactory);
+    MemoryMonitor monitor = new MemoryMonitor(executor);
     long best = Long.MAX_VALUE;
     for (int i = 0; i < runs; i++) {
       long memory = 0;
@@ -44,7 +60,7 @@ public final class MemoryMonitor extends FixedPeriodClerk<List<MemorySnapshot>> 
         best = memory;
       }
     }
-    monitor.terminate();
+    executor.shutdown();
     logger.info(
         iters
             + " loops, best of "
@@ -69,7 +85,7 @@ public final class MemoryMonitor extends FixedPeriodClerk<List<MemorySnapshot>> 
   }
 
   public static void main(String[] args) throws Exception {
-    int n = 1000;
+    int n = 10000;
     Runnable r =
         () -> {
           ArrayList<Integer> l = new ArrayList<>(n);
