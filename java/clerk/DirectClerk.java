@@ -1,10 +1,8 @@
 package clerk;
 
-import clerk.util.ClerkUtil;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 /**
  * A clerk that collects data on {@code start()} and {@code stop()}.
@@ -12,8 +10,6 @@ import java.util.logging.Logger;
  * <p>NOTE: Data operations are done on the calling thread.
  */
 public class DirectClerk<O> implements Clerk<O> {
-  private static final Logger logger = ClerkUtil.getLogger();
-
   private final Iterable<Supplier<?>> sources;
   private final Processor<?, O> processor;
 
@@ -29,33 +25,21 @@ public class DirectClerk<O> implements Clerk<O> {
     this.processor = processor;
   }
 
-  /**
-   * Pipes data into the processor.
-   *
-   * <p>NOTE: the profiler will report a warning if started while running.
-   */
+  /** Pipes data into the processor. */
   @Override
   public final void start() {
     if (!isRunning) {
       isRunning = true;
-      startCollecting();
-    } else {
-      logger.warning("start called while running!");
+      collectData();
     }
   }
 
-  /**
-   * Pipes data into the processor.
-   *
-   * <p>NOTE: the profiler will report a warning if stopped while not running.
-   */
+  /** Pipes data into the processor. */
   @Override
   public final void stop() {
     if (isRunning) {
-      startCollecting();
+      collectData();
       isRunning = false;
-    } else {
-      logger.warning("stop called while not running!");
     }
   }
 
@@ -66,7 +50,7 @@ public class DirectClerk<O> implements Clerk<O> {
   }
 
   /** Pipes data from the sources to the processor on the calling thread. */
-  private void startCollecting() {
+  private void collectData() {
     for (Supplier<?> source : sources) {
       Clerk.pipe(source, processor);
     }

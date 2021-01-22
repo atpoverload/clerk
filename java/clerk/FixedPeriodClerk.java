@@ -1,19 +1,14 @@
 package clerk;
 
 import clerk.data.FixedPeriodPolicy;
-import clerk.util.ClerkUtil;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 /** A clerk that collects data at a fixed period. */
-// TODO(timurbey): there's a potential race if start() gets called concurrently.
 public class FixedPeriodClerk<O> implements Clerk<O> {
-  private static final Logger logger = ClerkUtil.getLogger();
-
   private final Iterable<Supplier<?>> sources;
   private final Processor<?, O> processor;
   private final ScheduledExecutorService executor;
@@ -46,33 +41,21 @@ public class FixedPeriodClerk<O> implements Clerk<O> {
     this.policy = new FixedPeriodPolicy(this.executor, period);
   }
 
-  /**
-   * Pipes data into the processor.
-   *
-   * <p>NOTE: the profiler will report a warning if started while running.
-   */
+  /** Pipes data into the processor. */
   @Override
   public final void start() {
     if (!isRunning) {
       startCollecting();
       isRunning = true;
-    } else {
-      logger.warning("clerk was told to start while running!");
     }
   }
 
-  /**
-   * Stops piping data into the processor.
-   *
-   * <p>NOTE: the profiler will report a warning if stopped while not running.
-   */
+  /** Stops piping data into the processor. */
   @Override
   public final void stop() {
     if (isRunning) {
       policy.stop();
       isRunning = false;
-    } else {
-      logger.warning("clerk was told to stop while stopped!");
     }
   }
 
