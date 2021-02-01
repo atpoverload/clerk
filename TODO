@@ -1,3 +1,24 @@
-build out injection packages
-build out abstract driver
-build android example
+injection framework
+ - clean up the modules
+ - research non-dagger solutions
+
+jmh package
+ - injectable profiler?
+
+vanilla examples
+ - clean up code/interface
+ - find a better example for the deferring and fixed period clerks
+
+dagger examples
+ - find a problem with complex data handling (android? web requests?)
+
+# requires Windows #
+android examples
+ - run basic app
+ - create example for
+  + battery life
+  + camera
+ - create android unit tests?
+
+jmh examples
+ - get more tests

@@ -67,10 +67,7 @@ public final class FixedPeriodPolicy implements CollectionPolicy {
     r.run();
     Duration rescheduleTime = period.minus(Duration.between(start, Instant.now()));
 
-    if (rescheduleTime.toMillis() > 0) {
-      dataFutures.add(
-          executor.schedule(() -> runAndReschedule(r), rescheduleTime.toMillis(), MILLISECONDS));
-    } else if (rescheduleTime.toNanos() > 0) {
+    if (rescheduleTime.toNanos() > 0) {
       dataFutures.add(
           executor.schedule(() -> runAndReschedule(r), rescheduleTime.toNanos(), NANOSECONDS));
     } else {
