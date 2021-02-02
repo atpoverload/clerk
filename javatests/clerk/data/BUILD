@@ -22,9 +22,9 @@ java_test(
 )
 
 java_test(
-  name = "PairStorageTest",
-  srcs = ["PairStorageTest.java"],
-  test_class = "clerk.data.PairStorageTest",
+  name = "AbstractPairStorageTest",
+  srcs = ["AbstractPairStorageTest.java"],
+  test_class = "clerk.data.AbstractPairStorageTest",
   deps = [
     "//java/clerk/data:storage",
   ],

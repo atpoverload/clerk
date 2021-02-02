@@ -7,8 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PairStorageTest {
-  private PairStorage<Integer, Pair<Integer>> storage;
+public class AbstractPairStorageTest {
+  private AbstractPairStorage<Integer, Pair<Integer>> storage;
 
   private static class Pair<T> {
     private final T first;
@@ -42,7 +42,7 @@ public class PairStorageTest {
   @Before
   public void setUp() {
     storage =
-        new PairStorage<Integer, Pair<Integer>>() {
+        new AbstractPairStorage<Integer, Pair<Integer>>() {
           @Override
           public Pair<Integer> process() {
             if (getFirst() == null || getSecond() == null) {

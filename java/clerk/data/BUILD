@@ -19,7 +19,7 @@ java_library(
   visibility = ["//visibility:public"],
   srcs = [
     "AbstractListStorage.java",
-    "PairStorage.java",
+    "AbstractPairStorage.java",
     "ReturnableListStorage.java",
   ],
   deps = [
