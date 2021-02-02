@@ -40,6 +40,6 @@ java_library(
   ],
   deps = [
     ":clerk",
-    "//java/clerk/data:policies",
+    "//java/clerk/data:policy",
   ],
 )

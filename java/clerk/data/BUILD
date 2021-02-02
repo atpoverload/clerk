@@ -1,11 +1,13 @@
 load("@rules_java//java:defs.bzl", "java_library")
 
 java_library(
-  name = "policies",
+  name = "policy",
   visibility = ["//visibility:public"],
   srcs = [
+    "ConcurrentCollectionPolicy.java",
     "FixedPeriodPolicy.java",
-    "SingleCollectionPolicy.java"
+    "PairCollectionPolicy.java",
+    "SingleCollectionPolicy.java",
   ],
   deps = [
     "//java/clerk",
@@ -13,7 +15,7 @@ java_library(
 )
 
 java_library(
-  name = "processors",
+  name = "storage",
   visibility = ["//visibility:public"],
   srcs = [
     "AbstractListStorage.java",

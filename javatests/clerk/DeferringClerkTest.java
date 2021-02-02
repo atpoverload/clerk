@@ -1,5 +1,6 @@
 package clerk;
 
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.junit.Assert.assertEquals;
 
 import clerk.testing.data.DummyStorage;
@@ -16,7 +17,9 @@ public class DeferringClerkTest {
   @Before
   public void setUp() {
     counter = new AtomicInteger();
-    clerk = new DeferringClerk<Integer>(List.of(counter::incrementAndGet), new DummyStorage<>());
+    clerk =
+        new DeferringClerk<Integer>(
+            List.of(counter::incrementAndGet), new DummyStorage<>(), newSingleThreadExecutor());
   }
 
   @After

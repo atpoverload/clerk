@@ -18,7 +18,9 @@ public abstract class AbstractListStorage<I, O> implements Processor<I, O> {
   /** Pops and returns data. */
   protected final synchronized ArrayList<I> getData() {
     ArrayList<I> data = this.data;
-    this.data = new ArrayList<>();
+    synchronized (data) {
+      this.data = new ArrayList<>();
+    }
     return data;
   }
 }

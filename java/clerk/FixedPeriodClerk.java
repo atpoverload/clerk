@@ -67,7 +67,7 @@ public class FixedPeriodClerk<O> implements Clerk<O> {
 
   private void startCollecting() {
     for (Supplier<?> source : sources) {
-      policy.start(source, processor);
+      policy.collect(source, processor);
     }
   }
 }

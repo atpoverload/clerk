@@ -1,24 +1,9 @@
-injection framework
- - clean up the modules
- - research non-dagger solutions
+write fixed period tests
 
-jmh package
- - injectable profiler?
+re-build the injection framework
 
-vanilla examples
- - clean up code/interface
- - find a better example for the deferring and fixed period clerks
-
-dagger examples
- - find a problem with complex data handling (android? web requests?)
-
-# requires Windows #
-android examples
- - run basic app
- - create example for
-  + battery life
-  + camera
- - create android unit tests?
-
-jmh examples
- - get more tests
+build examples:
+ - simple examples
+ - dagger examples
+ - android examples
+ - jmh examples
