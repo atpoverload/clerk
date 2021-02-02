@@ -1,0 +1,9 @@
+write fixed period tests
+
+re-build the injection framework
+
+build examples:
+ - simple examples
+ - dagger examples
+ - android examples
+ - jmh examples

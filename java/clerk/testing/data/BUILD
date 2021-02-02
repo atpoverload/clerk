@@ -4,8 +4,9 @@ java_library(
   name = "data",
   visibility = ["//visibility:public"],
   srcs = [
-    "AsynchronousSteadyStateExecutor.java",
-    "DirectExecutor.java",
+    "DummyStorage.java",
   ],
-  deps = ["//clerk"],
+  deps = [
+    "//java/clerk",
+  ],
 )
