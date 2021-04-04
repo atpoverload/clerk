@@ -1,13 +1,11 @@
-package clerk.data;
+package clerk.util;
 
-import clerk.Processor;
+import clerk.DataProcessor;
 
 /** A processor that only stores the last 2 pieces of data added. */
-public abstract class AbstractPairStorage<I, O> implements Processor<I, O> {
+public abstract class PairStorage<I, O> implements DataProcessor<I, O> {
   private I first;
   private I second;
-
-  public AbstractPairStorage() {}
 
   /**
    * Sets the data. If there is no data, first is set. If there is no second piece of data, second

@@ -1,8 +1,8 @@
-package clerk;
+package clerk.util;
 
 import static org.junit.Assert.assertEquals;
 
-import clerk.testing.data.DummyStorage;
+import clerk.testing.FakeStorage;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.After;
@@ -16,7 +16,7 @@ public class DirectClerkTest {
   @Before
   public void setUp() {
     counter = new AtomicInteger();
-    clerk = new DirectClerk<Integer>(List.of(counter::incrementAndGet), new DummyStorage<>());
+    clerk = new DirectClerk<Integer>(List.of(counter::incrementAndGet), new FakeStorage<>());
   }
 
   @After

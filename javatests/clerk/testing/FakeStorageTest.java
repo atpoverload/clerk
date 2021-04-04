@@ -1,4 +1,4 @@
-package clerk.testing.data;
+package clerk.testing;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,12 +6,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DummyStorageTest {
-  private DummyStorage<Integer> storage;
+public class FakeStorageTest {
+  private FakeStorage<String> storage;
 
   @Before
   public void setUp() {
-    storage = new DummyStorage<>();
+    storage = new FakeStorage<>();
   }
 
   @After
@@ -26,14 +26,14 @@ public class DummyStorageTest {
 
   @Test
   public void addProcess_getValue() {
-    storage.add(0);
-    assertEquals(0, (int) storage.process());
+    storage.add("foo");
+    assertEquals("foo", storage.process());
   }
 
   @Test
   public void addAddProcess_getLastValue() {
-    storage.add(0);
-    storage.add(1);
-    assertEquals(1, (int) storage.process());
+    storage.add("foo");
+    storage.add("bar");
+    assertEquals("bar", storage.process());
   }
 }

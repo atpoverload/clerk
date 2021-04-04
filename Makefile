@@ -1,14 +1,16 @@
-SOURCES = $(wildcard java/clerk/*.java) $(wildcard java/clerk/data/*.java)
-BUILD_DIR = clerk-build
-CLASS_DIR = clerk
+SOURCES =                              \
+$(wildcard java/clerk/*.java)          \
+$(wildcard java/clerk/examples/*.java) \
+$(wildcard java/clerk/util/*.java)     \
+$(wildcard java/clerk/util/**/*.java)
+
+BUILD_DIR = clerk_build
 TARGET = clerk.jar
 
 clerk: clean
-	mkdir -p $(BUILD_DIR)/$(CLASS_DIR)
-	javac $(SOURCES) -d $(BUILD_DIR)/$(CLASS_DIR)
-	cd $(BUILD_DIR) && jar -cf $(TARGET) $(CLASS_DIR)
-	mv $(BUILD_DIR)/$(TARGET) $(TARGET)
+	javac $(SOURCES) -d $(BUILD_DIR)
+	cd $(BUILD_DIR) && jar -cf $(TARGET) * && mv $(TARGET) .. && cd ..
 	rm -r $(BUILD_DIR)
 
 clean:
-	rm -rf $(BUILD_DIR)/$(CLASS_DIR) $(TARGET)
+	rm -rf $(BUILD_DIR) $(TARGET)

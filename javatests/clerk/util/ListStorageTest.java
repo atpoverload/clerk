@@ -1,4 +1,4 @@
-package clerk.data;
+package clerk.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,12 +9,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ReturnableListStorageTest {
-  private ReturnableListStorage<Integer> storage;
+public class ListStorageTest {
+  private ListStorage<String> storage;
 
   @Before
   public void setUp() {
-    storage = new ReturnableListStorage<>();
+    storage = new ListStorage<>();
   }
 
   @After
@@ -29,16 +29,16 @@ public class ReturnableListStorageTest {
 
   @Test
   public void addProcess_getValue() {
-    storage.add(0);
-    List<Integer> data = storage.process();
+    storage.add("foo");
+    List<String> data = storage.process();
     assertFalse(data.isEmpty());
-    assertEquals(0, (int) data.get(0));
+    assertEquals("foo", data.get(0));
   }
 
   @Test
   public void addAddProcess_getLastValue() {
-    storage.add(0);
-    storage.add(1);
-    assertEquals(1, (int) storage.process().get(1));
+    storage.add("foo");
+    storage.add("bar");
+    assertEquals("bar", storage.process().get(1));
   }
 }

@@ -1,11 +1,9 @@
 load("@rules_java//java:defs.bzl", "java_library")
 
 java_library(
-  name = "data",
+  name = "util",
   visibility = ["//visibility:public"],
-  srcs = [
-    "DummyStorage.java",
-  ],
+  srcs = glob(["*.java"]),
   deps = [
     "//java/clerk",
   ],
