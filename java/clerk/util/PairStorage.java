@@ -23,12 +23,12 @@ public abstract class PairStorage<I, O> implements DataProcessor<I, O> {
     }
   }
 
-  /** Gets the first piece of data. */
+  /** Get the first piece of data. */
   protected final I getFirst() {
     return first;
   }
 
-  /** Gets the first piece of data. */
+  /** Get the second piece of data. */
   protected final I getSecond() {
     return second;
   }

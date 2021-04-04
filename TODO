@@ -1,9 +1,7 @@
-write fixed period tests
+implement concurrent processors
+
+write concurrent tests
 
 re-build the injection framework
 
-build examples:
- - simple examples
- - dagger examples
- - android examples
- - jmh examples
+build more examples

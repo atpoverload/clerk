@@ -8,6 +8,6 @@ public interface Clerk<O> {
   /** Stops data collection. */
   void stop();
 
-  /** Returns the data. */
+  /** Returns data. */
   O read();
 }

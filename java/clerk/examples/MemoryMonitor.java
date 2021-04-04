@@ -2,23 +2,28 @@ package clerk.examples;
 
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
-import clerk.util.ListStorage;
+import clerk.util.SimpleAggregator;
 import clerk.util.concurrent.FixedPeriodClerk;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
-public final class MemoryMonitor extends FixedPeriodClerk<List<Long>> {
+public final class MemoryMonitor extends FixedPeriodClerk<Long> {
   public MemoryMonitor(ScheduledExecutorService executor, Duration period) {
     super(
         () -> Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory(),
-        new ListStorage<Long>(),
+        new SimpleAggregator<Long, Long>() {
+          @Override
+          public Long aggregate(List<Long> data) {
+            return mean(data);
+          }
+        },
         executor,
         period);
   }
 
-  private static double mean(List<Long> values) {
-    double mean = 0;
+  private static long mean(List<Long> values) {
+    long mean = 0;
     for (long value : values) {
       mean += value;
     }
@@ -32,7 +37,7 @@ public final class MemoryMonitor extends FixedPeriodClerk<List<Long>> {
     monitor.start();
     Thread.sleep(1000);
     monitor.stop();
-    System.out.println("avg bytes: " + mean(monitor.read()));
+    System.out.println("total bytes: " + monitor.read() + "B");
 
     executor.shutdown();
   }

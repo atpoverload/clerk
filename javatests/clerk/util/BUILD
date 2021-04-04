@@ -11,9 +11,9 @@ java_test(
 )
 
 java_test(
-  name = "ListStorageTest",
-  srcs = ["ListStorageTest.java"],
-  test_class = "clerk.util.ListStorageTest",
+  name = "ReturnableListStorageTest",
+  srcs = ["ReturnableListStorageTest.java"],
+  test_class = "clerk.util.ReturnableListStorageTest",
   deps = [
     "//java/clerk/util",
     "//java/clerk/testing",
