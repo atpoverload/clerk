@@ -1,4 +1,4 @@
-package clerk.util;
+package clerk.collectors;
 
 import clerk.DataCollector;
 import clerk.DataProcessor;

@@ -1,4 +1,4 @@
-package clerk.util;
+package clerk.collectors;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
@@ -12,31 +12,27 @@ import java.util.function.Supplier;
 public final class FixedPeriodCollector extends ConcurrentCollector {
   private final Duration period;
 
-  private boolean isCollecting = false;
-
   public FixedPeriodCollector(ScheduledExecutorService executor, Duration period) {
     super(executor);
     this.period = period;
   }
 
-  /** Check for futures from a previous collection then start collection. */
+  /** Start collecting. */
   @Override
-  public final <I> void collect(Supplier<I> source, DataProcessor<I, ?> processor) {
-    if (isCollecting != true) {
-      stopFutures();
-    }
-    isCollecting = true;
+  public <I> void collect(Supplier<I> source, DataProcessor<I, ?> processor) {
+    setCollectionState(true);
     submit(() -> collectAndReschedule(source, processor));
   }
 
-  /** Stops collecting, which will terminate the futures without blocking. */
+  /** Stop collecting. */
   @Override
-  public final void stop() {
-    isCollecting = false;
+  public void stop() {
+    setCollectionState(false);
   }
 
+  /** Run the workload and re-schedule it for the next period start. */
   private <I> void collectAndReschedule(Supplier<I> source, DataProcessor<I, ?> processor) {
-    if (!isCollecting) {
+    if (!getCollectionState()) {
       return;
     }
 

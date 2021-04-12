@@ -1,4 +1,4 @@
-package clerk.util;
+package clerk.storage;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,11 +7,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SingleStorageTest {
-  private SingleStorage<String> storage;
+  private SingleStorage<String, String> storage;
 
   @Before
   public void setUp() {
-    storage = new SingleStorage<>();
+    storage =
+        new SingleStorage<String, String>() {
+          @Override
+          public String process() {
+            return getData();
+          }
+        };
   }
 
   @After

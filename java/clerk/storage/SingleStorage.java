@@ -1,9 +1,9 @@
-package clerk.util;
+package clerk.storage;
 
 import clerk.DataProcessor;
 
 /** A processor that stores and returns the last value sent to {@code add}. */
-public class SingleStorage<I> implements DataProcessor<I, I> {
+public abstract class SingleStorage<I, O> implements DataProcessor<I, O> {
   private I data;
 
   /** Replace the data. */
@@ -13,8 +13,7 @@ public class SingleStorage<I> implements DataProcessor<I, I> {
   }
 
   /** Return the data. */
-  @Override
-  public I process() {
+  protected I getData() {
     return data;
   }
 }

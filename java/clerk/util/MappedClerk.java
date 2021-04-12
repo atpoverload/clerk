@@ -5,24 +5,20 @@ import static clerk.DataCollector.CollectionError;
 import clerk.Clerk;
 import clerk.DataCollector;
 import clerk.DataProcessor;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-/** A Clerk that maps sources to collectors with a {@link String} key. */
+/** A Clerk that maps sources to collectors. */
 public final class MappedClerk<O> implements Clerk<O> {
-  private final Map<String, Supplier<?>> sources;
+  private final Map<Supplier<?>, DataCollector> sources;
   private final DataProcessor<?, O> processor;
-  private final Map<String, DataCollector> collectors;
 
   private boolean isRunning = false;
 
-  public MappedClerk(
-      Map<String, Supplier<?>> sources,
-      DataProcessor<?, O> processor,
-      Map<String, DataCollector> collectors) {
+  public MappedClerk(Map<Supplier<?>, DataCollector> sources, DataProcessor<?, O> processor) {
     this.sources = sources;
     this.processor = processor;
-    this.collectors = collectors;
   }
 
   /** Starts each source-collector pair. */
@@ -30,7 +26,7 @@ public final class MappedClerk<O> implements Clerk<O> {
   public final void start() {
     if (!isRunning) {
       isRunning = true;
-      for (String key : collectors.keySet()) {
+      for (Supplier<?> key : sources.keySet()) {
         collectData(key, processor);
       }
     }
@@ -40,8 +36,8 @@ public final class MappedClerk<O> implements Clerk<O> {
   @Override
   public final void stop() {
     if (isRunning) {
-      for (String key : collectors.keySet()) {
-        collectors.get(key).stop();
+      for (DataCollector collector : sources.values()) {
+        collector.stop();
       }
       isRunning = false;
     }
@@ -53,11 +49,32 @@ public final class MappedClerk<O> implements Clerk<O> {
     return processor.process();
   }
 
-  private <I> void collectData(String key, DataProcessor<I, ?> processor) {
+  private <I> void collectData(Supplier<?> source, DataProcessor<I, ?> processor) {
     try {
-      collectors.get(key).collect((Supplier<I>) sources.get(key), processor);
+      sources.get(source).collect((Supplier<I>) source, processor);
     } catch (ClassCastException e) {
       throw new CollectionError(e);
+    }
+  }
+
+  /** Helper class as an alternative to building the map directly. */
+  public static final class Builder<O> {
+    private final HashMap<Supplier<?>, DataCollector> sources = new HashMap();
+
+    private DataProcessor<?, O> processor;
+
+    public Builder addSource(Supplier<?> source, DataCollector collector) {
+      this.sources.put(source, collector);
+      return this;
+    }
+
+    public Builder setDataProcessor(DataProcessor<?, O> processor) {
+      this.processor = processor;
+      return this;
+    }
+
+    public MappedClerk<O> build() {
+      return new MappedClerk<O>(sources, processor);
     }
   }
 }

@@ -1,4 +1,4 @@
-package clerk.util;
+package clerk.collectors;
 
 import clerk.DataCollector;
 import java.util.ArrayList;
@@ -9,8 +9,9 @@ import java.util.concurrent.TimeUnit;
 /** Collector that provides future management helper methods for safer concurrent collection. */
 public abstract class ConcurrentCollector implements DataCollector {
   private final ArrayList<Future<?>> futures = new ArrayList<>();
+  private final ScheduledExecutorService executor;
 
-  protected final ScheduledExecutorService executor;
+  private boolean isCollecting = false;
 
   public ConcurrentCollector(ScheduledExecutorService executor) {
     this.executor = executor;
@@ -30,21 +31,32 @@ public abstract class ConcurrentCollector implements DataCollector {
     }
   }
 
-  /** Checks or forcibly ends all futures. */
-  protected final void stopFutures() {
-    synchronized (futures) {
-      for (Future<?> future : futures) {
-        // make sure previous futures are done or cancelled
-        if (!future.isDone() && !future.isCancelled() && !future.cancel(false)) {
-          try {
-            future.get();
-          } catch (Exception e) {
-            System.out.println("could not consume a future");
-            e.printStackTrace();
+  /** Returns if the collector is collecting. */
+  protected final boolean getCollectionState() {
+    synchronized (this) {
+      return isCollecting;
+    }
+  }
+
+  /** Sets the collection state. If the state changes, all futures are stopped. */
+  protected final void setCollectionState(boolean startCollecting) {
+    synchronized (this) {
+      if (isCollecting != startCollecting) {
+        synchronized (futures) {
+          for (Future<?> future : futures) {
+            if (!future.isDone() && !future.isCancelled() && !future.cancel(false)) {
+              try {
+                future.get();
+              } catch (Exception e) {
+                System.out.println("could not consume a future");
+                e.printStackTrace();
+              }
+            }
           }
+          futures.clear();
         }
+        isCollecting = startCollecting;
       }
-      futures.clear();
     }
   }
 }

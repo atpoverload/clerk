@@ -1,4 +1,4 @@
-package clerk.util;
+package clerk.collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,14 +11,20 @@ import org.junit.Test;
 public class DirectCollectorTest {
   private Supplier<Integer> source;
   private DirectCollector collector;
-  private SingleStorage<Integer> storage;
+  private SingleStorage<Integer, Integer> storage;
 
   @Before
   public void setUp() {
     AtomicInteger counter = new AtomicInteger();
     source = counter::getAndIncrement;
     collector = new DirectCollector();
-    storage = new SingleStorage<Integer>();
+    storage =
+        new SingleStorage<Integer, Integer>() {
+          @Override
+          public Integer process() {
+            return getData();
+          }
+        };
   }
 
   @After

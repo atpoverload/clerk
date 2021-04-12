@@ -1,4 +1,4 @@
-package clerk.util;
+package clerk.storage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,11 +10,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ListStorageTest {
-  private ListStorage<String> storage;
+  private ListStorage<String, List<String>> storage;
 
   @Before
   public void setUp() {
-    storage = new ListStorage<>();
+    storage =
+        new ListStorage<String, List<String>>() {
+          @Override
+          public List<String> process() {
+            return getData();
+          }
+        };
   }
 
   @After

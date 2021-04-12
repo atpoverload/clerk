@@ -1,4 +1,4 @@
-package clerk.util;
+package clerk.storage;
 
 import clerk.DataProcessor;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /** A processor that stores data in map of classes to list of objects of that class. */
-public class ClassMappedListStorage<I> implements DataProcessor<I, Map<Class<?>, List<I>>> {
+public abstract class ClassMappedListStorage<I, O> implements DataProcessor<I, O> {
   private final HashMap<Class<?>, List<I>> data = new HashMap<>();
 
   /** Adds data to the correct list. */
@@ -20,8 +20,7 @@ public class ClassMappedListStorage<I> implements DataProcessor<I, Map<Class<?>,
   }
 
   /** Returns a map of copied lists. */
-  @Override
-  public Map<Class<?>, List<I>> process() {
+  protected Map<Class<?>, List<I>> getData() {
     synchronized (this) {
       HashMap<Class<?>, List<I>> currentData = new HashMap<>();
       for (Class<?> cls : data.keySet()) {

@@ -1,11 +1,11 @@
-package clerk.util;
+package clerk.storage;
 
 import clerk.DataProcessor;
 import java.util.HashMap;
 import java.util.Map;
 
 /** A processor that stores data in map of classes to objects of that class. */
-public class ClassMappedStorage<I> implements DataProcessor<I, Map<Class<?>, I>> {
+public abstract class ClassMappedStorage<I, O> implements DataProcessor<I, O> {
   private final HashMap<Class<?>, I> data = new HashMap<>();
 
   /** Sets the data in the map. */
@@ -17,8 +17,7 @@ public class ClassMappedStorage<I> implements DataProcessor<I, Map<Class<?>, I>>
   }
 
   /** Returns a copy of the map. */
-  @Override
-  public Map<Class<?>, I> process() {
+  protected Map<Class<?>, I> getData() {
     synchronized (this) {
       return new HashMap<>(data);
     }

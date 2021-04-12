@@ -5,6 +5,7 @@ java_library(
   visibility = ["//visibility:public"],
   srcs = glob(["*.java"]),
   deps = [
+    "//java/clerk/storage",
     "//java/clerk/util",
   ],
 )
@@ -12,6 +13,12 @@ java_library(
 java_binary(
   name = "stopwatch",
   main_class = "clerk.examples.Stopwatch",
+  runtime_deps = [":examples"]
+)
+
+java_binary(
+  name = "burst_stopwatch",
+  main_class = "clerk.examples.BurstStopwatch",
   runtime_deps = [":examples"]
 )
 

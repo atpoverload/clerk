@@ -2,8 +2,8 @@ package clerk.examples;
 
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
+import clerk.storage.ListStorage;
 import clerk.util.FixedPeriodClerk;
-import clerk.util.ListStorage;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
@@ -12,7 +12,12 @@ public final class MemoryMonitor extends FixedPeriodClerk<List<Long>> {
   public MemoryMonitor(ScheduledExecutorService executor, Duration period) {
     super(
         () -> Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory(),
-        new ListStorage<Long>(),
+        new ListStorage<Long, List<Long>>() {
+          @Override
+          public List<Long> process() {
+            return getData();
+          }
+        },
         executor,
         period);
   }

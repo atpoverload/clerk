@@ -1,7 +1,7 @@
 package clerk.examples;
 
+import clerk.storage.PairStorage;
 import clerk.util.DirectClerk;
-import clerk.util.PairStorage;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -23,7 +23,6 @@ public final class Stopwatch extends DirectClerk<Duration> {
     stopwatch.start();
     Thread.sleep(1000);
     stopwatch.stop();
-
     System.out.println("slept for " + stopwatch.read());
   }
 }

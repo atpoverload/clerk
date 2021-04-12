@@ -1,6 +1,7 @@
 package clerk.util;
 
 import clerk.DataProcessor;
+import clerk.collectors.DirectCollector;
 import java.util.Collection;
 import java.util.function.Supplier;
 

@@ -1,8 +1,9 @@
-SOURCES =                              \
-$(wildcard java/clerk/*.java)          \
-$(wildcard java/clerk/examples/*.java) \
-$(wildcard java/clerk/util/*.java)     \
-$(wildcard java/clerk/util/**/*.java)
+SOURCES =                                \
+$(wildcard java/clerk/*.java)            \
+$(wildcard java/clerk/collectors/*.java) \
+$(wildcard java/clerk/examples/*.java)   \
+$(wildcard java/clerk/storage/*.java)    \
+$(wildcard java/clerk/util/*.java)
 
 BUILD_DIR = clerk_build
 TARGET = clerk.jar
