@@ -2,24 +2,23 @@ package clerk.util;
 
 import static org.junit.Assert.assertEquals;
 
-import clerk.testing.Pair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class PairStorageTest {
-  private PairStorage<String, Pair<String>> storage;
+  private PairStorage<String, String> storage;
 
   @Before
   public void setUp() {
     storage =
-        new PairStorage<String, Pair<String>>() {
+        new PairStorage<String, String>() {
           @Override
-          public Pair<String> process() {
+          public String process() {
             if (getFirst() == null || getSecond() == null) {
               return null;
             }
-            return new Pair(getFirst(), getSecond());
+            return getFirst() + getSecond();
           }
         };
   }
@@ -44,6 +43,6 @@ public class PairStorageTest {
   public void add_process() {
     storage.add("foo");
     storage.add("bar");
-    assertEquals(new Pair("foo", "bar"), storage.process());
+    assertEquals("foobar", storage.process());
   }
 }

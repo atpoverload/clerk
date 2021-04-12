@@ -24,7 +24,6 @@ java_test(
   test_class = "clerk.util.PairStorageTest",
   deps = [
     "//java/clerk/util",
-    "//java/clerk/testing",
   ],
 )
 
