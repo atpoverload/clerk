@@ -1,7 +1,6 @@
-package clerk.util.concurrent;
+package clerk.util;
 
 import clerk.DataProcessor;
-import clerk.util.SimpleClerk;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.ScheduledExecutorService;

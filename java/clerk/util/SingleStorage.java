@@ -1,9 +1,9 @@
-package clerk.testing;
+package clerk.util;
 
 import clerk.DataProcessor;
 
 /** A processor that stores and returns the last value sent to {@code add}. */
-public final class FakeStorage<I> implements DataProcessor<I, I> {
+public class SingleStorage<I> implements DataProcessor<I, I> {
   private I data;
 
   /** Replace the data. */
@@ -14,7 +14,7 @@ public final class FakeStorage<I> implements DataProcessor<I, I> {
 
   /** Return the data. */
   @Override
-  public final I process() {
+  public I process() {
     return data;
   }
 }

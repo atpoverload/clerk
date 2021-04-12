@@ -4,7 +4,7 @@ import clerk.DataProcessor;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-/** A clerk uses a {@link DirectCollector}. */
+/** A clerk that uses a {@link DirectCollector}. */
 public class DirectClerk<O> extends SimpleClerk<O> {
   public DirectClerk(Supplier<?> source, DataProcessor<?, O> processor) {
     super(source, processor, new DirectCollector());

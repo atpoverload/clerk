@@ -1,4 +1,4 @@
-package clerk.testing;
+package clerk.util;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,12 +6,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FakeStorageTest {
-  private FakeStorage<String> storage;
+public class SingleStorageTest {
+  private SingleStorage<String> storage;
 
   @Before
   public void setUp() {
-    storage = new FakeStorage<>();
+    storage = new SingleStorage<>();
   }
 
   @After

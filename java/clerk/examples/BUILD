@@ -6,7 +6,6 @@ java_library(
   srcs = glob(["*.java"]),
   deps = [
     "//java/clerk/util",
-    "//java/clerk/util/concurrent",
   ],
 )
 

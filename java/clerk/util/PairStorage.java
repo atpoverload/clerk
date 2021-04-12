@@ -13,23 +13,29 @@ public abstract class PairStorage<I, O> implements DataProcessor<I, O> {
    */
   @Override
   public final void add(I i) {
-    if (first == null) {
-      first = i;
-    } else if (second == null) {
-      second = i;
-    } else {
-      first = second;
-      second = i;
+    synchronized (this) {
+      if (first == null) {
+        first = i;
+      } else if (second == null) {
+        second = i;
+      } else {
+        first = second;
+        second = i;
+      }
     }
   }
 
   /** Get the first piece of data. */
   protected final I getFirst() {
-    return first;
+    synchronized (this) {
+      return first;
+    }
   }
 
   /** Get the second piece of data. */
   protected final I getSecond() {
-    return second;
+    synchronized (this) {
+      return second;
+    }
   }
 }

@@ -8,10 +8,7 @@ import clerk.DataProcessor;
 import java.util.List;
 import java.util.function.Supplier;
 
-/**
- * A clerk that uses the same processor and collector for all sources. Type errors are checked at
- * runtime for out-of-the-box construction.
- */
+/** A clerk that uses the same processor and collector for all sources. */
 public class SimpleClerk<O> implements Clerk<O> {
   private final Iterable<Supplier<?>> sources;
   private final DataProcessor<?, O> processor;

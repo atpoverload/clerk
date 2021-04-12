@@ -1,4 +1,4 @@
-package clerk.util.concurrent;
+package clerk.util;
 
 import clerk.DataCollector;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/** Collector that provides future management helper methods for safe concurrent collection. */
+/** Collector that provides future management helper methods for safer concurrent collection. */
 public abstract class ConcurrentCollector implements DataCollector {
   private final ArrayList<Future<?>> futures = new ArrayList<>();
 

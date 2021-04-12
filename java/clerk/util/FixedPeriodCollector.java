@@ -1,4 +1,4 @@
-package clerk.util.concurrent;
+package clerk.util;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
-/** Collector that safely collects data at a fixed period. */
+/** Collector that concurrently collects data at a fixed period. */
 public final class FixedPeriodCollector extends ConcurrentCollector {
   private final Duration period;
 

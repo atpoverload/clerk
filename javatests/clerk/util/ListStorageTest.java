@@ -9,12 +9,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ReturnableListStorageTest {
-  private ReturnableListStorage<String> storage;
+public class ListStorageTest {
+  private ListStorage<String> storage;
 
   @Before
   public void setUp() {
-    storage = new ReturnableListStorage<>();
+    storage = new ListStorage<>();
   }
 
   @After

@@ -2,7 +2,6 @@ package clerk.util;
 
 import static org.junit.Assert.assertEquals;
 
-import clerk.testing.FakeStorage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import org.junit.After;
@@ -12,14 +11,14 @@ import org.junit.Test;
 public class DirectCollectorTest {
   private Supplier<Integer> source;
   private DirectCollector collector;
-  private FakeStorage<Integer> storage;
+  private SingleStorage<Integer> storage;
 
   @Before
   public void setUp() {
     AtomicInteger counter = new AtomicInteger();
     source = counter::getAndIncrement;
     collector = new DirectCollector();
-    storage = new FakeStorage<Integer>();
+    storage = new SingleStorage<Integer>();
   }
 
   @After
