@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
-/** A clerk that concurrently collects data at a fixed period. */
+/** A clerk that concurrently collects data as quickly as possible. */
 public class BurstCollectionClerk<O> extends SimpleClerk<O> {
   public BurstCollectionClerk(
       Supplier<?> source, DataProcessor<?, O> processor, ScheduledExecutorService executor) {
