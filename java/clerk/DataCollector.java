@@ -9,11 +9,4 @@ public interface DataCollector {
 
   /** Stops all collection. */
   void stop();
-
-  /** Error that should be used for failures in {@link collect()} and {@link stop()}. */
-  public class CollectionError extends RuntimeException {
-    public CollectionError(Exception e) {
-      super("unable to collect data", e);
-    }
-  }
 }

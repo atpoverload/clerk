@@ -7,11 +7,4 @@ public interface DataProcessor<I, O> {
 
   /** Returns processed data. */
   O process();
-
-  /** Error that should be used for failures in {@code process()}. */
-  public class ProcessingError extends RuntimeException {
-    public ProcessingError(Exception e) {
-      super("unable to process data", e);
-    }
-  }
 }

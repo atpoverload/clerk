@@ -1,7 +1,5 @@
 package clerk.util;
 
-import static clerk.DataCollector.CollectionError;
-
 import clerk.Clerk;
 import clerk.DataCollector;
 import clerk.DataProcessor;
@@ -10,13 +8,15 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /** A Clerk that maps sources to collectors. */
-public final class MappedClerk<O> implements Clerk<O> {
-  private final Map<Supplier<?>, DataCollector> sources;
-  private final DataProcessor<?, O> processor;
+public class MappedClerk<O> implements Clerk<O> {
+  private final Map<Supplier<? extends Object>, DataCollector> sources;
+  private final DataProcessor<? extends Object, O> processor;
 
   private boolean isRunning = false;
 
-  public MappedClerk(Map<Supplier<?>, DataCollector> sources, DataProcessor<?, O> processor) {
+  public <I> MappedClerk(
+      Map<Supplier<? extends Object>, DataCollector> sources,
+      DataProcessor<? extends Object, O> processor) {
     this.sources = sources;
     this.processor = processor;
   }
@@ -50,25 +50,22 @@ public final class MappedClerk<O> implements Clerk<O> {
   }
 
   private <I> void collectData(Supplier<?> source, DataProcessor<I, ?> processor) {
-    try {
-      sources.get(source).collect((Supplier<I>) source, processor);
-    } catch (ClassCastException e) {
-      throw new CollectionError(e);
-    }
+    sources.get(source).collect((Supplier<I>) source, processor);
   }
 
   /** Helper class as an alternative to building the map directly. */
-  public static final class Builder<O> {
+  // TODO(timur): this is not type-safe
+  public static final class Builder<I, O> {
     private final HashMap<Supplier<?>, DataCollector> sources = new HashMap();
 
     private DataProcessor<?, O> processor;
 
-    public Builder addSource(Supplier<?> source, DataCollector collector) {
+    public Builder<I, O> addSource(Supplier<I> source, DataCollector collector) {
       this.sources.put(source, collector);
       return this;
     }
 
-    public Builder setDataProcessor(DataProcessor<?, O> processor) {
+    public Builder<I, O> setDataProcessor(DataProcessor<I, O> processor) {
       this.processor = processor;
       return this;
     }

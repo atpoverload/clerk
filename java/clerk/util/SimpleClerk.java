@@ -1,7 +1,5 @@
 package clerk.util;
 
-import static clerk.DataCollector.CollectionError;
-
 import clerk.Clerk;
 import clerk.DataCollector;
 import clerk.DataProcessor;
@@ -58,10 +56,6 @@ public class SimpleClerk<O> implements Clerk<O> {
   }
 
   private <I> void collectData(Supplier<?> source, DataProcessor<I, ?> processor) {
-    try {
-      collector.collect((Supplier<I>) source, processor);
-    } catch (ClassCastException e) {
-      throw new CollectionError(e);
-    }
+    collector.collect((Supplier<I>) source, processor);
   }
 }
