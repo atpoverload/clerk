@@ -5,26 +5,28 @@ import static clerk.DataCollector.CollectionError;
 import clerk.Clerk;
 import clerk.DataCollector;
 import clerk.DataProcessor;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
 /** A clerk that uses the same processor and collector for all sources. */
 public class SimpleClerk<O> implements Clerk<O> {
-  private final Iterable<Supplier<?>> sources;
-  private final DataProcessor<?, O> processor;
+  private final Collection<Supplier<? extends Object>> sources;
+  private final DataProcessor<? extends Object, O> processor;
   private final DataCollector collector;
 
   private boolean isRunning;
 
-  public SimpleClerk(Supplier<?> source, DataProcessor<?, O> processor, DataCollector collector) {
+  public <I> SimpleClerk(
+      Supplier<I> source, DataProcessor<I, O> processor, DataCollector collector) {
     this.sources = List.of(source);
     this.processor = processor;
     this.collector = collector;
   }
 
-  public SimpleClerk(
-      Iterable<Supplier<?>> sources, DataProcessor<?, O> processor, DataCollector collector) {
-    this.sources = sources;
+  public <I> SimpleClerk(
+      Collection<Supplier<I>> sources, DataProcessor<I, O> processor, DataCollector collector) {
+    this.sources = List.copyOf(sources);
     this.processor = processor;
     this.collector = collector;
   }
