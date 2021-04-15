@@ -1,8 +1,8 @@
 # `clerk`
 
-`clerk` is a lightweight data collection framework for `Java` runtimes with access to the [`Supplier`](https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html) interface. The API provides scalable out-of-the-box construction of data collectors while providing safety.
+`clerk` is a lightweight data collection framework for `Java` runtimes with access to the [`Supplier`](https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html) interface. The API provides scalable out-of-the-box construction of data collectors while providing data and thread safety. This helps the user focus on the data itself instead of infrastructure.
 
-A vanilla `jar` can be built using `make`.
+A vanilla `clerk.jar` can be built using `make`.
 
 # Components
 
@@ -19,7 +19,7 @@ public interface DataProcessor<I, O> {
 }
 ```
 
-`DataProcessor`s deal with the data. `clerk.storage` provides synchronized `DataProcessor`s that behave similarly to [`ForwardingObject`](https://guava.dev/releases/19.0/api/docs/com/google/common/collect/ForwardingObject.html)s.
+`DataProcessors` handle data, which usually includes both storage and processing. `clerk.storage` provides synchronized `DataProcessors` that behave similarly to [`ForwardingObjects`](https://guava.dev/releases/19.0/api/docs/com/google/common/collect/ForwardingObject.html), with a `getData` method to safely retrieve the current data.
 
 ```java
 /** Interface that connects a data source's output to a processor. */
@@ -32,7 +32,7 @@ public interface DataCollector {
 }
 ```
 
-`DataCollector`s connect sources to processors using some policy. `clerk.collectors` provide common collection strategies:
+`DataCollectors` connect sources to processors using some policy. `clerk.collectors` provide common collection strategies:
 
  - direct collection (start/stop)
  - fixed period collection
@@ -52,6 +52,6 @@ public interface Clerk<O> {
 }
 ```
 
-`Clerk`s are the user facing controls for collection. `clerk.util` provides a `SimpleClerk` that connects any number of `Supplier`s to a `DataProcessor` and a `DataCollector`, as well as wrappers for the provided `DataCollector`s.
+`Clerks` are the user facing controls for collection. `clerk.util` provides a `SimpleClerk` that connects any number of `Suppliers` to a `DataProcessor` and a `DataCollector`, as well as wrappers for the provided `DataCollectors`.
 
 `clerk.util` also provides a `MappedClerk`, which maps each source to a specific `DataCollector`. A `MappedClerk.Builder` is also available to avoid directly building the map.

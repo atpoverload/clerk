@@ -5,7 +5,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
 /** Collector that concurrently collects data as quickly as possible. */
-public final class BurstCollector extends ConcurrentCollector {
+public final class BurstCollector extends SchedulableCollector {
   private boolean isCollecting = false;
 
   public BurstCollector(ScheduledExecutorService executor) {
@@ -16,7 +16,7 @@ public final class BurstCollector extends ConcurrentCollector {
   @Override
   public <I> void collect(Supplier<I> source, DataProcessor<I, ?> processor) {
     setCollectionState(true);
-    submit(() -> collectAndResubmit(source, processor));
+    schedule(() -> collectAndResubmit(source, processor));
   }
 
   /** Stop collecting. */
@@ -32,6 +32,6 @@ public final class BurstCollector extends ConcurrentCollector {
     }
 
     processor.add(source.get());
-    submit(() -> collectAndResubmit(source, processor));
+    schedule(() -> collectAndResubmit(source, processor));
   }
 }

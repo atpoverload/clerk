@@ -14,10 +14,8 @@ public class MappedClerk<O> implements Clerk<O> {
 
   private boolean isRunning = false;
 
-  public <I> MappedClerk(
-      Map<Supplier<? extends Object>, DataCollector> sources,
-      DataProcessor<? extends Object, O> processor) {
-    this.sources = sources;
+  public <I> MappedClerk(Map<Supplier<I>, DataCollector> sources, DataProcessor<I, O> processor) {
+    this.sources = Map.copyOf(sources);
     this.processor = processor;
   }
 
@@ -56,9 +54,9 @@ public class MappedClerk<O> implements Clerk<O> {
   /** Helper class as an alternative to building the map directly. */
   // TODO(timur): this is not type-safe
   public static final class Builder<I, O> {
-    private final HashMap<Supplier<?>, DataCollector> sources = new HashMap();
+    private final HashMap<Supplier<I>, DataCollector> sources = new HashMap();
 
-    private DataProcessor<?, O> processor;
+    private DataProcessor<I, O> processor;
 
     public Builder<I, O> addSource(Supplier<I> source, DataCollector collector) {
       this.sources.put(source, collector);

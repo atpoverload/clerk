@@ -7,18 +7,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /** Collector that provides future management helper methods for safer concurrent collection. */
-public abstract class ConcurrentCollector implements DataCollector {
+public abstract class SchedulableCollector implements DataCollector {
   private final ArrayList<Future<?>> futures = new ArrayList<>();
   private final ScheduledExecutorService executor;
 
   private boolean isCollecting = false;
 
-  public ConcurrentCollector(ScheduledExecutorService executor) {
+  public SchedulableCollector(ScheduledExecutorService executor) {
     this.executor = executor;
   }
 
   /** Submits a runnable and stores the future. */
-  protected final void submit(Runnable r) {
+  protected final void schedule(Runnable r) {
     synchronized (futures) {
       futures.add(executor.submit(r));
     }

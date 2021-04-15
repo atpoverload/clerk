@@ -9,7 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
 
 /** Collector that concurrently collects data at a fixed period. */
-public final class FixedPeriodCollector extends ConcurrentCollector {
+public final class FixedPeriodCollector extends SchedulableCollector {
   private final Duration period;
 
   public FixedPeriodCollector(ScheduledExecutorService executor, Duration period) {
@@ -21,7 +21,7 @@ public final class FixedPeriodCollector extends ConcurrentCollector {
   @Override
   public <I> void collect(Supplier<I> source, DataProcessor<I, ?> processor) {
     setCollectionState(true);
-    submit(() -> collectAndReschedule(source, processor));
+    schedule(() -> collectAndReschedule(source, processor));
   }
 
   /** Stop collecting. */
@@ -44,7 +44,7 @@ public final class FixedPeriodCollector extends ConcurrentCollector {
       schedule(
           () -> collectAndReschedule(source, processor), rescheduleTime.toNanos(), NANOSECONDS);
     } else {
-      submit(() -> collectAndReschedule(source, processor));
+      schedule(() -> collectAndReschedule(source, processor));
     }
   }
 }
