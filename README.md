@@ -1,6 +1,6 @@
 # `clerk`
 
-`clerk` is a lightweight data collection framework for `Java` runtimes with access to the [`Supplier`](https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html) interface. The API provides scalable out-of-the-box construction of data collectors while providing data and thread safety. This helps the user focus on the data itself instead of infrastructure.
+`clerk` is a lightweight data collection, handling, and processing framework for `Java` runtimes with access to the [`Supplier`](https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html) interface. The API provides scalable out-of-the-box construction of data collectors while providing data and thread safety. This helps the user focus on the data itself instead of infrastructure.
 
 A vanilla `clerk.jar` can be built using `make`.
 
