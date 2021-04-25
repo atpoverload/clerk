@@ -8,6 +8,8 @@ A vanilla `clerk.jar` can be built using `make`.
 
 `clerk` provides three user API components:
 
+---
+
 ```java
 /** Interface that consumes raw data and produces processed data. */
 public interface DataProcessor<I, O> {
@@ -21,6 +23,8 @@ public interface DataProcessor<I, O> {
 
 `DataProcessors` handle data, which usually includes both storage and processing. `clerk.storage` provides synchronized `DataProcessors` that behave similarly to [`ForwardingObjects`](https://guava.dev/releases/19.0/api/docs/com/google/common/collect/ForwardingObject.html), with a `getData` method to safely retrieve the current data.
 
+---
+
 ```java
 /** Interface that connects a data source's output to a processor. */
 public interface DataCollector {
@@ -32,11 +36,13 @@ public interface DataCollector {
 }
 ```
 
-`DataCollectors` connect sources to processors using some policy. `clerk.collectors` provide common collection strategies:
+`DataCollectors` connect sources to processors using a policy. `clerk.collectors` provide some common collection strategies:
 
  - direct collection (start/stop)
  - fixed period collection
  - burst collection
+
+---
 
 ```java
 /** Interface for a data collection system. */
