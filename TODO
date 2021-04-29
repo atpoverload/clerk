@@ -1,0 +1,10 @@
+other components:
+ - processors:
+   - `DiskStorage`
+   - `SerializingStorage`
+ - collectors:
+   - `ListenableFuture`s for decoupling `get` and `add`
+
+build android example -> try to use a handler for something?
+
+change to `<>` operators

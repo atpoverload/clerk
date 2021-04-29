@@ -5,6 +5,7 @@ java_library(
   visibility = ["//visibility:public"],
   srcs = glob(["*.java"]),
   deps = [
+    "//java/clerk/collectors",
     "//java/clerk/storage",
     "//java/clerk/util",
   ],
@@ -25,5 +26,11 @@ java_binary(
 java_binary(
   name = "memory_monitor",
   main_class = "clerk.examples.MemoryMonitor",
+  runtime_deps = [":examples"]
+)
+
+java_binary(
+  name = "profiler",
+  main_class = "clerk.examples.Profiler",
   runtime_deps = [":examples"]
 )
