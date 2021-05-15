@@ -2,6 +2,7 @@ package clerk.collectors;
 
 import static org.junit.Assert.assertEquals;
 
+import clerk.storage.SingleStorage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import org.junit.After;

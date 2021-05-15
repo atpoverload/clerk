@@ -22,11 +22,14 @@ public abstract class ClassMappedListStorage<I, O> implements DataProcessor<I, O
   /** Returns a map of copied lists. */
   protected Map<Class<?>, List<I>> getData() {
     synchronized (this) {
-      HashMap<Class<?>, List<I>> currentData = new HashMap<>();
+      HashMap<Class<?>, List<I>> snapshot = new HashMap<>();
       for (Class<?> cls : data.keySet()) {
-        currentData.put(cls, new ArrayList<>(data.get(cls)));
+        snapshot.put(cls, new ArrayList<>());
+        for (I i : data.get(cls)) {
+          snapshot.get(cls).add(i);
+        }
       }
-      return currentData;
+      return snapshot;
     }
   }
 }

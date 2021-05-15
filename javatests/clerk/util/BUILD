@@ -5,6 +5,8 @@ java_test(
   srcs = ["DirectClerkTest.java"],
   test_class = "clerk.util.DirectClerkTest",
   deps = [
+    "//java/clerk/collectors",
+    "//java/clerk/storage",
     "//java/clerk/util",
   ],
 )
