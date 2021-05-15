@@ -19,7 +19,11 @@ public abstract class ListStorage<I, O> implements DataProcessor<I, O> {
   /** Returns a new list containing the data. */
   protected List<I> getData() {
     synchronized (this) {
-      return new ArrayList<>(data);
+      ArrayList<I> snapshot = new ArrayList<>();
+      for (I i : data) {
+        snapshot.add(i);
+      }
+      return snapshot;
     }
   }
 }

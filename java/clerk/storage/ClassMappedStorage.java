@@ -19,7 +19,11 @@ public abstract class ClassMappedStorage<I, O> implements DataProcessor<I, O> {
   /** Returns a copy of the map. */
   protected Map<Class<?>, I> getData() {
     synchronized (this) {
-      return new HashMap<>(data);
+      HashMap<Class<?>, I> snapshot = new HashMap<>();
+      for (Class<?> key : data.keySet()) {
+        snapshot.put(key, data.get(key));
+      }
+      return snapshot;
     }
   }
 }
