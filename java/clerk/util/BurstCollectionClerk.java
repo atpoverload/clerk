@@ -9,12 +9,14 @@ import java.util.function.Supplier;
 /** A clerk that concurrently collects data as quickly as possible. */
 public class BurstCollectionClerk<O> extends SimpleClerk<O> {
   public <I> BurstCollectionClerk(
-      Supplier<I> source, DataProcessor<I, O> processor, ScheduledExecutorService executor) {
+      Supplier<? extends I> source,
+      DataProcessor<I, O> processor,
+      ScheduledExecutorService executor) {
     super(source, processor, new BurstCollector(executor));
   }
 
   public <I> BurstCollectionClerk(
-      Collection<Supplier<I>> sources,
+      Collection<Supplier<? extends I>> sources,
       DataProcessor<I, O> processor,
       ScheduledExecutorService executor) {
     super(sources, processor, new BurstCollector(executor));

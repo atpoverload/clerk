@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 /** A clerk that concurrently collects data at a fixed period. */
 public class FixedPeriodClerk<O> extends SimpleClerk<O> {
   public <I> FixedPeriodClerk(
-      Supplier<I> source,
+      Supplier<? extends I> source,
       DataProcessor<I, O> processor,
       ScheduledExecutorService executor,
       Duration period) {
@@ -18,7 +18,7 @@ public class FixedPeriodClerk<O> extends SimpleClerk<O> {
   }
 
   public <I> FixedPeriodClerk(
-      Collection<Supplier<I>> sources,
+      Collection<Supplier<? extends I>> sources,
       DataProcessor<I, O> processor,
       ScheduledExecutorService executor,
       Duration period) {

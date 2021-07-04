@@ -14,7 +14,8 @@ public class MappedClerk<O> implements Clerk<O> {
 
   private boolean isRunning = false;
 
-  public <I> MappedClerk(Map<Supplier<I>, DataCollector> sources, DataProcessor<I, O> processor) {
+  public <I> MappedClerk(
+      Map<Supplier<? extends I>, DataCollector> sources, DataProcessor<I, O> processor) {
     this.sources = Map.copyOf(sources);
     this.processor = processor;
   }

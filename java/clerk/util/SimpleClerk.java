@@ -16,14 +16,16 @@ public class SimpleClerk<O> implements Clerk<O> {
   private boolean isRunning;
 
   public <I> SimpleClerk(
-      Supplier<I> source, DataProcessor<I, O> processor, DataCollector collector) {
+      Supplier<? extends I> source, DataProcessor<I, O> processor, DataCollector collector) {
     this.sources = List.of(source);
     this.processor = processor;
     this.collector = collector;
   }
 
   public <I> SimpleClerk(
-      Collection<Supplier<I>> sources, DataProcessor<I, O> processor, DataCollector collector) {
+      Collection<Supplier<? extends I>> sources,
+      DataProcessor<I, O> processor,
+      DataCollector collector) {
     this.sources = List.copyOf(sources);
     this.processor = processor;
     this.collector = collector;
