@@ -55,7 +55,7 @@ public class MappedClerk<O> implements Clerk<O> {
   /** Helper class as an alternative to building the map directly. */
   // TODO(timur): this is not type-safe
   public static final class Builder<I, O> {
-    private final HashMap<Supplier<I>, DataCollector> sources = new HashMap();
+    private final HashMap<Supplier<? extends I>, DataCollector> sources = new HashMap();
 
     private DataProcessor<I, O> processor;
 
